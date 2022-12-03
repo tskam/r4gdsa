@@ -2,7 +2,7 @@
 title: "Geographical Segmentation with Spatially Constrained Clustering Techniques"
 date: "`r Sys.Date()`"
 format: html
-execute: 
+execute:
   warning: false
   message: false
   fig-retine: 3
@@ -370,7 +370,7 @@ The correlation plot above shows that COMPUTER_PR and INTERNET_PR are highly cor
 
 In this section, you will learn how to perform hierarchical cluster analysis. The analysis consists of four major steps:
 
-### Extrating clustering variables
+### Extracting clustering variables
 
 The code chunk below will be used to extract the clustering variables from the *shan_sf* simple feature object into data.frame.
 
@@ -465,7 +465,7 @@ ggarrange(r, s, z,
           nrow = 1)
 ```
 
->What statistical conclusion can you draw from the histograms above? 
+> What statistical conclusion can you draw from the histograms above?
 
 ```{r, fig.width=12, fig.height=4}
 
@@ -493,9 +493,6 @@ ggarrange(r, s, z,
           ncol = 3,
           nrow = 1)
 ```
-
-
-
 
 ### Computing proximity matrix
 
@@ -850,9 +847,17 @@ tmap_arrange(hclust.map, shclust.map,
 
 In this section, you will gain hands-on experience on using functions provided by **ClustGeo** package to perform non-spatially constrained hierarchical cluster analysis and spatially constrained cluster analysis.
 
-### Ward-like hierarchical clustering: ClustGeo 
+### A short note about ClustGeo package
 
-ClustGeo package provides function called `hclustgeo()` to perform a typical Ward-like hierarchical clustering just like `hclust()` you learned in previous section. 
+[**ClustGeo**](https://cran.r-project.org/web/packages/ClustGeo/) package is an R package specially designed to support the need of performing spatially constrained cluster analysis. More specifically, it provides a Ward-like hierarchical clustering algorithm called `hclustgeo()` including spatial/geographical constraints.
+
+In the nutshell, the algorithm uses two dissimilarity matrices D0 and D1 along with a mixing parameter alpha, whereby the value of alpha must be a real number between \[0, 1\]. D0 can be non-Euclidean and the weights of the observations can be non-uniform. It gives the dissimilarities in the **attribute/clustering variable space**. D1, on the other hand, gives the dissimilarities in the **constraint space**. The criterion minimised at each stage is a convex combination of the homogeneity criterion calculated with D0 and the homogeneity criterion calculated with D1.
+
+The idea is then to determine a value of alpha which increases the spatial contiguity without deteriorating too much the quality of the solution based on the variables of interest. This need is supported by a function called `choicealpha()`.
+
+### Ward-like hierarchical clustering: ClustGeo
+
+ClustGeo package provides function called `hclustgeo()` to perform a typical Ward-like hierarchical clustering just like `hclust()` you learned in previous section.
 
 To perform non-spatially constrained hierarchical clustering, we only need to provide the function a dissimilarity matrix as shown in the code chunk below.
 
@@ -883,10 +888,9 @@ shan_sf_ngeo_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
 qtm(shan_sf_ngeo_cluster, "CLUSTER")
 ```
 
-
 ### Spatially Constrained Hierarchical Clustering
 
-Before we can performed spatially constrained hierarchical clustering, a spatial distance matrix will be derived by using [`st_distance()`](https://r-spatial.github.io/sf/reference/geos_measures.html) of sf package.  
+Before we can performed spatially constrained hierarchical clustering, a spatial distance matrix will be derived by using [`st_distance()`](https://r-spatial.github.io/sf/reference/geos_measures.html) of sf package.
 
 ```{r}
 dist <- st_distance(shan_sf, shan_sf)
@@ -907,20 +911,20 @@ With reference to the graphs above, alpha = 0.3 will be used as shown in the cod
 clustG <- hclustgeo(proxmat, distmat, alpha = 0.3)
 ```
 
-Next, `cutree()` is used to derive the cluster objecct. 
+Next, `cutree()` is used to derive the cluster objecct.
 
 ```{r}
 groups <- as.factor(cutree(clustG, k=6))
 ```
 
-We will then join back the group list with shan_sf polygon feature data frame by using the code chun below.
+We will then join back the group list with *shan_sf* polygon feature data frame by using the code chunk below.
 
 ```{r}
 shan_sf_Gcluster <- cbind(shan_sf, as.matrix(groups)) %>%
   rename(`CLUSTER` = `as.matrix.groups.`)
 ```
 
-We can not plot the map of the newly delineated spatially constrained clusters.
+We can now plot the map of the newly delineated spatially constrained clusters.
 
 ```{r}
 qtm(shan_sf_Gcluster, "CLUSTER")
