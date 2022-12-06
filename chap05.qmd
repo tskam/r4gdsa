@@ -953,11 +953,11 @@ ggplot(data = shan_sf_ngeo_cluster,
   geom_boxplot()
 ```
 
-The boxplot reveals Cluster 3 displays the highest mean Radio Ownership Per Thousand Household.  This is followed by Cluster 2, 1, 4, 6 and 5.
+The boxplot reveals Cluster 3 displays the highest mean Radio Ownership Per Thousand Household. This is followed by Cluster 2, 1, 4, 6 and 5.
 
-### Multivariate Visualisation 
+### Multivariate Visualisation
 
-Past studies shown that parallel coordinate plot can be used to reveal clustering variables by cluster very effectively.  In the code chunk below, [`ggparcoord()`](https://ggobi.github.io/ggally/reference/ggparcoord.html) of [**GGally**](https://ggobi.github.io/ggally/index.html) package     
+Past studies shown that parallel coordinate plot can be used to reveal clustering variables by cluster very effectively. In the code chunk below, [`ggparcoord()`](https://ggobi.github.io/ggally/reference/ggparcoord.html) of [**GGally**](https://ggobi.github.io/ggally/index.html) package
 
 ```{r}
 #| fig-width: 12
@@ -971,9 +971,9 @@ ggparcoord(data = shan_sf_ngeo_cluster,
   theme(axis.text.x = element_text(angle = 30))
 ```
 
-The parallel coordinate plot above reveals that households in Cluster 4 townships tend to own the highest number of TV and mobile-phone.  On the other hand, households in Cluster 5 tends to own the lowest of all the five ICT.
+The parallel coordinate plot above reveals that households in Cluster 4 townships tend to own the highest number of TV and mobile-phone. On the other hand, households in Cluster 5 tends to own the lowest of all the five ICT.
 
-Note that the `scale` argument of `ggparcoor()` provide several methods to scale the clustering variables.  They are:  
+Note that the `scale` argument of `ggparcoor()` provide several methods to scale the clustering variables. They are:
 
 -   std: univariately, subtract mean and divide by standard deviation.
 -   robust: univariately, subtract median and divide by median absolute deviation.
@@ -982,7 +982,7 @@ Note that the `scale` argument of `ggparcoor()` provide several methods to scale
 -   center: use uniminmax to standardize vertical height, then center each variable at a value specified by the scaleSummary param.
 -   centerObs: use uniminmax to standardize vertical height, then center each variable at the value of the observation specified by the centerObsID param
 
-There is no one best scaling method to use.  You should explore them and select the one that best meet your analysis need.
+There is no one best scaling method to use. You should explore them and select the one that best meet your analysis need.
 
 Last but not least, we can also compute the summary statistics such as mean, median, sd, etc to complement the visual interpretation.
 
@@ -998,4 +998,3 @@ shan_sf_ngeo_cluster %>%
             mean_MPHONE_PR = mean(MPHONE_PR),
             mean_COMPUTER_PR = mean(COMPUTER_PR))
 ```
-
