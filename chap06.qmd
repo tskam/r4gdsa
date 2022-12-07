@@ -2,11 +2,11 @@
 title: "Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
 date: "`r Sys.Date()`"
 format: html
+execute: 
+  warning: false
+  message: false
+  fig-retine: 3
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.retina = 3, warning = FALSE, message = FALSE)
-```
 
 ## Overview
 
@@ -40,14 +40,8 @@ The R packages needed for this exercise are as follows:
 
 The code chunks below installs and launches these R packages into R environment.
 
-```{r echo=TRUE, eval=TRUE}
-packages = c('olsrr', 'corrplot', 'ggpubr', 'sf', 'spdep', 'GWmodel', 'tmap', 'tidyverse')
-for (p in packages){
-  if(!require(p, character.only = T)){
-    install.packages(p)
-  }
-  library(p,character.only = T)
-}
+```{r}
+pacman::p_load(olsrr, corrplot, ggpubr, sf, spdep, GWmodel, tmap, tidyverse)
 ```
 
 ## A shirt note about GWmodel
