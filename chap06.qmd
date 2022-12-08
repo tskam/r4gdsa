@@ -414,7 +414,7 @@ If you prefer formal statistical test methods, the [`ols_test_normality()`](http
 ols_test_normality(condo.mlr1)
 ```
 
-The summary table above reveals that the p-values of the four tests are way smaller than the alpha value of 0.05. Hence we will reject the null hypothesis that the residual is NOT resemble normal distribution.
+The summary table above reveals that the p-values of the four tests are way smaller than the alpha value of 0.05. Hence we will reject the null hypothesis and infer that there is statistical evidence that the residual are not normally distributed.
 
 #### Testing for Spatial Autocorrelation
 
