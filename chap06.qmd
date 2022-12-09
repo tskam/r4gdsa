@@ -301,7 +301,9 @@ Correlation matrix is commonly used to visualise the relationships between the i
 
 The code chunk below is used to plot a scatterplot matrix of the relationship between the independent variables in *condo_resale* data.frame.
 
-```{r echo=TRUE, eval=TRUE, fig.width=12, fig.height=10}
+```{r}
+#| fig-width: 12
+#| fig-height: 10
 corrplot(cor(condo_resale[, 5:23]), diag = FALSE, order = "AOE",
          tl.pos = "td", tl.cex = 0.5, method = "number", type = "upper")
 ```
@@ -525,7 +527,7 @@ bw.fixed <- bw.gwr(formula = SELLING_PRICE ~ AREA_SQM + AGE	+ PROX_CBD +
                    longlat=FALSE)
 ```
 
-The result shows that the recommended bandwidth is 971.3398 metres. (Quiz: Do you know why it is in metre?)
+The result shows that the recommended bandwidth is 971.3405 metres. (Quiz: Do you know why it is in metre?)
 
 #### GWModel method - fixed bandwith
 
@@ -549,17 +551,17 @@ The output is saved in a list of class "gwrm". The code below can be used to dis
 gwr.fixed
 ```
 
-The report shows that the adjusted r-square of the gwr is 0.8430 which is significantly better than the globel multiple linear regression model of 0.6472.
+The report shows that the AICc of the gwr is 42263.61 which is significantly smaller than the globel multiple linear regression model of 42967.1.
 
 ### Building Adaptive Bandwidth GWR Model
 
-In this section, we will calibrate the gwr-absed hedonic pricing model by using adaptive bandwidth approach.
+In this section, we will calibrate the gwr-based hedonic pricing model by using adaptive bandwidth approach.
 
 #### Computing the adaptive bandwidth
 
-Similar to the earlier section, we will first use *bw.ger()* to determine the recommended data point to use.
+Similar to the earlier section, we will first use `bw.gwr()` to determine the recommended data point to use.
 
-The code chunk used look very similar to the one used to compute the fixed bandwidth except the ***adaptive*** argument has changed to **TRUE**.
+The code chunk used look very similar to the one used to compute the fixed bandwidth except the `adaptive` argument has changed to **TRUE**.
 
 ```{r}
 bw.adaptive <- bw.gwr(formula = SELLING_PRICE ~ AREA_SQM + AGE	+ 
@@ -598,7 +600,7 @@ The code below can be used to display the model output.
 gwr.adaptive
 ```
 
-The report shows that the adjusted r-square of the gwr is 0.8561 which is significantly better than the globel multiple linear regression model of 0.6472.
+The report shows that the AICc the adaptive distance gwr is 41982.22 which is even smaller than the AICc of the fixed distance gwr of 42263.61.
 
 ### Visualising GWR Output
 
@@ -649,7 +651,7 @@ summary(gwr.adaptive$SDF$yhat)
 
 The code chunks below is used to create an interactive point symbol map.
 
-```{r echo=TRUE, eval=TRUE}
+```{r}
 tmap_mode("view")
 tm_shape(mpsz_svy21)+
   tm_polygons(alpha = 0.1) +
@@ -663,6 +665,38 @@ tm_shape(condo_resale.sf.adaptive) +
 ```{r echo=TRUE, eval=TRUE}
 tmap_mode("plot")
 ```
+
+### Visualising coefficient estimates
+
+The code chunks below is used to create an interactive point symbol map.
+
+```{r}
+tmap_mode("view")
+AREA_SQM_SE <- tm_shape(mpsz_svy21)+
+  tm_polygons(alpha = 0.1) +
+tm_shape(condo_resale.sf.adaptive) +  
+  tm_dots(col = "AREA_SQM_SE",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+
+AREA_SQM_TV <- tm_shape(mpsz_svy21)+
+  tm_polygons(alpha = 0.1) +
+tm_shape(condo_resale.sf.adaptive) +  
+  tm_dots(col = "AREA_SQM_TV",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+
+tmap_arrange(AREA_SQM_SE, AREA_SQM_TV, 
+             asp=1, ncol=2,
+             sync = TRUE)
+```
+
+```{r echo=TRUE, eval=TRUE}
+tmap_mode("plot")
+```
+
 
 #### By URA Plannign Region
 
