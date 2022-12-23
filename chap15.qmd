@@ -1,0 +1,4 @@
+---
+title: "Spatial Interaction Models"
+editor: visual
+---
