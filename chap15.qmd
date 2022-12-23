@@ -1,4 +1,9 @@
 ---
 title: "Spatial Interaction Models"
+date: "`r Sys.Date()`"
+format: html
+execute:
+  message: false
+  warning: false
 editor: visual
 ---
