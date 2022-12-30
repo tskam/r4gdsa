@@ -407,5 +407,3 @@ ggplot(data=mpsz3414,
       x = "Pre-school density (per km sq)",
       y = "Pre-school count")
 ```
-
-
