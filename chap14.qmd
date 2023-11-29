@@ -1,0 +1,4 @@
+---
+title: "Geographically Weighted Predictive Models"
+editor: visual
+---

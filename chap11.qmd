@@ -1,0 +1,4 @@
+---
+title: "Geographically Weighted PCA"
+editor: visual
+---
