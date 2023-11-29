@@ -1,0 +1,3 @@
+# Preface {.unnumbered}
+
+Welcome to Geospatial Data Science and Analytics with R. This book aims to share with you the theory, the methods and the R tools specially designed to meet the challenges of analysing geographic problems and data.
