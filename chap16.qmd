@@ -1,5 +1,5 @@
 ---
-title: "Spatial Interaction Models"
+title: "Calibrating Spatial Interaction Models with R"
 date: "24 January 2023"
 date-modified: "last-modified"
 format: html
@@ -12,11 +12,24 @@ editor: visual
 
 ## Overview
 
-Spatial interaction represent the flow of people, material, or information between locations in geographical space. It encompasses everything from freight shipments, energy flows, and the global trade in rare antiquities, to flight schedules, rush hour woes, and pedestrian foot traffic. Understanding what factors and logic went into the decision-making behind those human-induced movements and interdependencies is important because it enables policy makwers to better understand, predict, manage, and help plan for such circulation. For example, policy makers can make informed decisions about how to better allocate resources to improve traffic in a city or to speed up shipments of perishable foodstuffs. It has to do with having a good understanding of the overall situation.
+Spatial Interaction Models (SIMs) are mathematical models for estimating flows between spatial entities developed by Alan Wilson in the late 1960s and early 1970, with considerable uptake and refinement for transport modelling since then Boyce and Williams (2015).
 
-Spatial Interaction Models (SIMs) are mathematical models for estimating movement between spatial entities developed by Alan Wilson in the late 1960s and early 1970, with considerable uptake and refinement for transport modelling since then Boyce and Williams (2015). There are four main types of traditional SIMs (Wilson 1971): - Unconstrained - Production-constrained - Attraction-constrained - Doubly-constrained
+There are four main types of traditional SIMs (Wilson 1971):
 
-Both ordinary least square (OLS) and negative binomial (NB) regression methods have been used extensively to calibrate OD flow models by processing flow data as different types of dependent variables.
+-   Unconstrained
+-   Production-constrained
+-   Attraction-constrained
+-   Doubly-constrained
+
+Ordinary least square (OLS), log-normal, Poisson and negative binomial (NB) regression methods have been used extensively to calibrate OD flow models by processing flow data as different types of dependent variables. In this chapter, you will gain hands-on experiences on using appropriate R packages to calibrate SIM by using there four regression methods.
+
+::: callout-note
+Calibration is the process of adjusting parameters in the model to try and get the estimates to agree with the observed data as much as possible. Adjusting the parameters is the sort of iterative process that computers are particularly good at and the goodness-of-fit statistics can be used to indicate when the optimum solution is found. Historically this process required a researcher with the requisite programming skills to write a computer algorithm to iteratively adjust each parameter, check the goodness-of-fit, and then start all over again until the goodness-of-fit statistic was maximised/minimised. (Adam Dennett, 2018)
+:::
+
+## The Case Study and Data
+
+In this exercise, we are going to calibrate SIM to determine factors affecting the public bus passenger flows during the morning peak in Singapore.
 
 ## Getting Started
 
@@ -27,280 +40,76 @@ For the purpose of this exercise, four r packages will be used. They are:
 -   tmap for creating thematic maps.
 
 ```{r}
-pacman::p_load(tmap, sf, DT, stplanr,
-               performance,
-               ggpubr, tidyverse)
+pacman::p_load(tmap, sf, sp, DT, stplanr,
+               performance, reshape2,
+               ggpubr, units, tidyverse)
 ```
 
-## Preparing the Flow Data
+## The Data
 
-### Importing the OD data
+This exercise is a continuation of **Chapter 15: Processing and Visualising Flow Data** and the following data will be used:
 
-Firstly, we will import the *Passenger Volume by Origin Destination Bus Stops* data set downloaded from LTA DataMall by using `read_csv()` of **readr** package.
+-   *od_data.rds*, weekday morning peak passenger flows at planning subzone level.
+-   *mpsz.rds*, URA Master Plan 2019 Planning Subzone boundary in simple feature tibble data frame format.
 
-```{r}
-odbus <- read_csv("chap15/data/aspatial/origin_destination_bus_202210.csv")
-```
-
-Let use display the *odbus* tibble data table by using the code chunk below.
-
-```{r}
-glimpse(odbus)
-```
-
-A quick check of odbus tibble data frame shows that the values in OROGIN_PT_CODE and DESTINATON_PT_CODE are in numeric data type. Hence, the code chunk below is used to convert these data values into character data type.
-
-```{r}
-odbus$ORIGIN_PT_CODE <- as.factor(odbus$ORIGIN_PT_CODE)
-odbus$DESTINATION_PT_CODE <- as.factor(odbus$DESTINATION_PT_CODE) 
-```
-
-### Extracting the study data
-
-For the purpose of this exercise, we will extract commuting flows on weekday and between 6 and 9 o'clock.
-
-```{r}
-odbus6_9 <- odbus %>%
-  filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 6 &
-           TIME_PER_HOUR <= 9) %>%
-  group_by(ORIGIN_PT_CODE,
-           DESTINATION_PT_CODE) %>%
-  summarise(TRIPS = sum(TOTAL_TRIPS))
-```
-
-Table below shows the content of odbus6_9
-
-```{r}
-datatable(odbus6_9)
-```
-
-We will save the output in rds format for future used.
-
-```{r}
-#| eval: false
-write_rds(odbus6_9, "chap15/data/rds/odbus6_9.rds")
-```
-
-The code chunk below will be used to import the save odbus6_9.rds into R environment.
-
-```{r}
-odbus6_9 <- read_rds("chap15/data/rds/odbus6_9.rds")
-```
-
-## Working with Geospatial Data
-
-For the purpose of this exercise, two geospatial data will be used. They are:
-
--   BusStop: This data provides the location of bus stop as at last quarter of 2022.
--   MPSZ-2019: This data provides the sub-zone boundary of URA Master Plan 2019.
-
-Both data sets are in ESRI shapefile format.
-
-### Importing geospatial data
-
-Two geospatial data will be used in this exercise, they are:
-
-```{r}
-busstop <- st_read(dsn = "chap15/data/geospatial",
-                   layer = "BusStop") %>%
-  st_transform(crs = 3414)
-```
-
-```{r}
-mpsz <- st_read(dsn = "chap15/data/geospatial",
-                   layer = "MPSZ-2019") %>%
-  st_transform(crs = 3414)
-mpsz
-```
-
-::: callout-note
--   `st_read()` function of sf package is used to import the shapefile into R as sf data frame.
--   `st_transform()` function of sf package is used to transform the projection to crs 3414.
-:::
-
-## Geospatial data wrangling
-
-### Combining Busstop and mpsz
-
-Code chunk below populates the planning subzone code (i.e. SUBZONE_C) of mpsz sf data frame into busstop sf data frame.
-
-```{r}
-busstop_mpsz <- st_intersection(busstop, mpsz) %>%
-  select(BUS_STOP_N, SUBZONE_C) %>%
-  st_drop_geometry()
-```
-
-::: callout-note
--   `st_intersection()` is used to perform point and polygon overly and the output will be in point sf object.
--   `select()` of dplyr package is then use to retain only BUS_STOP_N and SUBZONE_C in the busstop_mpsz sf data frame.
--   five bus stops are excluded in the resultant data frame because they are outside of Singapore bpundary.
-:::
-
-```{r}
-datatable(busstop_mpsz)
-```
-
-Before moving to the next step, it is wise to save the output into rds format.
-
-```{r}
-write_rds(busstop_mpsz, "chap15/data/rds/busstop_mpsz.rds")  
-```
-
-Next, we are going to append the planning subzone code from busstop_mpsz data frame onto odbus6_9 data frame.
-
-```{r}
-od_data <- left_join(odbus6_9 , busstop_mpsz,
-            by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
-  rename(ORIGIN_BS = ORIGIN_PT_CODE,
-         ORIGIN_SZ = SUBZONE_C,
-         DESTIN_BS = DESTINATION_PT_CODE)
-```
-
-Before continue, it is a good practice for us to check for duplicating records.
-
-```{r}
-duplicate <- od_data %>%
-  group_by_all() %>%
-  filter(n()>1) %>%
-  ungroup()
-```
-
-If duplicated records are found, the code chunk below will be used to retain the unique records.
-
-```{r}
-od_data <- unique(od_data)
-```
-
-It will be a good practice to confirm if the duplicating records issue has been addressed fully.
-
-Next, we will update od_data data frame cwith the planning subzone codes.
-
-```{r}
-od_data <- left_join(od_data , busstop_mpsz,
-            by = c("DESTIN_BS" = "BUS_STOP_N")) 
-```
-
-```{r}
-duplicate <- od_data %>%
-  group_by_all() %>%
-  filter(n()>1) %>%
-  ungroup()
-```
-
-```{r}
-od_data <- unique(od_data)
-```
-
-```{r}
-od_data <- od_data %>%
-  rename(DESTIN_SZ = SUBZONE_C) %>%
-  drop_na() %>%
-  group_by(ORIGIN_SZ, DESTIN_SZ) %>%
-  summarise(MORNING_PEAK = sum(TRIPS))
-```
-
-It is time to save the output into an rds file format.
-
-```{r}
-write_rds(od_data, "chap15/data/rds/od_data.rds")
-```
-
-```{r}
-od_data <- read_rds("chap15/data/rds/od_data.rds")
-```
-
-## Visualising Spatial Interaction
-
-In this section, you will learn how to prepare a desire line by using **stplanr** package.
-
-### Removing intra-zonal flows
-
-We will not plot the intra-zonal flows. The code chunk below will be used to remove intra-zonal flows.
-
-```{r}
-od_data1 <- od_data[od_data$ORIGIN_SZ!=od_data$DESTIN_SZ,]
-```
-
-### Creating desire lines
-
-In this code chunk below, `od2line()` of **stplanr** package is used to create the desire lines.
-
-```{r}
-flowLine <- od2line(flow = od_data1, 
-                    zones = mpsz,
-                    zone_code = "SUBZONE_C")
-```
-
-### Visualising the desire lines
-
-To visualise the resulting desire lines, the code chunk below is used.
-
-```{r}
-tm_shape(mpsz) +
-  tm_polygons() +
-flowLine %>%  
-  filter(MORNING_PEAK >= 5000) %>%
-tm_shape() +
-  tm_lines(lwd = "MORNING_PEAK",
-           style = "quantile",
-           scale = c(0.1, 1, 3, 5, 10),
-           n = 5,
-           alpha = 0.3)
-```
-
-::: callout-warning
-Be patient, the rendering process takes more time because of the transparency argument (i.e. alpha)
-:::
-
-## Visualising the Geospatial Data
-
-```{r}
-tmap_mode("plot")
-tmap_options(check.and.fix = TRUE)
-qtm(mpsz)
-```
-
-## Viewing the Subzone spatial file
-
-```{r}
-head(mpsz, 10)
-```
-
-## Isolating SUBZONE_C (subzone_code) into a new df
-
-```{r}
-mpsz <- mpsz[order(mpsz$SUBZONE_C),]
-head(mpsz, 10)
-```
+Beside these two data sets, an additional attribute data file called pop.csv will be provided. It
 
 ## Computing Distance Matrix
 
-The are at least two ways to compute the required distance matrix. One is based on sf and the other is based on sp. Past experience shows that computing distance matrix by using sf function took relatively longer time that sp method. In view of this, sp method is used in the code chunks below.
+In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. For example, in the table below we can see an Euclidean distance of 3926.0025 between MESZ01 and RVSZ05, of 3939.1079 between MESZ01 and SRSZ01, and so on. By definition, an location's distance from itself, which is shown in the main diagonal of the table, is 0.
 
-### Converting from sf data.table to SpatialPolygonDataFrame
+![](chap16/img/image16-1.jpg)
+
+In this section, you will learn how to compute a distance matrix by using URA Master Plan 2019 Planning Subzone boundary in which you saved as an rds file called *mpsz*.
+
+First, let us import *mpsz.rds* into R environemnt by using the code chunk below.
 
 ```{r}
-#| eval: false
+mpsz <- read_rds("chap16/data/rds/mpsz.rds")
+mpsz
+```
+
+Notice that it is a sf tibble dataframe object class.
+
+### Converting from sf data.table to SpatialPolygonsDataFrame
+
+There are at least two ways to compute the required distance matrix. One is based on sf and the other is based on sp. Past experience shown that computing distance matrix by using sf function took relatively longer time that sp method especially the data set is large. In view of this, sp method is used in the code chunks below.
+
+First [`as.Spatial()`](https://r-spatial.github.io/sf/reference/coerce-methods.html) will be used to convert *mpsz* from sf tibble data frame to SpatialPolygonsDataFrame of sp object as shown in the code chunk below.
+
+```{r}
 mpsz_sp <- as(mpsz, "Spatial")
+mpsz_sp
 ```
 
 ### Computing the distance matrix
 
+Next, [`spDists()`](https://www.rdocumentation.org/packages/sp/versions/2.1-1/topics/spDistsN1) of sp package will be used to compute the Euclidean distance between the centroids of the planning subzones.
+
+::: callout-tip
+### Q&A
+
+Do you know why the distance is calculated between two centroids of a pair of spatial polygons?
+:::
+
 ```{r}
-#| eval: false
-dist <- spDists(mpsz_sp)
-dist 
+dist <- spDists(mpsz_sp, 
+                longlat = FALSE)
+head(dist, n=c(10, 10))
 ```
 
-### Sorting the distance matrix by plannint sub-zone code
+Notice that the output *dist* is a matrix object class of R. Also notice that the column heanders and row headers are not labeled with the planning subzone codes.
+
+### Labelling column and row heanders of a distance matrix
+
+First, we will create a list sorted according to the the distance matrix by planning sub-zone code.
 
 ```{r}
 #| eval: false
 sz_names <- mpsz$SUBZONE_C
 ```
 
-### Attaching SUBZONE_C to row and column for distance matrix matching ahead
+Next we will attach `SUBZONE_C` to row and column for distance matrix matching ahead
 
 ```{r}
 #| eval: false
@@ -310,6 +119,8 @@ rownames(dist) <- paste0(sz_names)
 
 ### Pivoting distance value by SUBZONE_C
 
+Next, we will pivot the distance matrix into a long table by using the row and column subzone codes as show in the code chunk below.
+
 ```{r}
 #| eval: false
 distPair <- melt(dist) %>%
@@ -317,7 +128,13 @@ distPair <- melt(dist) %>%
 head(distPair, 10)
 ```
 
+Notice that the within zone distance is 0.
+
 ### Updating intra-zonal distances
+
+In this section, we are going to append a constant value to replace the intra-zonal distance of 0.
+
+First, we will select and find out the minimum value of the distance by using `summary()`.
 
 ```{r}
 #| eval: false
@@ -326,7 +143,7 @@ distPair %>%
   summary()
 ```
 
-A constant distance value of 50m is added into intra-zones
+Next, a constant distance value of 50m is added into intra-zones distance.
 
 ```{r}
 #| eval: false
@@ -351,30 +168,32 @@ distPair <- distPair %>%
          dest = Var2)
 ```
 
-Lastly, code chunk is used to save the data frame for future use.
+Lastly, the code chunk below is used to save the dataframe for future use.
 
 ```{r}
 #| eval: false
-write_rds(distPair, "data/distPair.rds") 
+write_rds(distPair, "chap16/data/rds/distPair.rds") 
 ```
 
 ## Preparing flow data
 
-The code chunk below is used to prepared the flow_data.
+The code chunk below is used import *od_data* save in Chapter 15 into R environment.
 
 ```{r}
 #| eval: false
 od_data <- read_rds("chap15/data/rds/od_data.rds")
 ```
 
+Next, we will compute the total passenger trip between and within planning subzones by using the code chunk below. The output is all *flow_data*.
+
 ```{r}
 #| eval: false
 flow_data <- od_data %>%
   group_by(ORIGIN_SZ, DESTIN_SZ) %>% 
-  summarize(TRIPS = sum(TRIPS)) 
+  summarize(TRIPS = sum(MORNING_PEAK)) 
 ```
 
-The code chunk below is used to view the passenger volume df
+Use the code chunk below to display flow_data dataframe.
 
 ```{r}
 #| eval: false
@@ -382,6 +201,8 @@ head(flow_data, 10)
 ```
 
 ### Separating intra-flow from passenger volume df
+
+Code chunk below is used to add three new fields in `flow_data` dataframe.
 
 ```{r}
 #| eval: false
@@ -395,11 +216,15 @@ flow_data$offset <- ifelse(
 
 ### Combining passenger volume data with distance value
 
+Before we can join *flow_data* and *distPair*, we need to convert data value type of *ORIGIN_SZ* and *DESTIN_SZ* fields of flow_data dataframe into factor data type.
+
 ```{r}
 #| eval: false
 flow_data$ORIGIN_SZ <- as.factor(flow_data$ORIGIN_SZ)
 flow_data$DESTIN_SZ <- as.factor(flow_data$DESTIN_SZ)
 ```
+
+Now, `left_join()` of **dplyr** will be used to *flow_data* dataframe and *distPair* dataframe. The output is called *flow_data1*.
 
 ```{r}
 #| eval: false
@@ -415,7 +240,7 @@ flow_data1 <- flow_data %>%
 
 ```{r}
 #| eval: false
-pop <- read_csv("chap15/data/aspatial/pop.csv")
+pop <- read_csv("chap16/data/aspatial/pop.csv")
 ```
 
 ### Geospatial data wrangling
@@ -458,9 +283,11 @@ flow_data1 <- flow_data1 %>%
   select(-c(PA, SZ_NAME))
 ```
 
+We will called the output data file *SIM_data*. it is in rds data file format.
+
 ```{r}
 #| eval: false
-write_rds(flow_data1, "chap15/data/rds/SIM_data")
+write_rds(flow_data1, "chap16/data/rds/SIM_data")
 ```
 
 ## Calibrating Spatial Interaction Models
@@ -472,7 +299,7 @@ In this section, you will learn how to calibrate Spatial Interaction Models by u
 Firstly, let us import the modelling data by using the code chunk below.
 
 ```{r}
-SIM_data <- read_rds("chap15/data/rds/SIM_data.rds")
+SIM_data <- read_rds("chap16/data/rds/SIM_data.rds")
 ```
 
 ### Visualising the dependent variable
@@ -555,11 +382,11 @@ Notice that all the 0 values have been replaced by 0.99.
 
 ### Unconstrained Spatial Interaction Model
 
-In this section, you will learn how to calibrate an unconstrained spatial interaction model by using `glm()` of Base Stats. The explanatory variables are origin population by different age cohort, destination population by different age cohort (i.e. wj3_destmedinc) and distance between origin and destination in km (i.e. dist).
+In this section, you will learn how to calibrate an unconstrained spatial interaction model by using `glm()` of Base Stats. The explanatory variables are origin population by different age cohort, destination population by different age cohort (i.e. *ORIGIN_AGE25_64*) and distance between origin and destination in km (i.e. *dist*).
 
 The general formula of Unconstrained Spatial Interaction Model
 
-![](chap15/img/image1.jpg)
+![](chap15/img/image1.jpg){width="480"}
 
 The code chunk used to calibrate to model is shown below:
 
@@ -602,7 +429,7 @@ In this section, we will fit an origin constrained SIM by using the code3 chunk 
 
 The general formula of Origin Constrained Spatial Interaction Model
 
-![](chap15/img/image2.jpg)
+![](chap15/img/image2.jpg){width="480"}
 
 ```{r}
 orcSIM <- glm(formula = TRIPS ~ 
@@ -627,7 +454,7 @@ In this section, we will fit a destination constrained SIM by using the code chu
 
 The general formula of Destination Constrained Spatial Interaction Model
 
-![](chap15/img/image3.jpg)
+![](chap15/img/image3.jpg){width="480"}
 
 ```{r}
 decSIM <- glm(formula = TRIPS ~ 
@@ -652,7 +479,7 @@ In this section, we will fit a doubly constrained SIM by using the code chunk be
 
 The general formula of Doubly Constrained Spatial Interaction Model
 
-![](chap15/img/image4.jpg)
+![](chap15/img/image4.jpg){width="480"}
 
 ```{r}
 dbcSIM <- glm(formula = TRIPS ~ 

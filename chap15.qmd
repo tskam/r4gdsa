@@ -125,6 +125,13 @@ mpsz
 -   `st_transform()` function of sf package is used to transform the projection to crs 3414.
 :::
 
+The code chunk below will be used to write mpsz sf tibble data frame into an rds file for future use.
+
+```{r}
+mpsz <- write_rds(mpsz, "chap16/data/rds/mpsz.rds")
+```
+
+
 ## Geospatial data wrangling
 
 ### Combining Busstop and mpsz
