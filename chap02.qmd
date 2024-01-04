@@ -529,5 +529,5 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
 #| echo: false
 #| eval: false
 renderthis::to_pdf(from = "https://r4gdsa.netlify.app/chap02.html",
-                   to = "D://ISSS624_AY2023-24Dec/03-Hands-on_Ex/Hands-on_Ex1b.pdf")
+                   to = "D://IS415_AY2022-23T2/03-Hands-on_Exercise/Hands-on_Ex1b.pdf")
 ```

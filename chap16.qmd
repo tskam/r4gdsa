@@ -40,9 +40,9 @@ For the purpose of this exercise, four r packages will be used. They are:
 -   tmap for creating thematic maps.
 
 ```{r}
-pacman::p_load(tmap, sf, sp, DT, stplanr,
+pacman::p_load(tmap, sf, sp,
                performance, reshape2,
-               ggpubr, units, tidyverse)
+               ggpubr, tidyverse)
 ```
 
 ## The Data
@@ -95,6 +95,9 @@ Do you know why the distance is calculated between two centroids of a pair of sp
 ```{r}
 dist <- spDists(mpsz_sp, 
                 longlat = FALSE)
+```
+
+```{r}
 head(dist, n=c(10, 10))
 ```
 
@@ -175,20 +178,24 @@ Lastly, the code chunk below is used to save the dataframe for future use.
 write_rds(distPair, "chap16/data/rds/distPair.rds") 
 ```
 
+```{r}
+distPair <- read_rds("chap16/data/rds/distPair.rds")
+```
+
 ## Preparing flow data
 
 The code chunk below is used import *od_data* save in Chapter 15 into R environment.
 
 ```{r}
 #| eval: false
-od_data <- read_rds("chap15/data/rds/od_data.rds")
+od_data_fii <- read_rds("chap15/data/rds/od_data_fii.rds")
 ```
 
 Next, we will compute the total passenger trip between and within planning subzones by using the code chunk below. The output is all *flow_data*.
 
 ```{r}
 #| eval: false
-flow_data <- od_data %>%
+flow_data <- od_data_fii %>%
   group_by(ORIGIN_SZ, DESTIN_SZ) %>% 
   summarize(TRIPS = sum(MORNING_PEAK)) 
 ```
@@ -287,7 +294,7 @@ We will called the output data file *SIM_data*. it is in rds data file format.
 
 ```{r}
 #| eval: false
-write_rds(flow_data1, "chap16/data/rds/SIM_data")
+write_rds(flow_data1, "chap16/data/rds/flow_data_6-9.rds")
 ```
 
 ## Calibrating Spatial Interaction Models
@@ -522,7 +529,7 @@ compare_performance(model_list,
 
 The print above reveals that doubly constrained SIM is the best model among all the four SIMs because it has the smallest RMSE value of 1487.111.
 
-### Visualising fitted
+### Visualising fitted values
 
 In this section, you will learn how to visualise the observed values and the fitted values.
 
@@ -605,9 +612,22 @@ dbc_p <- ggplot(data = SIM_data,
                     y = TRIPS)) +
   geom_point() +
   geom_smooth(method = lm)
+```
 
+Now, we will put all the graphs into a single visual for better comparison by using the code chunk below.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 7
 ggarrange(unc_p, orc_p, dec_p, dbc_p,
           ncol = 2,
           nrow = 2)
 
+```
+
+```{r}
+#| echo: false
+#| eval: false
+renderthis::to_pdf(from = "https://r4gdsa.netlify.app/chap16.html",
+                   to = "D://ISSS624_AY2023-24Nov/04-In-class_Ex/In-class_Ex3.pdf")
 ```

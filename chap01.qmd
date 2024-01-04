@@ -1,5 +1,5 @@
 ---
-title: "Geospatial Data Wrangling with R"
+title: "Geospatial Data Science with R"
 date: "24 January 2023"
 date-modified: "last-modified"
 format: html
@@ -12,7 +12,7 @@ editor: visual
 
 ## Learning Outcome
 
-In this hands-on exercise, you will learn how to handle geospatial data in R by using **sf** package.
+Geospatial Data Science is a process of importing, wrangling, integrating, and processing geographically referenced data sets.  In this hands-on exercise, you will learn how to perform geospatial data science tasks in R by using **sf** package.
 
 By the end of this hands-on exercise, you should acquire the following competencies:
 
@@ -410,6 +410,6 @@ ggplot(data=mpsz3414,
 ```{r}
 #| echo: false
 #| eval: false
-renderthis::to_pdf(from = "https://r4va.netlify.app/chap22.html",
-                   to = "D://ISSS608_AY2022-23Apr/20-r4va/chap22.pdf")
+renderthis::to_pdf(from = "https://r4gdsa.netlify.app/chap01.html",
+                   to = "D://IS415_AY2022-23T2/03-Hands-on_Exercise/Hands-on_Ex1a.pdf")
 ```
