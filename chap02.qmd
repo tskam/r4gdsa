@@ -1,5 +1,5 @@
 ---
-title: 'Choropleth Mapping with R'
+title: 'Thematic Mapping and GeoVisualisation with R'
 date: "December 23, 2022"
 date-modified: "last-modified"
 format: html
@@ -12,7 +12,9 @@ editor: visual
 
 ## Overview
 
-Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.
+In general, thematic mapping involves the use of map symbols to visualize selected properties of geographic features that are not naturally visible, such as population, temperature, crime rate, and property prices, just to mention a few of them.
+
+Geovisualisation, on the other hand, works by providing graphical ideation to render a place, a phenomenon or a process visible, enabling human’s most powerful information-processing abilities – those of spatial cognition associated with our eye–brain vision system – to be directly brought to bear.
 
 In this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called \*\*tmap\*\* package.
 
@@ -141,6 +143,8 @@ write_rds(mpsz_pop2020, "chap02/data/rds/mpszpop2020.rds")
 ```
 
 ## Choropleth Mapping Geospatial Data Using *tmap*
+
+Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.
 
 Two approaches can be used to prepare thematic map using *tmap*, they are:
 

@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2022-12-23">
 
-<title>R for Geospatial Data Science and Analytics - 2&nbsp; Choropleth Mapping with R</title>
+<title>R for Geospatial Data Science and Analytics - 2&nbsp; Thematic Mapping and GeoVisualisation with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -109,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap01.html">The Building Block</a></li><li class="breadcrumb-item"><a href="./chap02.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Choropleth Mapping with R</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap01.html">The Building Block</a></li><li class="breadcrumb-item"><a href="./chap02.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Thematic Mapping and GeoVisualisation with R</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -158,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap02.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Choropleth Mapping with R</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Thematic Mapping and GeoVisualisation with R</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -366,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Choropleth Mapping with R</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Thematic Mapping and GeoVisualisation with R</span></h1>
 </div>
 
 
@@ -384,7 +384,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 19, 2023</p>
+      <p class="date-modified">January 4, 2024</p>
     </div>
   </div>
     
@@ -395,7 +395,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">2.1</span> Overview</h2>
-<p>Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.</p>
+<p>In general, thematic mapping involves the use of map symbols to visualize selected properties of geographic features that are not naturally visible, such as population, temperature, crime rate, and property prices, just to mention a few of them.</p>
+<p>Geovisualisation, on the other hand, works by providing graphical ideation to render a place, a phenomenon or a process visible, enabling human’s most powerful information-processing abilities – those of spatial cognition associated with our eye–brain vision system – to be directly brought to bear.</p>
 <p>In this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called **tmap** package.</p>
 <section id="survival-tip" class="level3" data-number="2.1.1">
 <h3 data-number="2.1.1" class="anchored" data-anchor-id="survival-tip"><span class="header-section-number">2.1.1</span> Survival Tip</h3>
@@ -563,6 +564,7 @@ First 10 features:
 </section>
 <section id="choropleth-mapping-geospatial-data-using-tmap" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="choropleth-mapping-geospatial-data-using-tmap"><span class="header-section-number">2.4</span> Choropleth Mapping Geospatial Data Using <em>tmap</em></h2>
+<p>Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.</p>
 <p>Two approaches can be used to prepare thematic map using <em>tmap</em>, they are:</p>
 <ul>
 <li>Plotting a thematic map quickly by using <em>qtm()</em>.</li>
