@@ -12,7 +12,7 @@ editor: visual
 
 ## Learning Outcome
 
-Geospatial Data Science is a process of importing, wrangling, integrating, and processing geographically referenced data sets.  In this hands-on exercise, you will learn how to perform geospatial data science tasks in R by using **sf** package.
+Geospatial Data Science is a process of importing, wrangling, integrating, and processing geographically referenced data sets. In this hands-on exercise, you will learn how to perform geospatial data science tasks in R by using **sf** package.
 
 By the end of this hands-on exercise, you should acquire the following competencies:
 
