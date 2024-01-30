@@ -1,12 +1,18 @@
 ---
 title: "Global Measures of Spatial Autocorrelation"
-date: "`r Sys.Date()`"
+date: "January 25, 2023"
+date-modified: "last-modified"
 format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
 ---
 
 ## Overview
 
-In this hands-on exercise, you will learn how to compute Global and Local Measure of Spatial Autocorrelation (GLSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
+In this hands-on exercise, you will learn how to compute Global Measures of Spatial Autocorrelation (GMSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
 
 -   import geospatial data using appropriate function(s) of **sf** package,
 -   import csv file using appropriate function of **readr** package,
@@ -14,9 +20,7 @@ In this hands-on exercise, you will learn how to compute Global and Local Measur
 -   compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
     -   plot Moran scatterplot,
     -   compute and plot spatial correlogram using appropriate function of **spdep** package.
--   compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers by using appropriate functions **spdep** package;
--   compute Getis-Ord's Gi-statistics for detecting hot spot or/and cold spot area by using appropriate functions of **spdep** package; and
--   to visualise the analysis output by using **tmap** package.
+-   provide statistically correct interpretation of  GSA statistics.
 
 ## Getting Started
 
@@ -24,7 +28,7 @@ In this hands-on exercise, you will learn how to compute Global and Local Measur
 
 In spatial policy, one of the main development objective of the local government and planners is to ensure equal distribution of development in the province. Our task in this study, hence, is to apply appropriate spatial statistical methods to discover if development are even distributed geographically. If the answer is **No**. Then, our next question will be "is there sign of spatial clustering?". And, if the answer for this question is yes, then our next question will be "where are these clusters?"
 
-In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e. GDP per capita) of Hunan Provice, People Republic of China.(https://en.wikipedia.org/wiki/Hunan)
+In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e. GDP per capita) of [Hunan Provice](https://en.wikipedia.org/wiki/Hunan), People Republic of China.
 
 ### The Study Area and Data
 
@@ -59,7 +63,7 @@ In this section, you will learn how to bring a geospatial data and its associate
 
 ### Import shapefile into r environment
 
-The code chunk below uses [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package to import Hunan shapefile into R. The imported shapefile will be **simple features** Object of **sf**.
+The code chunk below uses [`st_read()`](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package to import Hunan shapefile into R. The imported shapefile will be **simple features** Object of **sf**.
 
 ```{r}
 hunan <- st_read(dsn = "chap09/data/geospatial", 
@@ -68,7 +72,7 @@ hunan <- st_read(dsn = "chap09/data/geospatial",
 
 ### Import csv file into r environment
 
-Next, we will import *Hunan_2012.csv* into R by using *read_csv()* of **readr** package. The output is R data frame class.
+Next, we will import *Hunan_2012.csv* into R by using [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html) of **readr** package. The output is R data frame class.
 
 ```{r}
 hunan2012 <- read_csv("chap09/data/aspatial/Hunan_2012.csv")
@@ -76,7 +80,7 @@ hunan2012 <- read_csv("chap09/data/aspatial/Hunan_2012.csv")
 
 ### Performing relational join
 
-The code chunk below will be used to update the attribute table of *hunan*'s SpatialPolygonsDataFrame with the attribute fields of *hunan2012* dataframe. This is performed by using *left_join()* of **dplyr** package.
+The code chunk below will be used to update the attribute table of *hunan*'s SpatialPolygonsDataFrame with the attribute fields of *hunan2012* dataframe. This is performed by using [`left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr** package.
 
 ```{r}
 hunan <- left_join(hunan,hunan2012) %>%
@@ -85,9 +89,11 @@ hunan <- left_join(hunan,hunan2012) %>%
 
 ### Visualising Regional Development Indicator
 
-Now, we are going to prepare a basemap and a choropleth map showing the distribution of GDPPC 2012 by using *qtm()* of **tmap** package.
+Now, we are going to prepare a basemap and a choropleth map showing the distribution of GDPPC 2012 by using `qtm()` of **tmap** package.
 
-```{r fig.width=12, fig.height=8}
+```{r}
+#| fig-width: 12
+#| fig-height: 8
 equal <- tm_shape(hunan) +
   tm_fill("GDPPC",
           n = 5,
@@ -108,7 +114,7 @@ tmap_arrange(equal,
              ncol=2)
 ```
 
-## Global Spatial Autocorrelation
+## Global Measures of Spatial Autocorrelation
 
 In this section, you will learn how to compute global spatial autocorrelation statistics and to perform spatial complete randomness test for global spatial autocorrelation.
 
@@ -116,7 +122,7 @@ In this section, you will learn how to compute global spatial autocorrelation st
 
 Before we can compute the global spatial autocorrelation statistics, we need to construct a spatial weights of the study area. The spatial weights is used to define the neighbourhood relationships between the geographical units (i.e. county) in the study area.
 
-In the code chunk below, [*poly2nb()*](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** package is used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with contiguous boundaries. If you look at the documentation you will see that you can pass a "queen" argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don't specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.
+In the code chunk below, [`poly2nb()`](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** package is used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with contiguous boundaries. If you look at the documentation you will see that you can pass a "queen" argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don't specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.
 
 More specifically, the code chunk below is used to compute Queen contiguity weight matrix.
 
@@ -139,19 +145,21 @@ rswm_q <- nb2listw(wm_q,
 rswm_q
 ```
 
-The input of *nb2listw()* must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
+::: {.callout-note}
+### What can we learn from the code chunk above?
 
+-   The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
 -   *style* can take values "W", "B", "C", "U", "minmax" and "S". B is the basic binary coding, W is row standardised (sums over all links to n), C is globally standardised (sums over all links to n), U is equal to C divided by the number of neighbours (sums over all links to unity), while S is the variance-stabilizing coding scheme proposed by Tiefelsdorf et al. 1999, p. 167-168 (sums over all links to n).
-
 -   If *zero policy* is set to TRUE, weights vectors of zero length are inserted for regions without neighbour in the neighbours list. These will in turn generate lag values of zero, equivalent to the sum of products of the zero row t(rep(0, length=length(neighbours))) %\*% x, for arbitrary numerical vector x of length length(neighbours). The spatially lagged value of x for the zero-neighbour region will then be zero, which may (or may not) be a sensible choice.
+:::
 
-### Global Spatial Autocorrelation: Moran's I
+## Global Measures of Spatial Autocorrelation: Moran's I
 
-In this section, you will learn how to perform Moran's I statistics testing by using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
+In this section, you will learn how to perform Moran's I statistics testing by using [`moran.test()`](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
 
 ### Maron's I test
 
-The code chunk below performs Moran's I statistical testing using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
+The code chunk below performs Moran's I statistical testing using [`moran.test()`](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
 
 ```{r}
 moran.test(hunan$GDPPC, 
@@ -162,9 +170,9 @@ moran.test(hunan$GDPPC,
 
 > Question: What statistical conclusion can you draw from the output above?
 
-#### Computing Monte Carlo Moran's I
+### Computing Monte Carlo Moran's I
 
-The code chunk below performs permutation test for Moran's I statistic by using [*moran.mc()*](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulation will be performed.
+The code chunk below performs permutation test for Moran's I statistic by using [`moran.mc()`](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulation will be performed.
 
 ```{r}
 set.seed(1234)
@@ -178,11 +186,11 @@ bperm
 
 > Question: What statistical conclustion can you draw fro mthe output above?
 
-#### Visualising Monte Carlo Moran's I
+### Visualising Monte Carlo Moran's I
 
 It is always a good practice for us the examine the simulated Moran's I test statistics in greater detail. This can be achieved by plotting the distribution of the statistical values as a histogram by using the code chunk below.
 
-In the code chunk below [*hist()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/hist) and [*abline()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/abline) of R Graphics are used.
+In the code chunk below [`hist()`](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/hist) and [`abline()`](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/abline) of R Graphics are used.
 
 ```{r}
 mean(bperm$res[1:999])
@@ -200,13 +208,13 @@ abline(v=0,
 
 > Challenge: Instead of using Base Graph to plot the values, plot the values by using ggplot2 package.
 
-### Global Spatial Autocorrelation: Geary's
+## Global Measures of  Spatial Autocorrelation: Geary's C
 
-In this section, you will learn how to perform Geary's c statistics testing by using appropriate functions of **spdep** package.
+In this section, you will learn how to perform Geary's C statistics testing by using appropriate functions of **spdep** package.
 
-#### Geary's C test
+### Geary's C test
 
-The code chunk below performs Geary's C test for spatial autocorrelation by using [*geary.test()*](https://r-spatial.github.io/spdep/reference/geary.test.html) of **spdep**.
+The code chunk below performs Geary's C test for spatial autocorrelation by using [`geary.test()`](https://r-spatial.github.io/spdep/reference/geary.test.html) of **spdep**.
 
 ```{r}
 geary.test(hunan$GDPPC, listw=rswm_q)
@@ -214,9 +222,9 @@ geary.test(hunan$GDPPC, listw=rswm_q)
 
 > Question: What statistical conclusion can you draw from the output above?
 
-#### Computing Monte Carlo Geary's C
+### Computing Monte Carlo Geary's C
 
-The code chunk below performs permutation test for Geary's C statistic by using [*geary.mc()*](https://r-spatial.github.io/spdep/reference/geary.mc.html) of **spdep**.
+The code chunk below performs permutation test for Geary's C statistic by using [`geary.mc()`](https://r-spatial.github.io/spdep/reference/geary.mc.html) of **spdep**.
 
 ```{r}
 set.seed(1234)
@@ -228,7 +236,7 @@ bperm
 
 > Question: What statistical conclusion can you draw from the output above?
 
-#### Visualising the Monte Carlo Geary's C
+### Visualising the Monte Carlo Geary's C
 
 Next, we will plot a histogram to reveal the distribution of the simulated values by using the code chunk below.
 
@@ -248,7 +256,7 @@ Spatial correlograms are great to examine patterns of spatial autocorrelation in
 
 ### Compute Moran's I correlogram
 
-In the code chunk below, [*sp.correlogram()*](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Moran's I. The **plot()** of base Graph is then used to plot the output.
+In the code chunk below, [`sp.correlogram()`](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Moran's I. The **plot()** of base Graph is then used to plot the output.
 
 ```{r}
 MI_corr <- sp.correlogram(wm_q, 
@@ -269,7 +277,7 @@ print(MI_corr)
 
 ### Compute Geary's C correlogram and plot
 
-In the code chunk below, *sp.correlogram()* of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Geary's C. The **plot()** of base Graph is then used to plot the output.
+In the code chunk below, `sp.correlogram()` of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Geary's C. The **plot()** of base Graph is then used to plot the output.
 
 ```{r}
 GC_corr <- sp.correlogram(wm_q, 
