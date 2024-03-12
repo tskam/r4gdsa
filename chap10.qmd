@@ -1,19 +1,24 @@
 ---
 title: "Local Measures of Spatial Autocorrelation"
-date: "`r Sys.Date()`"
+date: "January 25, 2023"
+date-modified: "last-modified"
 format: html
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
 ---
 
 ## Overview
 
-In this hands-on exercise, you will learn how to compute Global and Local Measure of Spatial Autocorrelation (GLSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
+Local Measures of Spatial Autocorrelation (LMSA) focus on the relationships between each observation and its surroundings, rather than providing a single summary of these relationships across the map. In this sense, they are not summary statistics but scores that allow us to learn more about the spatial structure in our data. The general intuition behind the metrics however is similar to that of global ones. Some of them are even mathematically connected, where the global version can be decomposed into a collection of local ones. One such example are Local Indicators of Spatial Association (LISA). Beside LISA, Getis-Ord's Gi-statistics will be introduce as an alternative LMSA statistics that present complementary information or allow us to obtain similar insights for geographically referenced data.
+
+In this hands-on exercise, you will learn how to compute Local Measures of Spatial Autocorrelation (LMSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
 
 -   import geospatial data using appropriate function(s) of **sf** package,
 -   import csv file using appropriate function of **readr** package,
 -   perform relational join using appropriate join function of **dplyr** package,
--   compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
-    -   plot Moran scatterplot,
-    -   compute and plot spatial correlogram using appropriate function of **spdep** package.
 -   compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers by using appropriate functions **spdep** package;
 -   compute Getis-Ord's Gi-statistics for detecting hot spot or/and cold spot area by using appropriate functions of **spdep** package; and
 -   to visualise the analysis output by using **tmap** package.
@@ -108,15 +113,17 @@ tmap_arrange(equal,
              ncol=2)
 ```
 
-## Global Spatial Autocorrelation
+## Local Indicators of Spatial Association(LISA)
 
-In this section, you will learn how to compute global spatial autocorrelation statistics and to perform spatial complete randomness test for global spatial autocorrelation.
+Local Indicators of Spatial Association or LISA are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
+
+In this section, you will learn how to apply appropriate Local Indicators for Spatial Association (LISA), especially local Moran'I to detect cluster and/or outlier from GDP per capita 2012 of Hunan Province, PRC.
 
 ### Computing Contiguity Spatial Weights
 
 Before we can compute the global spatial autocorrelation statistics, we need to construct a spatial weights of the study area. The spatial weights is used to define the neighbourhood relationships between the geographical units (i.e. county) in the study area.
 
-In the code chunk below, [*poly2nb()*](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** package is used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with contiguous boundaries. If you look at the documentation you will see that you can pass a "queen" argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don't specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.
+In the code chunk below, [`poly2nb()`](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** package is used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with contiguous boundaries. If you look at the documentation you will see that you can pass a "queen" argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don't specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.
 
 More specifically, the code chunk below is used to compute Queen contiguity weight matrix.
 
@@ -139,158 +146,14 @@ rswm_q <- nb2listw(wm_q,
 rswm_q
 ```
 
-The input of *nb2listw()* must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
+::: callout-note
+### What can we learn from the code chunk above?
 
+-   The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
 -   *style* can take values "W", "B", "C", "U", "minmax" and "S". B is the basic binary coding, W is row standardised (sums over all links to n), C is globally standardised (sums over all links to n), U is equal to C divided by the number of neighbours (sums over all links to unity), while S is the variance-stabilizing coding scheme proposed by Tiefelsdorf et al. 1999, p. 167-168 (sums over all links to n).
-
 -   If *zero policy* is set to TRUE, weights vectors of zero length are inserted for regions without neighbour in the neighbours list. These will in turn generate lag values of zero, equivalent to the sum of products of the zero row t(rep(0, length=length(neighbours))) %\*% x, for arbitrary numerical vector x of length length(neighbours). The spatially lagged value of x for the zero-neighbour region will then be zero, which may (or may not) be a sensible choice.
+:::
 
-### Global Spatial Autocorrelation: Moran's I
-
-In this section, you will learn how to perform Moran's I statistics testing by using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
-
-### Maron's I test
-
-The code chunk below performs Moran's I statistical testing using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**.
-
-```{r}
-moran.test(hunan$GDPPC, 
-           listw=rswm_q, 
-           zero.policy = TRUE, 
-           na.action=na.omit)
-```
-
-> Question: What statistical conclusion can you draw from the output above?
-
-#### Computing Monte Carlo Moran's I
-
-The code chunk below performs permutation test for Moran's I statistic by using [*moran.mc()*](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulation will be performed.
-
-```{r}
-set.seed(1234)
-bperm= moran.mc(hunan$GDPPC, 
-                listw=rswm_q, 
-                nsim=999, 
-                zero.policy = TRUE, 
-                na.action=na.omit)
-bperm
-```
-
-> Question: What statistical conclustion can you draw fro mthe output above?
-
-#### Visualising Monte Carlo Moran's I
-
-It is always a good practice for us the examine the simulated Moran's I test statistics in greater detail. This can be achieved by plotting the distribution of the statistical values as a histogram by using the code chunk below.
-
-In the code chunk below [*hist()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/hist) and [*abline()*](https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/abline) of R Graphics are used.
-
-```{r}
-mean(bperm$res[1:999])
-var(bperm$res[1:999])
-summary(bperm$res[1:999])
-hist(bperm$res, 
-     freq=TRUE, 
-     breaks=20, 
-     xlab="Simulated Moran's I")
-abline(v=0, 
-       col="red") 
-```
-
-> Question: What statistical observation can you draw fro mthe output above?
-
-> Challenge: Instead of using Base Graph to plot the values, plot the values by using ggplot2 package.
-
-### Global Spatial Autocorrelation: Geary's
-
-In this section, you will learn how to perform Geary's c statistics testing by using appropriate functions of **spdep** package.
-
-#### Geary's C test
-
-The code chunk below performs Geary's C test for spatial autocorrelation by using [*geary.test()*](https://r-spatial.github.io/spdep/reference/geary.test.html) of **spdep**.
-
-```{r}
-geary.test(hunan$GDPPC, listw=rswm_q)
-```
-
-> Question: What statistical conclusion can you draw from the output above?
-
-#### Computing Monte Carlo Geary's C
-
-The code chunk below performs permutation test for Geary's C statistic by using [*geary.mc()*](https://r-spatial.github.io/spdep/reference/geary.mc.html) of **spdep**.
-
-```{r}
-set.seed(1234)
-bperm=geary.mc(hunan$GDPPC, 
-               listw=rswm_q, 
-               nsim=999)
-bperm
-```
-
-> Question: What statistical conclusion can you draw from the output above?
-
-#### Visualising the Monte Carlo Geary's C
-
-Next, we will plot a histogram to reveal the distribution of the simulated values by using the code chunk below.
-
-```{r}
-mean(bperm$res[1:999])
-var(bperm$res[1:999])
-summary(bperm$res[1:999])
-hist(bperm$res, freq=TRUE, breaks=20, xlab="Simulated Geary c")
-abline(v=1, col="red") 
-```
-
-> Question: What statistical observation can you draw from the output?
-
-## Spatial Correlogram
-
-Spatial correlograms are great to examine patterns of spatial autocorrelation in your data or model residuals. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran's I or Geary's c) against distance.Although correlograms are not as fundamental as variograms (a keystone concept of geostatistics), they are very useful as an exploratory and descriptive tool. For this purpose they actually provide richer information than variograms.
-
-### Compute Moran's I correlogram
-
-In the code chunk below, [*sp.correlogram()*](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Moran's I. The **plot()** of base Graph is then used to plot the output.
-
-```{r}
-MI_corr <- sp.correlogram(wm_q, 
-                          hunan$GDPPC, 
-                          order=6, 
-                          method="I", 
-                          style="W")
-plot(MI_corr)
-```
-
-By plotting the output might not allow us to provide complete interpretation. This is because not all autocorrelation values are statistically significant. Hence, it is important for us to examine the full analysis report by printing out the analysis results as in the code chunk below.
-
-```{r}
-print(MI_corr)
-```
-
-> Question: What statistical observation can you draw from the plot above?
-
-### Compute Geary's C correlogram and plot
-
-In the code chunk below, *sp.correlogram()* of **spdep** package is used to compute a 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used in Geary's C. The **plot()** of base Graph is then used to plot the output.
-
-```{r}
-GC_corr <- sp.correlogram(wm_q, 
-                          hunan$GDPPC, 
-                          order=6, 
-                          method="C", 
-                          style="W")
-plot(GC_corr)
-```
-
-Similar to the previous step, we will print out the analysis report by using the code chunk below.
-
-```{r}
-print(GC_corr)
-```
-
-## Cluster and Outlier Analysis
-
-Local Indicators of Spatial Association or LISA are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable. For instance if we are studying cancer rates among census tracts in a given city local clusters in the rates mean that there are areas that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
-
-In this section, you will learn how to apply appropriate Local Indicators for Spatial Association (LISA), especially local Moran'I to detect cluster and/or outlier from GDP per capita 2012 of Hunan Province, PRC.
 
 ### Computing local Moran's I
 
