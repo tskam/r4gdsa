@@ -31,15 +31,11 @@ For the purpose of this exercise, seven r packages will be used. They are:
 -   [sf](https://r-spatial.github.io/sf/) for importing, integrating, processing and transforming geospatial data.
 -   [tidyverse](https://www.tidyverse.org/) for importing, integrating, wrangling and visualising data.
 -   [tmap](https://r-tmap.github.io/tmap/) for creating elegent and cartographic quality thematic maps.
--   [stplanr]()
--   [DT]()
--   [ggpubr]()
--   [performance]()
+-   [stplanr](https://docs.ropensci.org/stplanr/) provides functions for solving common problems in transport planning and modelling such as downloading and cleaning transport datasets; creating geographic “desire lines” from origin-destination (OD) data; route assignment, locally and interfaces to routing services such as CycleStreets.net; calculation of route segment attributes such as bearing and aggregate flow; and ‘travel watershed’ analysis. 
+-   [DT](https://rstudio.github.io/DT/) provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables.
 
 ```{r}
-pacman::p_load(tmap, sf, DT, stplanr,
-               performance,
-               ggpubr, tidyverse)
+pacman::p_load(tmap, sf, DT, stplanr, tidyverse)
 ```
 
 ## Preparing the Flow Data
