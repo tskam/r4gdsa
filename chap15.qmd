@@ -16,7 +16,7 @@ Spatial interaction represent the flow of people, material, or information betwe
 
 Each spatial interaction, as an analogy for a set of movements, is composed of a discrete origin/destination pair. Each pair can be represented as a cell in a matrix where rows are related to the locations (centroids) of origin, while columns are related to locations (centroids) of destination. Such a matrix is commonly known as an origin/destination matrix, or a spatial interaction matrix.
 
-In this hands-on exercise, you will learn how to build an OD matrix by using *Passenger Volume by Origin Destination Bus Stops* data set downloaded from LTA DataMall. By the end of this hands-on exercise, you will be able:
+In this hands-on exercise, you will learn how to build an OD matrix by using [*Passenger Volume by Origin Destination Bus Stops*]() data set downloaded from [LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en.html). By the end of this hands-on exercise, you will be able:
 
 -   to import and extract OD data for a selected time interval,
 -   to import and save geospatial data (i.e. bus stops and mpsz) into sf tibble data frame objects,
@@ -26,11 +26,15 @@ In this hands-on exercise, you will learn how to build an OD matrix by using *Pa
 
 ## Getting Started
 
-For the purpose of this exercise, four r packages will be used. They are:
+For the purpose of this exercise, seven r packages will be used. They are:
 
--   sf for importing, integrating, processing and transforming geospatial data.
--   tidyverse for importing, integrating, wrangling and visualising data.
--   tmap for creating thematic maps.
+-   [sf](https://r-spatial.github.io/sf/) for importing, integrating, processing and transforming geospatial data.
+-   [tidyverse](https://www.tidyverse.org/) for importing, integrating, wrangling and visualising data.
+-   [tmap](https://r-tmap.github.io/tmap/) for creating elegent and cartographic quality thematic maps.
+-   [stplanr]()
+-   [DT]()
+-   [ggpubr]()
+-   [performance]()
 
 ```{r}
 pacman::p_load(tmap, sf, DT, stplanr,
@@ -255,6 +259,11 @@ flowLine <- od2line(flow = od_data_fij,
 ```{r}
 #| eval: false
 write_rds(flowLine, "chap15/data/rds/flowLine.rds")
+```
+
+```{r}
+#| eval: false
+flowLine <- read_rds("chap15/data/rds/flowLine.rds")
 ```
 
 ### Visualising the desire lines
