@@ -26,7 +26,7 @@ In this hands-on exercise, you will learn how to build an OD matrix by using [*P
 
 ## Getting Started
 
-For the purpose of this exercise, seven r packages will be used. They are:
+For the purpose of this exercise, five r packages will be used. They are:
 
 -   [sf](https://r-spatial.github.io/sf/) for importing, integrating, processing and transforming geospatial data.
 -   [tidyverse](https://www.tidyverse.org/) for importing, integrating, wrangling and visualising data.

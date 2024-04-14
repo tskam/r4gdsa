@@ -313,10 +313,10 @@ bw
 
 #### Rescalling KDE values
 
-In the code chunk below, *rescale()* is used to covert the unit of measurement from meter to kilometer.
+In the code chunk below, *rescale.ppp()* is used to covert the unit of measurement from meter to kilometer.
 
 ```{r}
-childcareSG_ppp.km <- rescale(childcareSG_ppp, 1000, "km")
+childcareSG_ppp.km <- rescale.ppp(childcareSG_ppp, 1000, "km")
 ```
 
 Now, we can re-run *density()* using the resale data set and plot the output kde map.
@@ -531,13 +531,13 @@ childcare_ck_ppp = childcare_ppp_jit[ck_owin]
 childcare_jw_ppp = childcare_ppp_jit[jw_owin]
 ```
 
-Next, *rescale()* function is used to trasnform the unit of measurement from metre to kilometre.
+Next, *rescale.ppp()* function is used to trasnform the unit of measurement from metre to kilometre.
 
 ```{r}
-childcare_pg_ppp.km = rescale(childcare_pg_ppp, 1000, "km")
-childcare_tm_ppp.km = rescale(childcare_tm_ppp, 1000, "km")
-childcare_ck_ppp.km = rescale(childcare_ck_ppp, 1000, "km")
-childcare_jw_ppp.km = rescale(childcare_jw_ppp, 1000, "km")
+childcare_pg_ppp.km = rescale.ppp(childcare_pg_ppp, 1000, "km")
+childcare_tm_ppp.km = rescale.ppp(childcare_tm_ppp, 1000, "km")
+childcare_ck_ppp.km = rescale.ppp(childcare_ck_ppp, 1000, "km")
+childcare_jw_ppp.km = rescale.ppp(childcare_jw_ppp, 1000, "km")
 ```
 
 The code chunk below is used to plot these four study areas and the locations of the childcare centres.
