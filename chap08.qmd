@@ -1,11 +1,13 @@
 ---
 title: "Spatial Weights and Applications"
-date: "`r Sys.Date()`"
+date: "January 28, 2024"
+date-modified: "last-modified"
 format: html
 execute:
-  warning: false
   message: false
-  fig-retine: 3
+  warning: false
+  freeze: true
+editor: visual
 ---
 
 ## Overview

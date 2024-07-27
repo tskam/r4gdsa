@@ -1,5 +1,12 @@
 ---
 title: "2nd Order Spatial Point Patterns Analysis Methods"
+date: "January 23, 2023"
+date-modified: "last-modified"
+format: html
+execute:
+  message: false
+  warning: false
+  freeze: true
 editor: visual
 ---
 
@@ -38,7 +45,7 @@ In this hands-on exercise, five R packages will be used, they are:
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
-pacman::p_load(maptools, sf, raster, spatstat, tmap)
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
 ```
 
 ## Spatial Data Wrangling
@@ -105,52 +112,12 @@ Notice that at the interactive mode, **tmap** is using [**leaflet for R**](https
 
 Although simple feature data frame is gaining popularity again sp's Spatial\* classes, there are, however, many geospatial analysis packages require the input geospatial data in sp's Spatial\* classes. In this section, you will learn how to convert simple feature data frame to sp's Spatial\* class.
 
-### Converting sf data frames to sp's Spatial\* class
-
-The code chunk below uses [*as_Spatial()*]() of **sf** package to convert the three geospatial data from simple feature data frame to sp's Spatial\* class.
-
-```{r}
-childcare <- as_Spatial(childcare_sf)
-mpsz <- as_Spatial(mpsz_sf)
-sg <- as_Spatial(sg_sf)
-```
-
-> DIY: Using appropriate function, display the information of these three Spatial\* classes as shown below.
-
-```{r}
-childcare
-mpsz
-sg
-```
-
-Notice that the geospatial data have been converted into their respective sp's Spatial\* classes now.
-
-### Converting the Spatial\* class into generic sp format
-
-**spatstat** requires the analytical data in ***ppp*** object form. There is no direct way to convert a Spatial\* classes into ***ppp*** object. We need to convert the ***Spatial*** **classes**\* into ***Spatial*** object first.
-
-The codes chunk below converts the Spatial\* classes into generic sp objects.
-
-```{r}
-childcare_sp <- as(childcare, "SpatialPoints")
-sg_sp <- as(sg, "SpatialPolygons")
-```
-
-Next, you should display the sp objects properties as shown below.
-
-```{r}
-childcare_sp
-sg_sp
-```
-
-> Challenge: Do you know what are the differences between Spatial\* classes and generic sp object?
-
-### Converting the generic sp format into spatstat's ppp format
+### Converting from sf format into spatstat's ppp format
 
 Now, we will use *as.ppp()* function of **spatstat** to convert the spatial data into **spatstat**'s ***ppp*** object format.
 
 ```{r}
-childcare_ppp <- as(childcare_sp, "ppp")
+childcare_ppp <- as.ppp(childcare_sf)
 childcare_ppp
 ```
 
@@ -194,7 +161,7 @@ To view the locations of these duplicate point events, we will plot `childcare` 
 
 ```{r}
 tmap_mode('view')
-tm_shape(childcare) +
+tm_shape(childcare_sf) +
   tm_dots(alpha=0.4, 
           size=0.05)
 tmap_mode('plot')
@@ -230,7 +197,7 @@ When analysing spatial point patterns, it is a good practice to confine the anal
 The code chunk below is used to covert *sg* SpatialPolygon object into owin object of **spatstat**.
 
 ```{r}
-sg_owin <- as(sg_sp, "owin")
+sg_owin <- as.owin(sg_sf)
 ```
 
 The ouput object can be displayed by using *plot()* function
@@ -270,10 +237,14 @@ plot(childcareSG_ppp)
 The code chunk below will be used to extract the target planning areas.
 
 ```{r}
-pg = mpsz[mpsz@data$PLN_AREA_N == "PUNGGOL",]
-tm = mpsz[mpsz@data$PLN_AREA_N == "TAMPINES",]
-ck = mpsz[mpsz@data$PLN_AREA_N == "CHOA CHU KANG",]
-jw = mpsz[mpsz@data$PLN_AREA_N == "JURONG WEST",]
+pg <- mpsz_sf %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+tm <- mpsz_sf %>%
+  filter(PLN_AREA_N == "TAMPINES")
+ck <- mpsz_sf %>%
+  filter(PLN_AREA_N == "CHOA CHU KANG")
+jw <- mpsz_sf %>%
+  filter(PLN_AREA_N == "JURONG WEST")
 ```
 
 Plotting target planning areas
@@ -286,26 +257,15 @@ plot(ck, main = "Choa Chu Kang")
 plot(jw, main = "Jurong West")
 ```
 
-#### Converting the spatial point data frame into generic sp format
+#### Converting sf objects into ***owin*** objects
 
-Next, we will convert these SpatialPolygonsDataFrame layers into generic spatialpolygons layers.
-
-```{r}
-pg_sp = as(pg, "SpatialPolygons")
-tm_sp = as(tm, "SpatialPolygons")
-ck_sp = as(ck, "SpatialPolygons")
-jw_sp = as(jw, "SpatialPolygons")
-```
-
-#### Creating ***owin*** object
-
-Now, we will convert these SpatialPolygons objects into owin objects that is required by **spatstat**.
+Now, we will convert these sf objects into owin objects that is required by **spatstat**.
 
 ```{r}
-pg_owin = as(pg_sp, "owin")
-tm_owin = as(tm_sp, "owin")
-ck_owin = as(ck_sp, "owin")
-jw_owin = as(jw_sp, "owin")
+pg_owin = as.owin(pg)
+tm_owin = as.owin(tm)
+ck_owin = as.owin(ck)
+jw_owin = as.owin(jw)
 ```
 
 #### Combining childcare points and the study area

@@ -1,10 +1,12 @@
 ---
 title: "Network Constrained Spatial Point Patterns Analysis"
-date: "`r Sys.Date()`"
+date: "January 21, 2023"
+date-modified: "last-modified"
 format: html
 execute:
   message: false
   warning: false
+  freeze: true
 editor: visual
 ---
 
@@ -14,7 +16,7 @@ editor: visual
 
 In this hands-on exercise, you are going to gain hands-on experience on using appropriate functions of **spNetwork** package:
 
--   to derive **network constrained kernel density estimation (NetKDE)**, and
+-   to derive **network kernel density estimation (NKDE)**, and
 -   to perform network G-function and k-function analysis
 
 ## The Data
@@ -31,14 +33,13 @@ Both data sets are in ESRI shapefile format.
 In this hands-on exercise, four R packages will be used, they are:
 
 -   [spNetwork](https://cran.r-project.org/web/packages/spNetwork/index.html), which provides functions to perform Spatial Point Patterns Analysis such as kernel density estimation (KDE) and K-function on network. It also can be used to build spatial matrices ('listw' objects like in 'spdep' package) to conduct any kind of traditional spatial analysis with spatial weights based on reticular distances.
--   [rgdal](https://cran.r-project.org/web/packages/rgdal/index.html), which provides bindings to the ['Geospatial' Data Abstraction Library (GDAL) (\>= 1.11.4)](https://gdal.org/) and access to projection/transformation operations from the [PROJ](https://proj.org/) library. In this exercise, rgdal will be used to import geospatial data in R and store as [sp](https://cran.r-project.org/web/packages/sp/vignettes/intro_sp.pdf) objects.
--   [sp](https://cran.r-project.org/web/packages/sp/index.html), which provides classes and methods for dealing with spatial data in R. In this exercise, it will be used to manage SpatialPointsDataFrame and SpatiaLinesDataFrame, and for performing projection transformation.
+-   [sf](https://r-spatial.github.io/sf/index.html) package provides functions to manage, processing, and manipulate **Simple Features**, a formal geospatial data standard that specifies a storage and access model of spatial geometries such as points, lines, and polygons.
 -   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
 
 Use the code chunk below to install and launch the four R packages.
 
 ```{r}
-pacman::p_load(sp, sf, rgdal, spNetwork, tmap)
+pacman::p_load(sf, spNetwork, tmap, tidyverse)
 ```
 
 ## Data Import and Preparation
@@ -52,31 +53,30 @@ childcare <- st_read(dsn="chap07/data/geospatial",
                      layer="Punggol_CC")
 ```
 
-We can examine the structure of the output SpatialDataFrame in RStudio. Alternative, code chunk below can be used to print the content of network SpatialLineDataFrame and childcare SpatialPointsDataFrame by using the code chunk below.
+We can examine the structure of the output simple features data tables in RStudio. Alternative, code chunk below can be used to print the content of network and childcare simple features objects by using the code chunk below.
 
-```{r eval=FALSE}
-str(network)
-str(childcare)
-```
-
-When I exploring spNetwork's functions, it came to my attention that spNetwork is expecting the geospatial data contains complete CRS information.
-
-In the code chunk below, *spTransform()* of **sp** package is used to assign EPSG code to the SpatialDataFrames. The [epsg:3414](https://epsg.io/3414) is the code for svy21.
+::: panel-tabset
+## Childcare
 
 ```{r}
-#| eval: false
-childcare <-spTransform(childcare,
-                        CRS("+init=epsg:3414"))
-network <- spTransform(network,
-                       CRS("+init=epsg:3414"))
+childcare
 ```
+
+## Network
+
+```{r}
+network
+```
+:::
+
+When I exploring spNetwork's functions, it came to my attention that spNetwork is expecting the geospatial data contains complete CRS information.
 
 ## Visualising the Geospatial Data
 
 Before we jump into the analysis, it is a good practice to visualise the geospatial data. There are at least two ways to visualise the geospatial data. One way is by using *plot()* of Base R as shown in the code chunk below.
 
 ```{r}
-plot(network)
+plot(st_geometry(network))
 plot(childcare,add=T,col='red',pch = 19)
 ```
 
@@ -91,18 +91,18 @@ tm_shape(childcare) +
 tmap_mode('plot')
 ```
 
-## Network Constrained KDE (NetKDE) Analysis
+## Network KDE (NKDE) Analysis
 
-In this section, we will perform NetKDE analysis by using appropriate functions provided in **spNetwork** package.
+In this section, we will perform NKDE analysis by using appropriate functions provided in **spNetwork** package.
 
 ### Preparing the lixels objects
 
-Before computing NetKDE, the SpatialLines object need to be cut into lixels with a specified minimal distance. This task can be performed by using with *lixelize_lines()* of spNetwork as shown in the code chunk below.
+Before computing NKDE, the SpatialLines object need to be cut into lixels with a specified minimal distance. This task can be performed by using with [lixelize_lines()](https://jeremygelb.github.io/spNetwork/reference/lixelize_lines.html) of **spNetwork** as shown in the code chunk below.
 
 ```{r}
 lixels <- lixelize_lines(network, 
                          700, 
-                         mindist = 350)
+                         mindist = 375)
 ```
 
 What can we learned from the code chunk above:
@@ -119,19 +119,20 @@ After cut, if the length of the final lixel is shorter than the minimum distance
 Next, *lines_center()* of **spNetwork** will be used to generate a SpatialPointsDataFrame (i.e. samples) with line centre points as shown in the code chunk below.
 
 ```{r}
-samples <- lines_center(lixels)
+samples <- lines_center(lixels) 
 ```
 
 The points are located at center of the line based on the length of the line.
 
-### Performing NetKDE
+### Performing NKDE
 
-We are ready to computer the NetKDE by using the code chunk below.
+We are ready to computer the NKDE by using the code chunk below.
 
 ```{r}
+#| eval: false
 densities <- nkde(network, 
                   events = childcare,
-                  w = rep(1,nrow(childcare)),
+                  w = rep(1, nrow(childcare)),
                   samples = samples,
                   kernel_name = "quartic",
                   bw = 300, 
@@ -141,7 +142,7 @@ densities <- nkde(network,
                   tol = 1,
                   grid_shape = c(1,1), 
                   max_depth = 8,
-                  agg = 5, #we aggregate events within a 5m radius (faster calculation)
+                  agg = 5, 
                   sparse = TRUE,
                   verbose = FALSE)
 ```
@@ -154,13 +155,14 @@ What can we learn from the code chunk above?
     -   method="discontinuous". The method is proposed by Okabe et al (2008), which equally "divides" the mass density of an event at intersections of lixels.
     -   method="continuous". If the discontinuous method is unbiased, it leads to a discontinuous kernel function which is a bit counter-intuitive. Okabe et al (2008) proposed another version of the kernel, that divide the mass of the density at intersection but adjusts the density before the intersection to make the function continuous.
 
-The user guide of **spNetwork** package provide a comprehensive discussion of *nkde()*. You should read them at least once to have a basic understanding of the various parameters that can be used to calibrate the NetKDE model.
+The user guide of **spNetwork** package provide a comprehensive discussion of *nkde()*. You should read them at least once to have a basic understanding of the various parameters that can be used to calibrate the NKDE model.
 
-#### Visualising NetKDE
+#### Visualising NKDE
 
-Before we can visualise the NetKDE values, code chunk below will be used to insert the computed density values (i.e. densities) into *samples* and *lixels* objects as *density* field.
+Before we can visualise the NKDE values, code chunk below will be used to insert the computed density values (i.e. densities) into *samples* and *lixels* objects as *density* field.
 
 ```{r}
+#| eval: false
 samples$density <- densities
 lixels$density <- densities
 ```
@@ -168,6 +170,7 @@ lixels$density <- densities
 Since svy21 projection system is in meter, the computed density values are very small i.e. 0.0000005. The code chunk below is used to resale the density values from number of events per meter to number of events per kilometer.
 
 ```{r}
+#| eval: false
 # rescaling to help the mapping
 samples$density <- samples$density*1000
 lixels$density <- lixels$density*1000
@@ -176,6 +179,7 @@ lixels$density <- lixels$density*1000
 The code below uses appropriate functions of tmap package to prepare interactive and high cartographic quality map visualisation.
 
 ```{r}
+#| eval: false
 tmap_mode('view')
 tm_shape(lixels)+
   tm_lines(col="density")+

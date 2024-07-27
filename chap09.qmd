@@ -7,6 +7,7 @@ execute:
   eval: true
   echo: true
   warning: false
+  freeze: true
 editor: visual
 ---
 
@@ -20,7 +21,7 @@ In this hands-on exercise, you will learn how to compute Global Measures of Spat
 -   compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
     -   plot Moran scatterplot,
     -   compute and plot spatial correlogram using appropriate function of **spdep** package.
--   provide statistically correct interpretation of  GSA statistics.
+-   provide statistically correct interpretation of GSA statistics.
 
 ## Getting Started
 
@@ -145,7 +146,7 @@ rswm_q <- nb2listw(wm_q,
 rswm_q
 ```
 
-::: {.callout-note}
+::: callout-note
 ### What can we learn from the code chunk above?
 
 -   The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
@@ -208,7 +209,7 @@ abline(v=0,
 
 > Challenge: Instead of using Base Graph to plot the values, plot the values by using ggplot2 package.
 
-## Global Measures of  Spatial Autocorrelation: Geary's C
+## Global Measures of Spatial Autocorrelation: Geary's C
 
 In this section, you will learn how to perform Geary's C statistics testing by using appropriate functions of **spdep** package.
 

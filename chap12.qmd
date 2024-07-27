@@ -1,11 +1,13 @@
 ---
 title: "Geographical Segmentation with Spatially Constrained Clustering Techniques"
-date: "`r Sys.Date()`"
+date: "November 29, 2023"
+date-modified: "last-modified"
 format: html
 execute:
   warning: false
   message: false
   fig-retine: 3
+  freeze: true
 ---
 
 ## Overview
@@ -61,7 +63,7 @@ The R packages needed for this exercise are as follows:
 The code chunks below installs and launches these R packages into R environment.
 
 ```{r}
-pacman::p_load(rgdal, spdep, tmap, sf, ClustGeo, 
+pacman::p_load(spdep, tmap, sf, ClustGeo, 
                ggpubr, cluster, factoextra, NbClust,
                heatmaply, corrplot, psych, tidyverse, GGally)
 ```
@@ -710,10 +712,15 @@ summary(shan.nb)
 We can plot the neighbours list on shan_sp by using the code chunk below. Since we now can plot the community area boundaries as well, we plot this graph on top of the map. The first plot command gives the boundaries. This is followed by the plot of the neighbor list object, with coordinates applied to the original SpatialPolygonDataFrame (Shan state township boundaries) to extract the centroids of the polygons. These are used as the nodes for the graph representation. We also set the color to blue and specify add=TRUE to plot the network on top of the boundaries.
 
 ```{r}
-plot(shan_sp, 
+coords <- st_coordinates(
+  st_centroid(st_geometry(shan_sf)))
+```
+
+```{r}
+plot(st_geometry(shan_sf), 
      border=grey(.5))
-plot(shan.nb, 
-     coordinates(shan_sp), 
+plot(shan.nb,
+     coords, 
      col="blue", 
      add=TRUE)
 ```
@@ -773,9 +780,10 @@ head(shan.mst)
 The plot method for the MST include a way to show the observation numbers of the nodes in addition to the edge. As before, we plot this together with the township boundaries. We can see how the initial neighbour list is simplified to just one edge connecting each of the nodes, while passing through all the nodes.
 
 ```{r}
-plot(shan_sp, border=gray(.5))
+plot(st_geometry(shan_sf), 
+                 border=gray(.5))
 plot.mst(shan.mst, 
-         coordinates(shan_sp), 
+         coords, 
          col="blue", 
          cex.lab=0.7, 
          cex.circles=0.005, 
@@ -819,9 +827,10 @@ table(ccs6)
 Lastly, we can also plot the pruned tree that shows the five clusters on top of the townshop area.
 
 ```{r fig.width=4, fig.height=6}
-plot(shan_sp, border=gray(.5))
+plot(st_geometry(shan_sf), 
+     border=gray(.5))
 plot(clust6, 
-     coordinates(shan_sp), 
+     coords, 
      cex.lab=.7,
      groups.colors=c("red","green","blue", "brown", "pink"),
      cex.circles=0.005, 

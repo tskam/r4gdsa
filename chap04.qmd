@@ -1,10 +1,12 @@
 ---
 title: "1st Order Spatial Point Patterns Analysis Methods"
-date: "`r Sys.Date()`"
+date: "January 8, 2023"
+date-modified: "last-modified"
 format: html
 execute:
   message: false
   warning: false
+  freeze: true
 editor: visual
 ---
 
@@ -43,7 +45,7 @@ In this hands-on exercise, five R packages will be used, they are:
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
-pacman::p_load(maptools, sf, raster, spatstat, tmap)
+pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
 ```
 
 ## Spatial Data Wrangling
@@ -155,7 +157,7 @@ sg_sp
 Now, we will use *as.ppp()* function of **spatstat** to convert the spatial data into **spatstat**'s ***ppp*** object format.
 
 ```{r}
-childcare_ppp <- as(childcare_sp, "ppp")
+childcare_ppp <- as.ppp(childcare_sf)
 childcare_ppp
 ```
 
@@ -235,7 +237,7 @@ When analysing spatial point patterns, it is a good practice to confine the anal
 The code chunk below is used to covert *sg* SpatialPolygon object into owin object of **spatstat**.
 
 ```{r}
-sg_owin <- as(sg_sp, "owin")
+sg_owin <- as.owin(sg_sf)
 ```
 
 The ouput object can be displayed by using *plot()* function
@@ -429,6 +431,7 @@ plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
 The result is the same, we just convert it so that it is suitable for mapping purposes
 
 ```{r}
+#| eval: false
 gridded_kde_childcareSG_bw <- as.SpatialGridDataFrame.im(kde_childcareSG.bw)
 spplot(gridded_kde_childcareSG_bw)
 ```
@@ -438,7 +441,7 @@ spplot(gridded_kde_childcareSG_bw)
 Next, we will convert the gridded kernal density objects into RasterLayer object by using *raster()* of **raster** package.
 
 ```{r}
-kde_childcareSG_bw_raster <- raster(gridded_kde_childcareSG_bw)
+kde_childcareSG_bw_raster <- raster(kde_childcareSG.bw)
 ```
 
 Let us take a look at the properties of *kde_childcareSG_bw_raster* RasterLayer.
@@ -466,9 +469,8 @@ Finally, we will display the raster in cartographic quality map using **tmap** p
 
 ```{r}
 tm_shape(kde_childcareSG_bw_raster) + 
-  tm_raster("v") +
+  tm_raster("layer", palette = "viridis") +
   tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
-
 ```
 
 Notice that the raster values are encoded explicitly onto the raster pixel using the values in "v"" field.
@@ -482,10 +484,14 @@ In this section, you will learn how to compare KDE of childcare at Ponggol, Tamp
 The code chunk below will be used to extract the target planning areas.
 
 ```{r}
-pg = mpsz[mpsz@data$PLN_AREA_N == "PUNGGOL",]
-tm = mpsz[mpsz@data$PLN_AREA_N == "TAMPINES",]
-ck = mpsz[mpsz@data$PLN_AREA_N == "CHOA CHU KANG",]
-jw = mpsz[mpsz@data$PLN_AREA_N == "JURONG WEST",]
+pg <- mpsz_sf %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+tm <- mpsz_sf %>%
+  filter(PLN_AREA_N == "TAMPINES")
+ck <- mpsz_sf %>%
+  filter(PLN_AREA_N == "CHOA CHU KANG")
+jw <- mpsz_sf %>%
+  filter(PLN_AREA_N == "JURONG WEST")
 ```
 
 Plotting target planning areas
@@ -498,26 +504,15 @@ plot(ck, main = "Choa Chu Kang")
 plot(jw, main = "Jurong West")
 ```
 
-#### Converting the spatial point data frame into generic sp format
-
-Next, we will convert these SpatialPolygonsDataFrame layers into generic spatialpolygons layers.
-
-```{r}
-pg_sp = as(pg, "SpatialPolygons")
-tm_sp = as(tm, "SpatialPolygons")
-ck_sp = as(ck, "SpatialPolygons")
-jw_sp = as(jw, "SpatialPolygons")
-```
-
 #### Creating ***owin*** object
 
-Now, we will convert these SpatialPolygons objects into owin objects that is required by **spatstat**.
+Now, we will convert these sf objects into owin objects that is required by **spatstat**.
 
 ```{r}
-pg_owin = as(pg_sp, "owin")
-tm_owin = as(tm_sp, "owin")
-ck_owin = as(ck_sp, "owin")
-jw_owin = as(jw_sp, "owin")
+pg_owin = as.owin(pg)
+tm_owin = as.owin(tm)
+ck_owin = as.owin(ck)
+jw_owin = as.owin(jw)
 ```
 
 #### Combining childcare points and the study area
