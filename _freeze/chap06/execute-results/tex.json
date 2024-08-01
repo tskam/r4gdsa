@@ -1,0 +1,21 @@
+{
+  "hash": "9ada59d019171c897e26deba13d749ab",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Spatiotemporal Point Patterns Analysis\"\ndate: \"July 21, 2024\"\ndate-modified: \"last-modified\"\nformat: html\nexecute:\n  message: false\n  warning: false\n  freeze: true\neditor: visual\n---\n\n\n\n## Overview\n\nThe analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Non-parametric point pattern methods are a highly adaptable approach to answering questions about the real-world using complex data in the form of collections of points. Several methodological advances have been introduced in the last few years. This paper examines the current methodology, including the most recent developments in estimation and computation, and shows how various R packages can be combined to run a set of non-parametric point pattern analyses in a guided and intuitive way. An example of non-specific gastrointestinal disease reports in Hampshire, UK, from 2001 to 2003 is used to illustrate the methods, procedures and interpretations.\n\n## Learning Outcome\n\n### The research questions\n\nThe specific question we would like to answer is:\n\n-   are the locations of childcare centre by different business groups (i.e. NT, PT, RC, ST) spatial independent?\n-   If the answer is NO, are there any phenomena of attraction or repulsion?\n\n### The data\n\nTo provide answer to the questions above, two data sets will be used. They are:\n\n-   Childcare centre: The original data is in KML format. It has been converted into ESRI shapefile format.\n-   URA Master Plan Subzone 2014: It is in ESRI shapefile format.\n\nBoth data sets were downloaded from Data.gov.\n\n## Installing and Loading the R packages\n\nFor the purpose of this study, five R packages will be used. They are:\n\n-   rgdal for importing geospatial data in GIS file format such as shapefile into R and save them as Spatial\\*DataFrame,\n-   maptools for converting Spatial\\* object into ppp object,\n-   raster for handling raster data in R,\n-   spatstat for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc., and\n-   tmap for producing cartographic quality thematic maps.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(sf, raster, spatstat, tmap, tidyverse)\n```\n:::\n\n\n\n## Importing the Geospatial Data\n\n## Mapping the geospatial layers\n\n## Spatial Data Wrangling\n",
+    "supporting": [
+      "chap06_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}
