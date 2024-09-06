@@ -1,5 +1,5 @@
 ---
-title: "Spatiotemporal Point Patterns Analysis"
+title: "Spatio-Temporal Point Patterns Analysis"
 date: "July 21, 2024"
 date-modified: "last-modified"
 format: html
@@ -12,7 +12,9 @@ editor: visual
 
 ## Overview
 
-The analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Non-parametric point pattern methods are a highly adaptable approach to answering questions about the real-world using complex data in the form of collections of points. Several methodological advances have been introduced in the last few years. This paper examines the current methodology, including the most recent developments in estimation and computation, and shows how various R packages can be combined to run a set of non-parametric point pattern analyses in a guided and intuitive way. An example of non-specific gastrointestinal disease reports in Hampshire, UK, from 2001 to 2003 is used to illustrate the methods, procedures and interpretations.
+A spatio-temporal point process (also called space-time or spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event. Examples of events include incidence of disease, sightings or births of a species, or the occurrences of fires, earthquakes, lightning strikes, tsunamis, or volcanic eruptions. 
+
+The analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years.  This chapter shows how various R packages can be combined to run a set of spatio-temporal point pattern analyses in a guided and intuitive way.  A real world forest fire events in Kepulauan Bangka Belitung, Indonesia from 1st January 2023 to 31st December 2023 is used to illustrate the methods, procedures and interpretations.
 
 ## Learning Outcome
 
@@ -20,17 +22,15 @@ The analysis of spatio-temporal point patterns is becoming increasingly necessar
 
 The specific question we would like to answer is:
 
--   are the locations of childcare centre by different business groups (i.e. NT, PT, RC, ST) spatial independent?
--   If the answer is NO, are there any phenomena of attraction or repulsion?
+-   are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?
+-   if the answer is NO, where and when the observed forest fire locations tend to cluster?
 
 ### The data
 
-To provide answer to the questions above, two data sets will be used. They are:
+For the purpose of this exercise, two data sets are used, they are:
 
--   Childcare centre: The original data is in KML format. It has been converted into ESRI shapefile format.
--   URA Master Plan Subzone 2014: It is in ESRI shapefile format.
-
-Both data sets were downloaded from Data.gov.
+-   forestfires, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data.  The data are downloaded from [Fire Information for Resource Management System](https://firms.modaps.eosdis.nasa.gov/download/).  For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.  
+-  Kepulauan_Bangka_Belitung, an ESRI shapefile showing the sub-district (i.e. [kelurahan](https://en.wikipedia.org/wiki/Villages_of_Indonesia)) boundary of Kepulauan Bangka Belitung.  The data set was downloaded from [Indonesia Geospatial](https://www.indonesia-geospasial.com/2023/05/download-shapefile-batas-administrasi.html) portal. The original data covers the whole Indonesia.  For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.
 
 ## Installing and Loading the R packages
 

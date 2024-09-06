@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2024-07-21">
 
-<title>R for Geospatial Data Science and Analytics - 6&nbsp; Spatiotemporal Point Patterns Analysis</title>
+<title>R for Geospatial Data Science and Analytics - 6&nbsp; Spatio-Temporal Point Patterns Analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap04.html">Spatial Point Patterns Analysis</a></li><li class="breadcrumb-item"><a href="./chap06.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatiotemporal Point Patterns Analysis</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap04.html">Spatial Point Patterns Analysis</a></li><li class="breadcrumb-item"><a href="./chap06.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatio-Temporal Point Patterns Analysis</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -200,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap06.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatiotemporal Point Patterns Analysis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatio-Temporal Point Patterns Analysis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -353,9 +353,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap04.html">Spatial Point Patterns Analysis</a></li><li class="breadcrumb-item"><a href="./chap06.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatiotemporal Point Patterns Analysis</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chap04.html">Spatial Point Patterns Analysis</a></li><li class="breadcrumb-item"><a href="./chap06.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatio-Temporal Point Patterns Analysis</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatiotemporal Point Patterns Analysis</span></h1>
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Spatio-Temporal Point Patterns Analysis</span></h1>
 </div>
 
 
@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">Invalid Date</p>
+      <p class="date-modified">September 6, 2024</p>
     </div>
   </div>
     
@@ -386,7 +386,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">6.1</span> Overview</h2>
-<p>The analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Non-parametric point pattern methods are a highly adaptable approach to answering questions about the real-world using complex data in the form of collections of points. Several methodological advances have been introduced in the last few years. This paper examines the current methodology, including the most recent developments in estimation and computation, and shows how various R packages can be combined to run a set of non-parametric point pattern analyses in a guided and intuitive way. An example of non-specific gastrointestinal disease reports in Hampshire, UK, from 2001 to 2003 is used to illustrate the methods, procedures and interpretations.</p>
+<p>A spatio-temporal point process (also called space-time or spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event. Examples of events include incidence of disease, sightings or births of a species, or the occurrences of fires, earthquakes, lightning strikes, tsunamis, or volcanic eruptions.</p>
+<p>The analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years. This chapter shows how various R packages can be combined to run a set of spatio-temporal point pattern analyses in a guided and intuitive way. A real world forest fire events in Kepulauan Bangka Belitung, Indonesia from 1st January 2023 to 31st December 2023 is used to illustrate the methods, procedures and interpretations.</p>
 </section>
 <section id="learning-outcome" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="learning-outcome"><span class="header-section-number">6.2</span> Learning Outcome</h2>
@@ -394,18 +395,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="6.2.1" class="anchored" data-anchor-id="the-research-questions"><span class="header-section-number">6.2.1</span> The research questions</h3>
 <p>The specific question we would like to answer is:</p>
 <ul>
-<li>are the locations of childcare centre by different business groups (i.e.&nbsp;NT, PT, RC, ST) spatial independent?</li>
-<li>If the answer is NO, are there any phenomena of attraction or repulsion?</li>
+<li>are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?</li>
+<li>if the answer is NO, where and when the observed forest fire locations tend to cluster?</li>
 </ul>
 </section>
 <section id="the-data" class="level3" data-number="6.2.2">
 <h3 data-number="6.2.2" class="anchored" data-anchor-id="the-data"><span class="header-section-number">6.2.2</span> The data</h3>
-<p>To provide answer to the questions above, two data sets will be used. They are:</p>
+<p>For the purpose of this exercise, two data sets are used, they are:</p>
 <ul>
-<li>Childcare centre: The original data is in KML format. It has been converted into ESRI shapefile format.</li>
-<li>URA Master Plan Subzone 2014: It is in ESRI shapefile format.</li>
+<li>forestfires, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from <a href="https://firms.modaps.eosdis.nasa.gov/download/">Fire Information for Resource Management System</a>. For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.<br>
+</li>
+<li>Kepulauan_Bangka_Belitung, an ESRI shapefile showing the sub-district (i.e.&nbsp;<a href="https://en.wikipedia.org/wiki/Villages_of_Indonesia">kelurahan</a>) boundary of Kepulauan Bangka Belitung. The data set was downloaded from <a href="https://www.indonesia-geospasial.com/2023/05/download-shapefile-batas-administrasi.html">Indonesia Geospatial</a> portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.</li>
 </ul>
-<p>Both data sets were downloaded from Data.gov.</p>
 </section>
 </section>
 <section id="installing-and-loading-the-r-packages" class="level2" data-number="6.3">
