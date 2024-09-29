@@ -932,7 +932,7 @@ cr <- choicealpha(proxmat, distmat, range.alpha = seq(0, 1, 0.1), K=6, graph = T
 With reference to the graphs above, alpha = 0.2 will be used as shown in the code chunk below.
 
 ```{r}
-clustG <- hclustgeo(proxmat, distmat, alpha = 0.3)
+clustG <- hclustgeo(proxmat, distmat, alpha = 0.2)
 ```
 
 Next, `cutree()` is used to derive the cluster objecct.
