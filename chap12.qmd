@@ -409,7 +409,11 @@ head(shan_ict, 10)
 ```{r}
 #| eval: false
 #| echo: false
-write_rds(shan_ict, "shan_ict.rds")
+write_rds(shan_ict, "chap12/data/rds/shan_ict.rds")
+```
+
+```{r}
+shan_ict <- read_rds("chap12/data/rds/shan_ict.rds")
 ```
 
 ### Data Standardisation
@@ -925,10 +929,10 @@ Next, `choicealpha()` will be used to determine a suitable value for the mixing 
 cr <- choicealpha(proxmat, distmat, range.alpha = seq(0, 1, 0.1), K=6, graph = TRUE)
 ```
 
-With reference to the graphs above, alpha = 0.3 will be used as shown in the code chunk below.
+With reference to the graphs above, alpha = 0.2 will be used as shown in the code chunk below.
 
 ```{r}
-clustG <- hclustgeo(proxmat, distmat, alpha = 0.3)
+clustG <- hclustgeo(proxmat, distmat, alpha = 0.2)
 ```
 
 Next, `cutree()` is used to derive the cluster objecct.
