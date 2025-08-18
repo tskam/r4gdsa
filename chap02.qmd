@@ -20,7 +20,7 @@ In general, thematic mapping involves the use of map symbols to visualize select
 
 Geovisualisation, on the other hand, is the process of using visual representations and cartographic techniques to explore, analyze, and communicate geospatial data. It combines elements of cartography, computer science, and information visualization to enhance spatial understanding and knowledge discovery.
 
-In this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called \*\*tmap\*\* package.
+In this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called **tmap** package.
 
 ### Survival Tip
 
@@ -34,7 +34,7 @@ In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-pr
 -   [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
 -   [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
 -   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for handling geospatial data.
--   [(*rvest*)](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages. 
+-   [(*rvest*)](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
 
 Among the four packages, **readr**, **tidyr** and **dplyr** are part of **tidyverse** package.
 
@@ -194,7 +194,7 @@ The code chunk below will draw a cartographic standard choropleth map as shown b
 
 ```{r}
 tmap_mode("plot")
-qtm(mpsz_pop2024, 
+qtm(shp = mpsz_pop2024, 
     fill = "DEPENDENCY")
 ```
 
@@ -430,7 +430,7 @@ tm_shape(mpsz_pop2024) +
                 style = "quantile",
                 n = 5),
               fill.legend = tm_legend(
-                title = "Dependency ration")) +
+                title = "Dependency ratio")) +
   tm_pos_auto_in() +
   tm_borders(fill_alpha = 0.5) +
   tm_compass(type="8star", size = 2) +
@@ -447,12 +447,14 @@ tm_shape(mpsz_pop2024) +
 The code chunk below shows the *classic* style is used.
 
 ```{r}
-tm_shape(mpsz_pop2024)+
-  tm_fill("DEPENDENCY", 
-          style = "quantile", 
-          palette = "-Greens") +
-  tm_borders(alpha = 0.5) +
-  tmap_style("classic")
+tm_shape(mpsz_pop2024) +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5,
+                values = "-brewer.greens")) + 
+  tm_borders(fill_alpha = 0.5) + 
+  tmap_style("natural")
 ```
 
 To reset the default style, refer to the code chunk below.
@@ -461,95 +463,210 @@ To reset the default style, refer to the code chunk below.
 tmap_style("white")
 ```
 
-### Drawing Small Multiple Choropleth Maps
+## Drawing Small Multiple Choropleth Maps
 
 **Small multiple maps**, also referred to as **facet maps**, are composed of many maps arrange side-by-side, and sometimes stacked vertically. Small multiple maps enable the visualisation of how spatial relationships change with respect to another variable, such as time.
 
 In **tmap**, small multiple maps can be plotted in three ways:
 
 -   by assigning multiple values to at least one of the asthetic arguments,
--   by defining a group-by variable in *tm_facets()*, and
--   by creating multiple stand-alone maps with *tmap_arrange()*.
+-   by creating multiple stand-alone maps with *tmap_arrange()*, and
+-   by defining a group-by variable in *tm_facets()*.
 
-#### By assigning multiple values to at least one of the aesthetic arguments
+### By assigning multiple values to at least one of the aesthetic arguments
 
-In this example, small multiple choropleth maps are created by defining ***ncols*** in **tm_fill()**
-
-```{r}
-tm_shape(mpsz_pop2024)+
-  tm_fill(c("YOUNG", "AGED"),
-          style = "equal", 
-          palette = "Blues") +
-  tm_layout(legend.position = c("right", "bottom")) +
-  tm_borders(alpha = 0.5) +
-  tmap_style("white")
-```
-
-In this example, small multiple choropleth maps are created by assigning multiple values to at least one of the aesthetic arguments
+In this example, small multiple choropleth maps are created by assigning two variables to the visual variable (i.e. fill).
 
 ```{r}
-tm_shape(mpsz_pop2024)+ 
-  tm_polygons(c("DEPENDENCY","AGED"),
-          style = c("equal", "quantile"), 
-          palette = list("Blues","Greens")) +
-  tm_layout(legend.position = c("right", "bottom"))
+tm_shape(mpsz_pop2024) + 
+  tm_polygons(
+    fill = c("YOUNG", "AGED"),
+    fill.legend = 
+      tm_legend(position = tm_pos_in(
+        "right", "bottom"),
+                item.height = 1.5,
+                item.width = 1.5),
+    fill.scale = tm_scale_intervals(
+      style = "equal", 
+      n = 5,
+      values = "brewer.blues")) +
+  tm_borders(fill_alpha = 0.5) +
+  tmap_style("natural")
 ```
 
-#### By defining a group-by variable in *tm_facets()*
+### By arrange multiples choropleth maps in a grid layout
+
+In this example, multiple choropleth maps are created and `tmap_arrnage()` is used to arrnage them in a grid layout.
+
+```{r}
+youngmap <- tm_shape(mpsz_pop2024)+ 
+  tm_polygons(fill = "YOUNG",
+              fill.legend = tm_legend(
+                position = tm_pos_in(
+                  "right", "bottom"),
+                item.height = 1.5,
+                item.width = 1.5),
+              fill.scale = tm_scale_intervals(
+                style = "quantile", 
+                values = "brewer.blues")) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Distribution of young population")
+                
+agedmap <- tm_shape(mpsz_pop2024)+ 
+  tm_polygons(fill = "AGED",
+              fill.legend = tm_legend(
+                position = tm_pos_in(
+                  "right", "bottom"),
+                item.height = 1.5,
+                item.width = 1.5),
+              fill.scale = tm_scale_intervals(
+              style = "quantile", 
+              values = "brewer.blues")) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Distribution of aged population")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+### By defining a group-by variable in *tm_facets()*
 
 In this example, multiple small choropleth maps are created by using **tm_facets()**.
 
 ```{r}
 tm_shape(mpsz_pop2024) +
-  tm_fill("DEPENDENCY",
-          style = "quantile",
-          palette = "Blues",
-          thres.poly = 0) + 
-  tm_facets(by="REGION_N", 
+  tm_fill(fill = "DEPENDENCY",
+          fill.scale = tm_scale_intervals(
+            style = "quantile",
+            values = "brewer.blues")) + 
+  tm_facets(by = "REGION_N",
+            nrow = 2, 
+            ncols = 3,
             free.coords=TRUE, 
-            drop.shapes=TRUE) +
-  tm_layout(legend.show = FALSE,
+            drop.units=TRUE) +
+  tm_layout(legend.show = TRUE,
             title.position = c("center", "center"), 
             title.size = 20) +
-  tm_borders(alpha = 0.5)
+  tm_borders(fill_alpha = 0.5)
 ```
 
-#### By creating multiple stand-alone maps with *tmap_arrange()*
+## Mappping Spatial Object Meeting a Selection Criterion
 
-In this example, multiple small choropleth maps are created by creating multiple stand-alone maps with **tmap_arrange()**.
+Instead of creating small multiple choropleth map, you can also use `filter()` of **dplyr** package to select geographical area of interest and plot a choropleth map focus only on the selected region.
 
 ```{r}
-youngmap <- tm_shape(mpsz_pop2024)+ 
-  tm_polygons("YOUNG", 
-              style = "quantile", 
-              palette = "Blues")
-
-agedmap <- tm_shape(mpsz_pop2024)+ 
-  tm_polygons("AGED", 
-              style = "quantile", 
-              palette = "Blues")
-
-tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+mpsz_pop2024 %>%
+  filter(REGION_N == "CENTRAL REGION") %>%
+  tm_shape() +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(
+                style = "quantile", 
+                values = "brewer.greens"),
+              fill.legend = tm_legend()) +
+  tm_borders(fill_alpha = 0.5)
 ```
 
-### Mappping Spatial Object Meeting a Selection Criterion
+## Complementing Thematic Map with Statistical Chart
 
-Instead of creating small multiple choropleth map, you can also use selection funtion to map spatial objects meeting the selection criterion.
+Maps and statistical charts complement each other by visually representing different aspects of the same data, offering a more comprehensive understanding. Maps excel at showing spatial relationships and geographical patterns, while charts effectively display numerical data, trends, and comparisons. Combining both allows for a more insightful and engaging data narrative, especially when dealing with spatial data that also has quantifiable characteristics.
+
+With tmap, statistical chart and be incorporate into the map visualisation by using `fill.chat` argument of map layers and [**legend chart**](https://r-tmap.github.io/tmap/reference/tm_chart.html) feature as shown in the code chunk below.
 
 ```{r}
-tm_shape(mpsz_pop2024[mpsz_pop2024$REGION_N=="CENTRAL REGION", ])+
-  tm_fill("DEPENDENCY", 
-          style = "quantile", 
-          palette = "Blues", 
-          legend.hist = TRUE, 
-          legend.is.portrait = TRUE,
-          legend.hist.z = 0.1) +
-  tm_layout(legend.outside = TRUE,
-            legend.height = 0.45, 
-            legend.width = 5.0,
-            legend.position = c("right", "bottom"),
-            frame = FALSE) +
-  tm_borders(alpha = 0.5)
+mpsz_pop2024 %>%
+  filter(REGION_N == "CENTRAL REGION") %>%
+  tm_shape() +
+  tm_polygons(fill = "DEPENDENCY",
+              fill.scale = tm_scale_intervals(
+                style = "quantile", 
+                values = "brewer.greens"),
+              fill.legend = tm_legend(),
+              fill.chart = tm_chart_box()) +
+  tm_borders() +
+  tm_layout(asp = 0.8)
+```
+
+In the code chunk below, We improve the visual representation further by highlighting and lebaling the outliers on the choropleth map.  
+
+```{r}
+mpsz_selected <- mpsz_pop2024 %>%
+  filter(REGION_N == "CENTRAL REGION")
+
+stats <- boxplot.stats(mpsz_selected$DEPENDENCY)
+
+outlier_vals <- stats$out
+
+outlier_sf <- mpsz_selected[mpsz_selected$DEPENDENCY %in% outlier_vals, ]
+
+tm_shape(mpsz_selected) +
+  tm_polygons(fill = "DEPENDENCY",
+          fill.scale = tm_scale_intervals(
+            style = "quantile", 
+            values = "brewer.blues"),
+          fill.legend = tm_legend(),
+          fill.chart = tm_chart_box()) +
+  tm_borders(fill_alpha = 0.5) +
+tm_shape(outlier_sf) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_text("SUBZONE_N", col = "red", size = 0.7) +
+  tm_layout(asp = 0.8)
+```
+
+## Creating Interactive Map
+
+Interactive maps let users actively explore and interact with the data they display. Unlike static maps, you can zoom in and out, pan across areas, click on locations for more information, and even work with data overlays or visualizations—making the experience more dynamic and informative. One of the great things about tmap is that it lets you switch easily between static and interactive maps using `tmap_mode()`, so you can choose the view that best suits your analysis.
+
+By modifying the code chunk in sub-section 2.6, the code chunks below build an interactive map using
+
+```{r}
+region_selected <- mpsz_pop2024 %>%
+  filter(REGION_N == "CENTRAL REGION")
+region_bbox <- st_bbox(region_selected)
+
+stats <- boxplot.stats(region_selected$DEPENDENCY)
+outlier_vals <- stats$out
+outlier_sf <- region_selected[region_selected$DEPENDENCY %in% outlier_vals, ]
+
+tmap_mode("view")
+tm_shape(region_selected, 
+         bbox = region_bbox) +
+  tm_fill("DEPENDENCY",
+          id = "SUBZONE_N",
+          popup.vars = c(
+            "Name" = "SUBZONE_N", 
+            "Dependency" = "DEPENDENCY")) +
+  tm_borders() +
+  tm_shape(outlier_sf) +
+  tm_borders(col = "red", lwd = 2)
+tmap_mode("plot")
+```
+
+The interactive map above is far from satisfactory.  While we want to encourage users to engage and explore the interactive by zooming in and out of the study area freely.  But, users might lost in the cyberspace with too much freedom to zoom-in and zoom-out.   
+
+To address this issue, `set_zoom_limits` argument can be used to limit the map extend users can zooming in and out of the map areas as shown below.
+
+```{r}
+region_selected <- mpsz_pop2024 %>%
+  filter(REGION_N == "CENTRAL REGION")
+region_bbox <- st_bbox(region_selected)
+
+stats <- boxplot.stats(region_selected$DEPENDENCY)
+outlier_vals <- stats$out
+outlier_sf <- region_selected[region_selected$DEPENDENCY %in% outlier_vals, ]
+
+tmap_mode("view")
+
+tm_shape(region_selected, 
+         bbox = region_bbox) +
+  tm_fill("DEPENDENCY",
+          id = "SUBZONE_N",
+          popup.vars = c(
+            "Name" = "SUBZONE_N", 
+            "Dependency" = "DEPENDENCY")) +
+  tm_borders() +
+  tm_shape(outlier_sf) +
+  tm_borders(col = "red", lwd = 2) +
+  tm_view(set_zoom_limits = c(12,14))
+tmap_mode("plot")
 ```
 
 ## Reference

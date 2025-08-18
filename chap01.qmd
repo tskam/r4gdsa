@@ -27,7 +27,10 @@ By the end of this hands-on exercise, you should acquire the following competenc
 -   performing data wrangling tasks by using appropriate functions of **dplyr** package and
 -   performing Exploratory Data Analysis (EDA) by using appropriate functions from **ggplot2** package.
 
-> Note: Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.
+::: callout-note
+Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.
+:::
+
 
 ## Data Acquisition
 
