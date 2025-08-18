@@ -478,20 +478,20 @@ In **tmap**, small multiple maps can be plotted in three ways:
 In this example, small multiple choropleth maps are created by assigning two variables to the visual variable (i.e. fill).
 
 ```{r}
+#| fig-width: 12
 tm_shape(mpsz_pop2024) + 
   tm_polygons(
     fill = c("YOUNG", "AGED"),
     fill.legend = 
       tm_legend(position = tm_pos_in(
-        "right", "bottom"),
-                item.height = 1.5,
-                item.width = 1.5),
+        "right", "bottom")),
     fill.scale = tm_scale_intervals(
       style = "equal", 
       n = 5,
       values = "brewer.blues")) +
   tm_borders(fill_alpha = 0.5) +
   tmap_style("natural")
+
 ```
 
 ### By arrange multiples choropleth maps in a grid layout
@@ -504,8 +504,7 @@ youngmap <- tm_shape(mpsz_pop2024)+
               fill.legend = tm_legend(
                 position = tm_pos_in(
                   "right", "bottom"),
-                item.height = 1.5,
-                item.width = 1.5),
+                  item.height = 0.8),
               fill.scale = tm_scale_intervals(
                 style = "quantile", 
                 values = "brewer.blues")) +
@@ -517,8 +516,7 @@ agedmap <- tm_shape(mpsz_pop2024)+
               fill.legend = tm_legend(
                 position = tm_pos_in(
                   "right", "bottom"),
-                item.height = 1.5,
-                item.width = 1.5),
+                item.height = 0.8),
               fill.scale = tm_scale_intervals(
               style = "quantile", 
               values = "brewer.blues")) +
@@ -585,7 +583,7 @@ mpsz_pop2024 %>%
   tm_layout(asp = 0.8)
 ```
 
-In the code chunk below, We improve the visual representation further by highlighting and lebaling the outliers on the choropleth map.  
+In the code chunk below, We improve the visual representation further by highlighting and lebaling the outliers on the choropleth map.
 
 ```{r}
 mpsz_selected <- mpsz_pop2024 %>%
@@ -640,7 +638,7 @@ tm_shape(region_selected,
 tmap_mode("plot")
 ```
 
-The interactive map above is far from satisfactory.  While we want to encourage users to engage and explore the interactive by zooming in and out of the study area freely.  But, users might lost in the cyberspace with too much freedom to zoom-in and zoom-out.   
+The interactive map above is far from satisfactory. While we want to encourage users to engage and explore the interactive by zooming in and out of the study area freely. But, users might lost in the cyberspace with too much freedom to zoom-in and zoom-out.
 
 To address this issue, `set_zoom_limits` argument can be used to limit the map extend users can zooming in and out of the map areas as shown below.
 
