@@ -157,7 +157,7 @@
     "href": "chap02.html#getting-started",
     "title": "2  Thematic Mapping and GeoVisualisation with R",
     "section": "2.2 Getting Started",
-    "text": "2.2 Getting Started\nIn this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, four other R packages will be used. They are:\n\nreadr for importing delimited text file,\ntidyr for tidying data,\ndplyr for wrangling data and\nsf for handling geospatial data.\n(rvest) for scraping (or harvesting) data from web pages.\n\nAmong the four packages, readr, tidyr and dplyr are part of tidyverse package.\nThe code chunk below will be used to install and load these packages in RStudio.\n\npacman::p_load(sf, tmap, tidyverse, rvest)\n\nNotice that, we only need to install tidyverse instead of readr, tidyr and dplyr individually.",
+    "text": "2.2 Getting Started\nIn this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, five other R packages will be used. They are:\n\nreadr for importing delimited text file,\ntidyr for tidying data,\ndplyr for wrangling data and\nsf for handling geospatial data.\n(rvest) for scraping (or harvesting) data from web pages.\n\nAmong the five packages, readr, tidyr and dplyr are part of tidyverse package.\nThe code chunk below will be used to install and load these packages in RStudio.\n\npacman::p_load(sf, tmap, tidyverse, rvest)\n\nNotice that, we only need to install tidyverse instead of readr, tidyr and dplyr individually.",
     "crumbs": [
       "The Building Block",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Thematic Mapping and GeoVisualisation with R</span>"

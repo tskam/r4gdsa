@@ -28,15 +28,15 @@ It is advisable for you to read the functional description of each function befo
 
 ## Getting Started
 
-In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-project.org/web/packages/tmap/) package in R. Beside **tmap** package, four other R packages will be used. They are:
+In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-project.org/web/packages/tmap/) package in R. Beside **tmap** package, five other R packages will be used. They are:
 
 -   [**readr**](https://readr.tidyverse.org/) for importing delimited text file,
 -   [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
 -   [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
 -   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for handling geospatial data.
--   [(*rvest*)](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
+-   [(**rvest**)](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
 
-Among the four packages, **readr**, **tidyr** and **dplyr** are part of **tidyverse** package.
+Among the five packages, **readr**, **tidyr** and **dplyr** are part of **tidyverse** package.
 
 The code chunk below will be used to install and load these packages in RStudio.
 
