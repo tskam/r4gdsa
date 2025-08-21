@@ -2,7 +2,10 @@
 title: "Geospatial Data Science with R"
 date: "24 January 2023"
 date-modified: "last-modified"
-format: html
+format: 
+  html:
+    toc-depth: 4
+    toc-expand: true
 execute:
   echo: true
   eval: true
@@ -31,7 +34,6 @@ By the end of this hands-on exercise, you should acquire the following competenc
 Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.
 :::
 
-
 ## Data Acquisition
 
 Data are key to data analytics including geospatial analytics. Hence, before analysing, we need to assemble the necessary data. In this hands-on exercise, you are required to extract the necessary data sets from the following sources:
@@ -41,11 +43,17 @@ Data are key to data analytics including geospatial analytics. Hence, before ana
 -   Cycling Path from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
 -   Latest version of Singapore Airbnb listing data from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
 
-> Note: The purpose of this section is not merely extracting the necessary data sets. It also aims to introduce you to public available data sets. Students are encouraged to explore the rest of the available data sets in these three data sources.
+::: callout-note
+The purpose of this section is not merely extracting the necessary data sets. It also aims to introduce you to public available data sets. Students are encouraged to explore the rest of the available data sets in these three data sources.
+:::
 
 ### Extracting the geospatial data sets
 
-Next, at the `Hands-on_Ex01` folder, create a sub-folder called `data`. Then, inside the `data` sub-folder, create two sub-folders and name them `geospatial` and `aspatial` respectively.
+To get started, create a new folder called *Hands-on_Ex* in a working directory.
+
+Next, create a new sub-folder called *Hands-on_ex01* in the newly created *Hands-on_Ex* folder.
+
+In the `Hands-on_Ex01` folder, create a sub-folder called `data`. Then, inside the `data` sub-folder, create two sub-folders and name them `geospatial` and `aspatial` respectively.
 
 Place `Master Plan 2014 Subzone Boundary (Web)`, `Pre-Schools Location` and `Cycling Path` zipped files into `geospatial` sub-folder and unzipped them. Copy the unzipped files from their respective sub-folders and place them inside `geospatial` sub-folder.
 
@@ -60,15 +68,20 @@ In this hands-on exercise, two R packages will be used. They are:
 -   **sf** for importing, managing, and processing geospatial data, and
 -   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
 
+::: callout-note
 Tidyverse consists of a family of R packages. In this hands-on exercise, the following packages will be used:
 
 -   **readr** for importing csv data,
--   **readxl** for importing Excel worksheet,
 -   **tidyr** for manipulating data,
 -   **dplyr** for transforming data, and
 -   **ggplot2** for visualising data
+:::
 
-Type the following code chunk.
+::: callout-warning
+You must have **pacman** R package installed. If you have yet to do so, you should install **pacman** before moving to the next step.
+:::
+
+Use the code chunk below to load the necessary R packages into R.
 
 ```{r}
 pacman::p_load(sf, tidyverse)
@@ -76,7 +89,7 @@ pacman::p_load(sf, tidyverse)
 
 What we can learn from the code chunk above:
 
--   [`p_load`](https://cran.r-project.org/web/packages/pacman/pacman.pdf) function pf [**pacman**](https://github.com/trinker/pacman) package is used to install and load sf and tidyverse pacages into R environment.
+-   [`p_load`](https://cran.r-project.org/web/packages/pacman/pacman.pdf) function pf [**pacman**](https://github.com/trinker/pacman) package is used to install and load sf and tidyverse packages into R environment.
 
 ## Importing Geospatial Data
 
@@ -106,42 +119,47 @@ cyclingpath = st_read(dsn = "chap01/data/geospatial",
                          layer = "CyclingPathGazette")
 ```
 
-The message above reveals that there are a total of 2558 features and 2 fields in `cyclingpath` linestring feature data frame and it is in **svy21** projected coordinates system too.
+The message above reveals that there are a total of 4651 features and 19 fields in `cyclingpath` sf data frame. The geospatial entities are capture in *multilinestring* object. Similar to the *MP19_SUBZONE_WEB_PL* shape file, this data set is in in **svy21** projected coordinates system too.
 
 ### Importing GIS data in kml format
 
-The `PreSchoolsLocation` is in kml format. The code chunk below will be used to import the kml into R. Notice that in the code chunk below, the complete path and the kml file extension were provided.
+The `PreSchoolsLocation` is in [**kml**](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) format. The code chunk below will be used to import the kml into R.
 
 ```{r}
 preschool = st_read("chap01/data/geospatial/PreSchoolsLocation.kml")
 ```
 
+::: callout-tip
+Notice that in the code chunk above, the complete path and the kml file extension were provided.
+:::
+
 The message above reveals that `preschool` is a point feature data frame. There are a total of 2290 features and 2 fields. Different from the previous two simple feature data frame, preschool is in **wgs84** coordinates system.
 
 ## Checking the Content of A Simple Feature Data Frame
 
-In this sub-section, you will learn different ways to retrieve information related to the content of a simple feature data frame.
+Prior to wrangle the geospatial data, it is always a good practice for us to know more about the data sets first.
 
 ### Working with *st_geometry()*
 
-The column in the sf data.frame that contains the geometries is a list, of class `sfc`. We can retrieve the geometry list-column in this case by mpsz\$geom or mpsz\[\[1\]\], but the more general way uses *st_geometry()* as shown in the code chunk below.
+The column in the sf data.frame that contains the geometries is a list of class `sfc`. We can retrieve the geometry list-column in this case by mpsz\$geom or mpsz\[\[1\]\], but the more general way uses [`st_geometry()`](https://r-spatial.github.io/sf/reference/st_geometry.html) as shown in the code chunk below.
 
 ```{r}
 st_geometry(mpsz)
-
 ```
 
+::: callout-note
 Notice that the print only displays basic information of the feature class such as type of geometry, the geographic extent of the features and the coordinate system of the data.
+:::
 
 ### Working with glimpse()
 
-Beside the basic feature information, we also would like to learn more about the associated attribute information in the data frame. This is the time you will find *glimpse()* of **dplyr**. very handy as shown in the code chunk below.
+Beside the basic geospatial feature information, we also would like to learn more about the associated attribute information in the data frame. This is the time you will find [`glimpse()`](https://dplyr.tidyverse.org/reference/glimpse.html) of **dplyr**. very handy as shown in the code chunk below.
 
 ```{r}
 glimpse(mpsz)
 ```
 
-*glimpse()* report reveals the data type of each fields. For example `FMEL-UPD_D` field is in **date** data type and `X_ADDR`, `Y_ADDR`, `SHAPE_L` and `SHAPE_AREA` fields are all in **double-precision values**.
+`glimpse()` report reveals the data type of each fields. For example `FMEL-UPD_D` field is in **date** data type and `X_ADDR`, `Y_ADDR`, `SHAPE_L` and `SHAPE_AREA` fields are all in **double-precision values**.
 
 ### Working with *head()*
 
@@ -151,7 +169,9 @@ Sometimes we would like to reveal complete information of a feature object, this
 head(mpsz, n=5)  
 ```
 
-> Note: One of the useful argument of *head()* is it allows user to select the numbers of record to display (i.e. the n argument).
+::: callout-note
+One of the useful argument of *head()* is it allows user to select the numbers of record to display (i.e. the n argument).
+:::
 
 ## Plotting the Geospatial Data
 
@@ -173,7 +193,23 @@ Alternatively, we can also choose the plot the sf object by using a specific att
 plot(mpsz["PLN_AREA_N"])
 ```
 
-> Note: *plot()* is mean for plotting the geospatial object for quick look. For high cartographic quality plot, other R package such as tmap should be used.
+::: callout-tip
+`plot()` is appropriate for plotting the geospatial object for quick look. For high cartographic quality map, other R package such as **tmap** should be used.
+:::
+
+Now, let us plot the preschool layer ontop of the mpsz layer by using the code chunk below.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(preschool), 
+     add = TRUE)
+```
+
+::: callout-note
+#### Quez:
+
+Note that the preschool point objects failed to plot ontop of the mpsz layer. Do you know why?
+:::
 
 ## Working with Projection
 
@@ -196,13 +232,13 @@ Although `mpsz` data frame is projected in svy21 but when we read until the end 
 In order to assign the correct EPSG code to `mpsz` data frame, *st_set_crs()* of **sf** package is used as shown in the code chunk below.
 
 ```{r}
-mpsz3414 <- st_set_crs(mpsz, 3414)
+mpsz <- st_set_crs(mpsz, 3414)
 ```
 
 Now, let us check the CSR again by using the code chunk below.
 
 ```{r}
-st_crs(mpsz3414)
+st_crs(mpsz)
 ```
 
 Notice that the EPSG code is 3414 now.
@@ -221,20 +257,31 @@ This is a scenario that *st_set_crs()* is not appropriate and *st_transform()* o
 
 Let us perform the projection transformation by using the code chunk below.
 
-```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-preschool3414 <- st_transform(preschool, 
+```{r}
+preschool <- st_transform(preschool, 
                               crs = 3414)
 ```
 
-> Note: In practice, we need find out the appropriate project coordinate system to use before performing the projection transformation.
+::: callout-note
+In practice, we need to find out the appropriate project coordinate system to use before performing the projection transformation.
+:::
 
-Next, let us display the content of preschool3414 sf data frame as shown below.
+Next, let us display the content of preschool sf data frame as shown below.
 
 ```{r echo=FALSE}
-st_geometry(preschool3414)
+st_geometry(preschool)
 ```
 
 Notice that it is in svy21 projected coordinate system now. Furthermore, if you refer to *Bounding box:*, the values are greater than 0-360 range of decimal degree commonly used by most of the geographic coordinate systems.
+
+Now, let us try to plot the preschool layer ontop of mpsz layer again by using the similar code chunk you used earlier.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(preschool), add = TRUE)
+```
+
+Notice that the composite map display like what we want now.
 
 ## Importing and Converting An Aspatial Data
 
@@ -287,25 +334,45 @@ glimpse(listings_sf)
 
 Table above shows the content of `listing_sf`. Notice that a new column called `geometry` has been added into the data frame. On the other hand, the `longitude` and `latitude` columns have been dropped from the data frame.
 
+::: callout-note
+#### DIY:
+
+Using the method you learned earlier, plot listing_sf layer on top of mpsz layer.
+:::
+
+The plot should look similar to the figure below.
+
+```{r}
+#| echo: false
+plot(st_geometry(mpsz))
+plot(st_geometry(listings_sf), add = TRUE)
+```
+
 ## Geoprocessing with sf package
 
 Besides providing functions to handling (i.e. importing, exporting, assigning projection, transforming projection etc) geospatial data, **sf** package also offers a wide range of geoprocessing (also known as GIS analysis) functions.
 
-In this section, you will learn how to perform two commonly used geoprocessing functions, namely [buffering](https://www.gislounge.com/buffers-in-gis/) and point in polygon count.
+In this section, you will learn how to answer GIS questions by using geoprocessing functions of sf package.
 
-### Buffering
+### Use case 1: Land acquisition analysis
 
-The scenario:
+#### The scenario
 
-The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 metres of reserved land on the both sides of the current cycling path. You are tasked to determine the extend of the land need to be acquired and their total area.
+The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 metres of reserved land on the both sides of the existing cycling path. You are tasked to determine the extend of the land need to be acquired and their total area.
 
-The solution:
+#### The solution
 
-Firstly, [*st_buffer()*](https://r-spatial.github.io/sf/reference/geos_unary.html) of **sf** package is used to compute the 5-meter buffers around cycling paths
+Firstly, [`st_buffer()`](https://r-spatial.github.io/sf/reference/geos_unary.html) of **sf** package is used to compute the 5-meter buffers around cycling paths.
 
-```{r, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
-buffer_cycling <- st_buffer(cyclingpath, 
-                               dist=5, nQuadSegs = 30)
+```{r}
+#| echo: false
+cyclingpath <- st_transform(
+  cyclingpath, crs = 3414)
+```
+
+```{r}
+buffer_cycling <- st_buffer(
+  cyclingpath, dist=5, nQuadSegs = 30)
 ```
 
 This is followed by calculating the area of the buffers as shown in the code chunk below.
@@ -314,68 +381,97 @@ This is followed by calculating the area of the buffers as shown in the code chu
 buffer_cycling$AREA <- st_area(buffer_cycling)
 ```
 
-Lastly, sum() of Base R will be used to derive the total land involved
+If you are tidyverse person like me, code chunk below should be used.
+
+```{r}
+buffer_cycling <- buffer_cycling %>%
+  mutate(AREA = st_area(geometry))
+```
+
+Lastly, `sum()` of Base R will be used to derive the total land involved
 
 ```{r}
 sum(buffer_cycling$AREA)
 ```
 
-**Mission Accomplished!**
+We can also create a plot showing the buffer by a selected planning subzone.
 
-### Point-in-polygon count
+Assuming that we are interested on the land acquisition in Tampines West planning subzone.
 
-The scenario:
-
-A pre-school service group want to find out the numbers of pre-schools in each Planning Subzone.
-
-The solution:
-
-The code chunk below performs two operations at one go. Firstly, identify pre-schools located inside each Planning Subzone by using [st_intersects()](https://r-spatial.github.io/sf/reference/geos_binary_pred.html). Next, [*length()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/length) of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.
+Firstly, `filter()` of dplyr package will be used to extract polygon feature of Tampines West by using the code chunk below.
 
 ```{r}
-mpsz3414$`PreSch Count`<- lengths(st_intersects(mpsz3414, preschool3414))
+mpsz_selected <- mpsz %>%
+  filter(SUBZONE_N == "TAMPINES WEST") 
 ```
 
-> **Warning**: You should not confuse with [st_intersection()](https://r-spatial.github.io/sf/reference/geos_binary_ops.html).
+Next, `st_intersection()` of **sf** package will be used to clip cycling buffers within Tampines West planning subzone.
+
+```{r}
+buffer_cycling_selected <- st_intersection(
+  buffer_cycling, mpsz_selected)
+```
+
+Lastly, `plot()` of R Graphic will be used to create the plot as shown below.
+
+```{r}
+#| echo: false
+plot(st_geometry(buffer_cycling_selected))
+```
+
+**Mission Accomplished!**
+
+### Use case 2: To determine the number of pre-schools by planning subzone
+
+#### The scenario
+
+The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.   
+
+#### The solution
+
+The code chunk below performs two operations at one go. Firstly, identify pre-schools located inside each Planning Subzone by using [`st_intersects()`](https://r-spatial.github.io/sf/reference/geos_binary_pred.html). Next, [`length()`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/length) of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.
+
+```{r}
+mpsz$`PreSch Count`<- lengths(st_intersects(mpsz, preschool))
+```
+
+::: callout-warning
+You should not confuse with [st_intersection()](https://r-spatial.github.io/sf/reference/geos_binary_ops.html).
+:::
 
 You can check the summary statistics of the newly derived *PreSch Count* field by using *summary()* as shown in the code chunk below.
 
 ```{r}
-summary(mpsz3414$`PreSch Count`)
+summary(mpsz$`PreSch Count`)
 ```
 
 To list the planning subzone with the most number of pre-school, the [*top_n()*](https://dplyr.tidyverse.org/reference/top_n.html) of **dplyr** package is used as shown in the code chunk below.
 
 ```{r}
-top_n(mpsz3414, 1, `PreSch Count`)
+top_n(mpsz, 1, `PreSch Count`)
 ```
 
-> **DIY: Calculate the density of pre-school by planning subzone.**
-
-The solution:
-
-Firstly, the code chunk below uses [*st_area()*](https://r-spatial.github.io/sf/reference/geos_measures.html) of **sf** package to derive the area of each planning subzone.
+In the code chunk below, another geoprocessing function of sf package called [`st_area()`](https://r-spatial.github.io/sf/reference/geos_measures.html) is used to derive the area of each planning subzone.
 
 ```{r}
-mpsz3414$Area <- mpsz3414 %>%
+mpsz$Area <- mpsz %>%
   st_area()
 ```
 
 Next, [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) of [**dplyr**](https://dplyr.tidyverse.org/index.html) package is used to compute the density by using the code chunk below.
 
 ```{r}
-mpsz3414 <- mpsz3414 %>%
+mpsz <- mpsz %>%
   mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
 ```
 
-## Exploratory Data Analysis (EDA)
 
-In practice, many geospatial analytics start with Exploratory Data Analysis. In this section, you will learn how to use appropriate [ggplot2](https://ggplot2.tidyverse.org/) functions to create functional and yet truthful statistical graphs for EDA purposes.
+In this section, you will visualise the derive variables by using appropriate Exploratory data Analysis methods of [ggplot2](https://ggplot2.tidyverse.org/).
 
 Firstly, we will plot a histogram to reveal the distribution of `PreSch Density`. Conventionally, *hist()* of R Graphics will be used as shown in the code chunk below.
 
 ```{r}
-hist(mpsz3414$`PreSch Density`)
+hist(mpsz$`PreSch Density`)
 ```
 
 Although the syntax is very easy to use however the output is far from meeting publication quality. Furthermore, the function has limited room for further customisation.
@@ -383,23 +479,21 @@ Although the syntax is very easy to use however the output is far from meeting p
 In the code chunk below, appropriate **ggplot2** functions will be used.
 
 ```{r}
-ggplot(data=mpsz3414, 
+ggplot(data=mpsz, 
        aes(x= as.numeric(`PreSch Density`)))+
   geom_histogram(bins=20, 
                  color="black", 
                  fill="light blue") +
   labs(title = "Are pre-school even distributed in Singapore?",
-       subtitle= "There are many planning sub-zones with a single pre-school, on the other hand, \nthere are two planning sub-zones with at least 20 pre-schools",
+       subtitle= "There are many planning subzones with a single pre-school, on the other hand, \nthere are seven planning subzones with at least 30 or more pre-schools",
       x = "Pre-school density (per km sq)",
       y = "Frequency")
 ```
 
-> **DIY: Using ggplot2 method, plot a scatterplot showing the relationship between Pre-school Density and Pre-school Count.**
-
-The solution:
+In the code chunk below, appropriate ggplot2 functions are used to plot a scatterplot showing the relationship between Pre-school Density and Pre-school Count.
 
 ```{r}
-ggplot(data=mpsz3414, 
+ggplot(data=mpsz, 
        aes(y = `PreSch Count`, 
            x= as.numeric(`PreSch Density`)))+
   geom_point(color="black", 
