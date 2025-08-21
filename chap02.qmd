@@ -34,7 +34,7 @@ In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-pr
 -   [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
 -   [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
 -   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for handling geospatial data.
--   [(**rvest**)](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
+-   [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
 
 Among the five packages, **readr**, **tidyr** and **dplyr** are part of **tidyverse** package.
 

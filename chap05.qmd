@@ -12,10 +12,7 @@ editor: visual
 
 ## Overview
 
-Spatial Point Pattern Analysis is the evaluation of the pattern or distribution, of a set of points on a surface. The point can be location of:
-
--   events such as crime, traffic accident and disease onset, or
--   business services (coffee and fastfood outlets) or facilities such as childcare and eldercare.
+Second-order spatial point pattern analysis examines the spatial relationships between points in a pattern, specifically focusing on how the presence of one point influences the location of others. It goes beyond simply describing the overall density of points (first-order effects) by investigating clustering, dispersion, or randomness at various spatial scales.
 
 Using appropriate functions of [spatstat](https://cran.r-project.org/web/packages/spatstat/), this hands-on exercise aims to discover the spatial point processes of childecare centres in Singapore.
 

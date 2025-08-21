@@ -1,5 +1,5 @@
 ---
-title: "1st Order Spatial Point Patterns Analysis Methods"
+title: "First-order Spatial Point Patterns Analysis Methods"
 date: "January 8, 2023"
 date-modified: "last-modified"
 format: 
@@ -17,24 +17,36 @@ editor: visual
 
 ## Overview
 
-Spatial Point Pattern Analysis is the evaluation of the pattern or distribution, of a set of points on a surface. The point can be location of:
+**Spatial Point Pattern Analysis (SPPA)** is the evaluation of the pattern or distribution of a set of points on a surface. The points may represent:
 
--   events such as crime, traffic accident and disease onset, or
--   business services (coffee and fastfood outlets) or facilities such as childcare and eldercare.
+- events such as crimes, traffic accidents, or disease onsets, or
+- business services (e.g., coffee shops and fast-food outlets) or facilities such as childcare centres and eldercare centres.
 
-Using appropriate functions of [spatstat](https://cran.r-project.org/web/packages/spatstat/), this hands-on exercise aims to discover the spatial point processes of childecare centres in Singapore.
+**First-order Spatial Point Pattern Analysis (1st-SPPA)** focuses on understanding the intensity or density of points across a study area. It examines how the distribution of points varies over space, essentially identifying trends or patterns in point density. This type of analysis deals with the individual locations of points and their distribution, without considering interactions between them.
+
+In essence, 1st-SPPA helps answer questions such as:
+
+- Where are points most densely located within the study area?
+- Is point density uniform, or does it vary across space?
+- How spread out is the point pattern?
+
+In this chapter, you will gain hands-on experience with [**spatstat**](https://cran.r-project.org/web/packages/spatstat/) to perform two commonly used 1st-SPPA methods:
 
 The specific questions we would like to answer are as follows:
 
--   are the childcare centres in Singapore randomly distributed throughout the country?\
--   if the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
+- Are the childcare centres in Singapore
+randomly distributed throughout the country?
+- If the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
+- Are the observed spatial point patterns (e.g., random, clustered, or evenly distributed) statistically significant?
 
 ## The data
 
 To provide answers to the questions above, two data sets will be used. They are:
 
--   `CHILDCARE`, a point feature data providing both location and attribute information of childcare centres. It was downloaded from data.gov.sg and is in geojson format.
--   `MPSZ2019`, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from data.gov.sg.
+- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.  
+- *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data. 
+
+Both data sets are provided in kml and geojson format.  Students are free to download their preferred data format.
 
 ## Installing and Loading the R packages
 
@@ -43,71 +55,88 @@ In this hands-on exercise, five R packages will be used, they are:
 -   [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
 -   [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
 -   [**terra**](https://rspatial.github.io/terra/index.html): The terra package is a modern spatial data analysis package designed to replace the raster package. It offers improved speed and efficiency when working with both raster and vector spatial data, particularly with large datasets. terra provides functionalities for creating, reading, manipulating, and writing raster and vector data, and it's built on top of GDAL and PROJ libraries for enhanced performance. In this hands-on exercise, it will be used to convert image output generate by spatstat into terra format.
--   [**maptools**](https://cran.r-project.org/web/packages/maptools/index.html) which provides a set of tools for manipulating geographic data. In this hands-on exercise, we mainly use it to convert *Spatial* objects into *ppp* format of **spatstat**.
--   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
+-   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [**leaflet**](https://leafletjs.com/) API.
+-   [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages
+
 
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
-pacman::p_load(sf, terra, spatstat,
-               maptools, tmap, tidyverse)
+pacman::p_load(sf, terra, spatstat, 
+               tmap, rvest, tidyverse)
 ```
 
-## Spatial Data Wrangling
+## Importing the Geospatial Data Sets
 
-### Importing the spatial data
+::: callout-note
+### DIY
+- Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
+- Tidy the datasets and, if necessary, transform their projections.
+- Validate that both datasets use the same projection.
+- Ensure that the final outputs are stored in sf format.  
+:::
 
-In this section, [`st_read()`](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package will be used to import these two geospatial data sets into R.
-
-To import the childcare services data, the code chunk below will be used.
 
 ```{r}
-childcare_sf <- st_read("chap04/data/ChildCareServices.geojson") %>% 
+#| echo: false
+mpsz_sf <- st_read("chap04/data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml") %>% 
+  st_zm(drop = TRUE, what = "ZM") %>% st_transform(crs = 3414)
+```
+
+```{r}
+#| echo: false
+extract_kml_field <- function(html_text, field_name) {
+  if (is.na(html_text) || html_text == "") return(NA_character_)
+  
+  page <- read_html(html_text)
+  rows <- page %>% html_elements("tr")
+  
+  value <- rows %>%
+    keep(~ html_text2(html_element(.x, "th")) == field_name) %>%
+    html_element("td") %>%
+    html_text2()
+  
+  if (length(value) == 0) NA_character_ else value
+}
+```
+
+```{r}
+#| echo: false
+mpsz_sf <- mpsz_sf %>%
+  mutate(
+    REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
+    PLN_AREA_N = map_chr(Description, extract_kml_field, "PLN_AREA_N"),
+    SUBZONE_N = map_chr(Description, extract_kml_field, "SUBZONE_N"),
+    SUBZONE_C = map_chr(Description, extract_kml_field, "SUBZONE_C")
+  ) %>%
+  select(-Name, -Description) %>%
+  relocate(geometry, .after = last_col())
+```
+
+```{r}
+#| echo: false
+mpsz_cl <- mpsz_sf %>%
+  filter(SUBZONE_N != "SOUTHERN GROUP",
+         PLN_AREA_N != "WESTERN ISLANDS",
+         PLN_AREA_N != "NORTH-EASTERN ISLANDS")
+```
+
+```{r}
+#| echo: false
+write_rds(mpsz_cl, 
+          "chap04/data/mpsz_cl.rds")
+```
+
+```{r}
+mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
+```
+
+```{r}
+childcare_sf <- st_read("chap04/data/ChildCareServices.kml") %>% 
+  st_zm(drop = TRUE, what = "ZM") %>%
   st_transform(crs = 3414)
 ```
 
-::: callout-note
-Note that `st_transform()` is used in the code chunk above to re-project the geospatial data to SVY21 projected coordinates system.
-:::
-
-To import the planning subzone boundary layer, the code chunk below will be used.
-
-```{r}
-mpsz_sf <- st_read(dsn = "chap04/data",
-                   layer="MPSZ2019")
-```
-
-::: callout-note
-Although `st_read()` is used to import both data sets but the arguments used are not the same. This is because the planning subzone data is stored in ESRI shapefile format.
-:::
-
-Before we can use these data for analysis, it is important for us to ensure that they are projected in same projection system.
-
-::: callout-note
-#### DIY
-
-Using the appropriate **sf** function you learned in Hands-on Exercise 2, retrieve the referencing system information of these geospatial data.
-:::
-
-```{r}
-#| echo: false
-st_crs(childcare_sf)
-```
-
-```{r}
-#| echo: false
-st_crs(mpsz_sf)
-```
-
-::: callout-caution
-Notice that `childcare_sf` is not in projected coordinates system.
-:::
-
-::: callout-note
-#### DIY
-
-Using the method you learned in Lesson 2, transform the projection of *childcare_sf* into SVY21.
-:::
 
 ### Mapping the geospatial data sets
 
@@ -115,13 +144,12 @@ After checking the referencing system of each geospatial data data frame, it is 
 
 ::: callout-note
 #### DIY
-
-Using the mapping methods you learned in Hands-on Exercise 3, prepare a map as shown below.
+Using the mapping methods from Hands-on Exercise 2, prepare a map as shown in the figure below.
 :::
 
 ```{r}
 #| echo: false
-tm_shape(mpsz_sf) +
+tm_shape(mpsz_cl) +
   tm_polygons() +
 tm_shape(childcare_sf)+
   tm_dots()
@@ -129,7 +157,7 @@ tm_shape(childcare_sf)+
 
 Notice that all the geospatial layers are within the same map extend. This shows that their referencing system and coordinate values are referred to similar spatial context. This is very important in any geospatial analysis.
 
-Alternatively, we can also prepare a interactive point symbol map by using the code chunk below.
+Alternatively, we can also prepare an interactive point symbol map by using the code chunk below.
 
 ```{r}
 tmap_mode('view')
@@ -179,8 +207,9 @@ When analysing spatial point patterns, it is a good practice to confine the anal
 The code chunk below, `as.owin()` of spatstat is used to covert *mpsz_sf* into owin object of **spatstat**.
 
 ```{r}
-sg_owin <- as.owin(mpsz_sf)
+sg_owin <- as.owin(mpsz_cl)
 ```
+
 
 Again, `class()` will be used to verify the object class of *sg_owin*.
 
@@ -218,6 +247,33 @@ In this section, you will learn how to perform first-order SPPA by using **spats
 -   performing **Confirmatory Spatial Point Patterns Analysis** by using **Nearest Neighbour** statistics.
 
 ### Kernel Density Estimation
+
+Kernel Density Estimation (KDE) is a valuable tool for analyzing first-order spatial point patterns. It allows us to estimate the intensity or density of points across a study area, revealing spatial patterns and identifying areas of high or low event concentration. By smoothing the data and creating a continuous surface, KDE helps in visualizing and understanding the underlying spatial processes that generate the observed point pattern. 
+Here's a more detailed explanation:
+1. First-Order Spatial Point Patterns:
+
+    First-order analysis focuses on the intensity or density of points across the study area, treating each point as an independent individual. 
+
+It examines how the density of points varies spatially, revealing patterns like clustering or dispersion. 
+KDE is a common method for analyzing these first-order properties. 
+
+2. Kernel Density Estimation:
+
+    KDE is a non-parametric method that estimates the probability density function of a random variable, or in this case, the intensity function of a spatial point process. 
+
+It works by placing a kernel (a function that defines the shape and size of the "neighborhood" around each point) at each point in the dataset. 
+The kernel assigns weights to nearby points, giving more influence to points closer to the center and less influence to points further away. 
+The density at any given location is then estimated by summing the weighted contributions of all points within the specified kernel radius. 
+This results in a continuous surface of density estimates, which can be visualized as a heatmap or contour map. 
+
+3. How KDE relates to first-order analysis:
+
+    KDE provides a way to estimate the intensity function, which is a key element in first-order spatial point pattern analysis. 
+
+By visualizing the density surface generated by KDE, we can identify areas of high intensity (hotspots) and low intensity (cold spots). 
+This helps in understanding how the density of events varies across the study area and in identifying potential areas of interest for further investigation. 
+
+
 
 In this section, you will learn how to compute the kernel density estimation (KDE) of childcare services in Singapore.
 
@@ -462,13 +518,13 @@ In this section, you will learn how to compare KDE of childcare at Ponggol, Tamp
 The code chunk below will be used to extract the target planning areas.
 
 ```{r}
-pg <- mpsz_sf %>%
+pg <- mpsz_cl %>%
   filter(PLN_AREA_N == "PUNGGOL")
-tm <- mpsz_sf %>%
+tm <- mpsz_cl %>%
   filter(PLN_AREA_N == "TAMPINES")
-ck <- mpsz_sf %>%
+ck <- mpsz_cl %>%
   filter(PLN_AREA_N == "CHOA CHU KANG")
-jw <- mpsz_sf %>%
+jw <- mpsz_cl %>%
   filter(PLN_AREA_N == "JURONG WEST")
 ```
 
@@ -585,6 +641,20 @@ plot(density(childcare_jw_ppp.km,
 ```
 
 ## Nearest Neighbour Analysis
+
+Yes, the Clark-Evans test of nearest neighbor analysis is considered a first-order spatial point pattern analysis. It focuses on the distribution of points in space and analyzes the distances between each point and its nearest neighbor. This type of analysis helps determine if the point pattern is random, clustered, or dispersed. 
+Here's why:
+
+    First-order analysis
+    examines the intensity of the point pattern, which is the density of points across the study area. The Clark-Evans test assesses the randomness of this intensity by comparing the observed nearest neighbor distances to what would be expected under a random distribution. 
+
+Nearest neighbor analysis
+is a fundamental method in spatial statistics that measures the distance between each point and its closest neighbor. This provides insights into the spatial arrangement of points, indicating whether they are clustered together, uniformly spaced, or randomly distributed. 
+The Clark-Evans test specifically
+uses the mean nearest neighbor distance to calculate an index (R) that quantifies the degree of clustering or dispersion. An R value close to 1 indicates a random pattern, while values significantly above or below 1 suggest dispersion or clustering, respectively. 
+In contrast to second-order statistics,
+which analyze the relationships between all pairs of points at various distances, first-order methods like the Clark-Evans test focus on individual point-to-neighbor relationships
+
 
 In this section, we will perform the Clark-Evans test of aggregation for a spatial point pattern by using [*clarkevans.test()*](https://www.rdocumentation.org/packages/spatstat/versions/1.63-3/topics/clarkevans.test) of **statspat**.
 
