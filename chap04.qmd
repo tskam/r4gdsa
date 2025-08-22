@@ -19,34 +19,32 @@ editor: visual
 
 **Spatial Point Pattern Analysis (SPPA)** is the evaluation of the pattern or distribution of a set of points on a surface. The points may represent:
 
-- events such as crimes, traffic accidents, or disease onsets, or
-- business services (e.g., coffee shops and fast-food outlets) or facilities such as childcare centres and eldercare centres.
+-   events such as crimes, traffic accidents, or disease onsets, or
+-   business services (e.g., coffee shops and fast-food outlets) or facilities such as childcare centres and eldercare centres.
 
 **First-order Spatial Point Pattern Analysis (1st-SPPA)** focuses on understanding the intensity or density of points across a study area. It examines how the distribution of points varies over space, essentially identifying trends or patterns in point density. This type of analysis deals with the individual locations of points and their distribution, without considering interactions between them.
 
 In essence, 1st-SPPA helps answer questions such as:
 
-- Where are points most densely located within the study area?
-- Is point density uniform, or does it vary across space?
-- How spread out is the point pattern?
+-   Where are points most densely located within the study area?
+-   Is point density uniform, or does it vary across space?
+-   How spread out is the point pattern?
 
 In this chapter, you will gain hands-on experience with [**spatstat**](https://cran.r-project.org/web/packages/spatstat/) to perform two commonly used 1st-SPPA methods:
 
 The specific questions we would like to answer are as follows:
 
-- Are the childcare centres in Singapore
-randomly distributed throughout the country?
-- If the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
-- Are the observed spatial point patterns (e.g., random, clustered, or evenly distributed) statistically significant?
+-   Are the childcare centres in Singapore randomly distributed throughout the country?
+-   If the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
 
 ## The data
 
 To provide answers to the questions above, two data sets will be used. They are:
 
-- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.  
-- *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data. 
+-   *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
+-   *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
 
-Both data sets are provided in kml and geojson format.  Students are free to download their preferred data format.
+Both data sets are provided in kml and geojson format. Students are free to download their preferred data format.
 
 ## Installing and Loading the R packages
 
@@ -58,7 +56,6 @@ In this hands-on exercise, five R packages will be used, they are:
 -   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [**leaflet**](https://leafletjs.com/) API.
 -   [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages
 
-
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
@@ -66,25 +63,33 @@ pacman::p_load(sf, terra, spatstat,
                tmap, rvest, tidyverse)
 ```
 
-## Importing the Geospatial Data Sets
+## Importing and Wrangling Geospatial Data Sets
 
 ::: callout-note
 ### DIY
-- Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
-- Tidy the datasets and, if necessary, transform their projections.
-- Validate that both datasets use the same projection.
-- Ensure that the final outputs are stored in sf format.  
+
+-   Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
+-   Tidy the datasets and, if necessary, transform their projections.
+-   Validate that both datasets use the same projection.
+-   Ensure that the final outputs are stored in sf format.\
 :::
 
+Use the code chunk below to import Master Plan 2019 Subzone (No Sea) data set into R environment.
 
 ```{r}
-#| echo: false
+#| eval: false
 mpsz_sf <- st_read("chap04/data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml") %>% 
   st_zm(drop = TRUE, what = "ZM") %>% st_transform(crs = 3414)
 ```
 
+::: callout-tip
+Notice that [`st_zm()`](https://r-spatial.github.io/sf/reference/st_zm.html) is used to used to remove Z (elevation) and M (measure) dimensions from geospatial geometries.
+:::
+
+Next, build a function called *extract_kml_field* for extracting REGION_N, PLN_AREA_N, SUBZONE_N, SUBZONE_C from Description field by using the code chunk below.
+
 ```{r}
-#| echo: false
+#| eval: false
 extract_kml_field <- function(html_text, field_name) {
   if (is.na(html_text) || html_text == "") return(NA_character_)
   
@@ -101,7 +106,7 @@ extract_kml_field <- function(html_text, field_name) {
 ```
 
 ```{r}
-#| echo: false
+#| eval: false
 mpsz_sf <- mpsz_sf %>%
   mutate(
     REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
@@ -114,7 +119,7 @@ mpsz_sf <- mpsz_sf %>%
 ```
 
 ```{r}
-#| echo: false
+#| eval: false
 mpsz_cl <- mpsz_sf %>%
   filter(SUBZONE_N != "SOUTHERN GROUP",
          PLN_AREA_N != "WESTERN ISLANDS",
@@ -122,14 +127,17 @@ mpsz_cl <- mpsz_sf %>%
 ```
 
 ```{r}
-#| echo: false
+#| eval: false
 write_rds(mpsz_cl, 
           "chap04/data/mpsz_cl.rds")
 ```
 
 ```{r}
+#| echo: false
 mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
 ```
+
+Next, code chunk below will be used to import the childcare Service data downloaded from data.gov.sg into R environment as sf data frame called *chilcare_sf*.  The Simple Feature Geometry (sfg) of this geospatial data layer if 
 
 ```{r}
 childcare_sf <- st_read("chap04/data/ChildCareServices.kml") %>% 
@@ -137,13 +145,13 @@ childcare_sf <- st_read("chap04/data/ChildCareServices.kml") %>%
   st_transform(crs = 3414)
 ```
 
-
 ### Mapping the geospatial data sets
 
 After checking the referencing system of each geospatial data data frame, it is also useful for us to plot a map to show their spatial patterns.
 
 ::: callout-note
 #### DIY
+
 Using the mapping methods from Hands-on Exercise 2, prepare a map as shown in the figure below.
 :::
 
@@ -186,7 +194,7 @@ spatstat relies on its own specific data structures like **ppp** (planar point p
 childcare_ppp <- as.ppp(childcare_sf)
 ```
 
-Next, class() of Base R will be used to verify the object class of childcare_ppp.
+Next, `class()` of Base R will be used to verify the object class of childcare_ppp.
 
 ```{r}
 class(childcare_ppp)
@@ -209,7 +217,6 @@ The code chunk below, `as.owin()` of spatstat is used to covert *mpsz_sf* into o
 ```{r}
 sg_owin <- as.owin(mpsz_cl)
 ```
-
 
 Again, `class()` will be used to verify the object class of *sg_owin*.
 
@@ -239,45 +246,69 @@ The output object combined both the point and polygon feature in one ppp object 
 childcareSG_ppp
 ```
 
-## First-order Spatial Point Patterns Analysis
+## Clark-Evan Test for Nearest Neighbour Analysis
 
-In this section, you will learn how to perform first-order SPPA by using **spatstat** package. The hands-on exercise will focus on:
+**Nearest Neighbor Analysis (NNA)** is a spatial statistics method that calculates the average distance between each point and its closest neighbor to determine if a pattern of points is clustered, dispersed, or randomly distributed. 
 
--   deriving **kernel density estimation (KDE)** layer for visualising and exploring the intensity of point processes,
--   performing **Confirmatory Spatial Point Patterns Analysis** by using **Nearest Neighbour** statistics.
+Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose
 
-### Kernel Density Estimation
+::: callout-note
+NNA is a broad term for methods that examine the spatial distribution of points, whereas the Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose.
+:::
 
-Kernel Density Estimation (KDE) is a valuable tool for analyzing first-order spatial point patterns. It allows us to estimate the intensity or density of points across a study area, revealing spatial patterns and identifying areas of high or low event concentration. By smoothing the data and creating a continuous surface, KDE helps in visualizing and understanding the underlying spatial processes that generate the observed point pattern. 
-Here's a more detailed explanation:
-1. First-Order Spatial Point Patterns:
+In this section, we will perform the Clark-Evans test of aggregation for a spatial point pattern by using [*clarkevans.test()*](https://cran.r-project.org/web/packages/spatstat.explore/refman/spatstat.explore.html#clarkevans.test) of [**spatstat.explore**](https://cran.r-project.org/web/packages/spatstat.explore/refman/spatstat.explore.html) package.
 
-    First-order analysis focuses on the intensity or density of points across the study area, treating each point as an independent individual. 
+The test hypotheses are:
 
-It examines how the density of points varies spatially, revealing patterns like clustering or dispersion. 
-KDE is a common method for analyzing these first-order properties. 
+Ho = The distribution of childcare services are randomly distributed.
 
-2. Kernel Density Estimation:
+H1= The distribution of childcare services are not randomly distributed.
 
-    KDE is a non-parametric method that estimates the probability density function of a random variable, or in this case, the intensity function of a spatial point process. 
+The 95% confident interval will be used.
 
-It works by placing a kernel (a function that defines the shape and size of the "neighborhood" around each point) at each point in the dataset. 
-The kernel assigns weights to nearby points, giving more influence to points closer to the center and less influence to points further away. 
-The density at any given location is then estimated by summing the weighted contributions of all points within the specified kernel radius. 
-This results in a continuous surface of density estimates, which can be visualized as a heatmap or contour map. 
+### Perform the Clark-Evans test without CSR
 
-3. How KDE relates to first-order analysis:
+`clarkevans.test()` of spatstat.explore package support two Clark-Evans test, namely: without CRS and with CRS.  In the code chunk below, Clark-Evans test without CSR method is used.
 
-    KDE provides a way to estimate the intensity function, which is a key element in first-order spatial point pattern analysis. 
+```{r}
+clarkevans.test(childcareSG_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"))
+```
 
-By visualizing the density surface generated by KDE, we can identify areas of high intensity (hotspots) and low intensity (cold spots). 
-This helps in understanding how the density of events varies across the study area and in identifying potential areas of interest for further investigation. 
+::: callout-note
+### Quiz
+- Draw statistical conclusion from the test result.
+- Provide business communication from the statistical analysis.
+:::
 
+### Perform the Clark-Evans test with CSR
 
+In the code chunk below, the argument method = "MonteCarlo" is used.  In this case, the p-value for the test is computed by comparing the observed value of R to the results obtained from nsim (i.e. 39, 99, 999) simulated realisations of Complete Spatial Randomness conditional on the observed number of points. 
+
+```{r}
+clarkevans.test(childcareSG_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"),
+                method="MonteCarlo",
+                nsim=99)
+```
+
+::: callout-note
+### Quiz
+- Draw statistical conclusion from the test result.
+- Provide business communication from the statistical analysis.
+:::
+
+## Kernel Density Estimation Method
+
+**Kernel Density Estimation (KDE)** is a valuable tool for visualising and analyzing first-order spatial point patterns. It is widely considered a method within **Exploratory Spatial Data Analysis (ESDA)** because it's used to visualize and understand spatial data patterns by transforms discrete point data (like locations of childcare service, crime incidents or disease cases) into continuous density surfaces that reveal clusters and variations in event occurrences, without making prior assumptions about data distribution. It helps to begin understanding data distribution, identify hotspots, and explore relationships between spatial variables before performing more rigorous analysis.
 
 In this section, you will learn how to compute the kernel density estimation (KDE) of childcare services in Singapore.
 
-#### Computing kernel density estimation using automatic bandwidth selection method
+### Computing kernel density estimation using automatic bandwidth selection method
 
 The code chunk below computes a kernel density by using the following configurations of [*density()*](https://rdrr.io/cran/spatstat/man/density.ppp.html) of **spatstat**:
 
@@ -286,10 +317,11 @@ The code chunk below computes a kernel density by using the following configurat
 -   The intensity estimate is corrected for edge effect bias by using method described by Jones (1993) and Diggle (2010, equation 18.9). The default is *FALSE*.
 
 ```{r}
-kde_childcareSG_bw <- density(childcareSG_ppp,
-                              sigma=bw.diggle,
-                              edge=TRUE,
-                            kernel="gaussian") 
+kde_SG_diggle <- density(
+  childcareSG_ppp,
+  sigma=bw.diggle,
+  edge=TRUE,
+  kernel="gaussian") 
 ```
 
 ::: callout-node
@@ -299,11 +331,11 @@ The *plot()* function of Base R is then used to display the kernel density deriv
 
 ```{r}
 #| fig-height: 6
-plot(kde_childcareSG_bw)
+plot(kde_SG_diggle)
 ```
 
 ```{r}
-summary(kde_childcareSG_bw)
+summary(kde_SG_diggle)
 ```
 
 The density values of the output range from 0 to 0.00003727443 which is way too small to comprehend. This is because the default unit of measurement of svy21 is in meter. As a result, the density values computed is in "number of points per square meter".
@@ -320,13 +352,14 @@ bw
 In the code chunk below, *rescale.ppp()* is used to covert the unit of measurement from meter to kilometer.
 
 ```{r}
-childcareSG_ppp.km <- rescale.ppp(childcareSG_ppp, 1000, "km")
+childcareSG_ppp_km <- rescale.ppp(
+  childcareSG_ppp, 1000, "km")
 ```
 
 Now, we can re-run `density()` using the resale data set and plot the output kde map.
 
 ```{r}
-kde_childcareSG.bw <- density(childcareSG_ppp.km,
+kde_childcareSG_km <- density(childcareSG_ppp_km,
                               sigma=bw.diggle,
                               edge=TRUE,
                               kernel="gaussian")
@@ -336,7 +369,7 @@ Next, plot() is used to plot the kde object as shown below.
 
 ```{r}
 #| fig-height: 6
-plot(kde_childcareSG.bw)
+plot(kde_childcareSG_km)
 ```
 
 Notice that output image looks identical to the earlier version, the only changes in the data values (refer to the legend).
@@ -348,19 +381,19 @@ Beside *bw.diggle()*, there are three other **spatstat** functions can be used t
 Let us take a look at the bandwidth return by these automatic bandwidth calculation methods by using the code chunk below.
 
 ```{r}
-bw.CvL(childcareSG_ppp.km)
+bw.CvL(childcareSG_ppp_km)
 ```
 
 ```{r}
-bw.scott(childcareSG_ppp.km)
+bw.scott(childcareSG_ppp_km)
 ```
 
 ```{r}
-bw.ppl(childcareSG_ppp.km)
+bw.ppl(childcareSG_ppp_km)
 ```
 
 ```{r}
-bw.diggle(childcareSG_ppp.km)
+bw.diggle(childcareSG_ppp_km)
 ```
 
 Baddeley et. (2016) suggested the use of the *bw.ppl()* algorithm because past experience shown that it tends to produce the more appropriate values when the pattern consists predominantly of tight clusters. But they also insist that if the purpose of once study is to detect a single tight cluster in the midst of random noise then the *bw.diggle()* method seems to work best.
@@ -368,12 +401,12 @@ Baddeley et. (2016) suggested the use of the *bw.ppl()* algorithm because past e
 The code chunk beow will be used to compare the output of using *bw.diggle* and *bw.ppl* methods.
 
 ```{r fig.width=16, fig.height=6}
-kde_childcareSG.ppl <- density(childcareSG_ppp.km, 
+kde_childcareSG.ppl <- density(childcareSG_ppp_km, 
                                sigma=bw.ppl, 
                                edge=TRUE,
                                kernel="gaussian")
 par(mfrow=c(1,2))
-plot(kde_childcareSG.bw, main = "bw.diggle")
+plot(kde_childcareSG_km, main = "bw.diggle")
 plot(kde_childcareSG.ppl, main = "bw.ppl")
 ```
 
@@ -385,23 +418,23 @@ The code chunk below will be used to compute three more kernel density estimatio
 
 ```{r fig.width=16, fig.height=12}
 par(mfrow=c(2,2))
-plot(density(childcareSG_ppp.km, 
-             sigma=bw.ppl, 
+plot(density(childcareSG_ppp_km, 
+             sigma=0.2959712, 
              edge=TRUE, 
              kernel="gaussian"), 
      main="Gaussian")
-plot(density(childcareSG_ppp.km, 
-             sigma=bw.ppl, 
+plot(density(childcareSG_ppp_km, 
+             sigma=0.2959712, 
              edge=TRUE, 
              kernel="epanechnikov"), 
      main="Epanechnikov")
-plot(density(childcareSG_ppp.km, 
-             sigma=bw.ppl, 
+plot(density(childcareSG_ppp_km, 
+             sigma=0.2959712, 
              edge=TRUE, 
              kernel="quartic"), 
      main="Quartic")
-plot(density(childcareSG_ppp.km, 
-             sigma=bw.ppl, 
+plot(density(childcareSG_ppp_km, 
+             sigma=0.2959712, 
              edge=TRUE, 
              kernel="disc"), 
      main="Disc")
@@ -411,15 +444,15 @@ plot(density(childcareSG_ppp.km,
 
 ### Computing KDE by using fixed bandwidth
 
-Next, you will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of ***childcareSG_ppp.km*** object is in kilometer, hence the 600m is 0.6km.
+Next, you will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of ***childcareSG_ppp_km*** object is in kilometer, hence the 600m is 0.6km.
 
 ```{r}
 #| fig-height: 6
-kde_childcareSG_600 <- density(childcareSG_ppp.km, 
-                               sigma=0.6, 
-                               edge=TRUE, 
-                               kernel="gaussian")
-plot(kde_childcareSG_600)
+kde_childcareSG_fb <- density(childcareSG_ppp_km,
+                              sigma=0.6, 
+                              edge=TRUE,
+                              kernel="gaussian")
+plot(kde_childcareSG_fb)
 ```
 
 ### Computing KDE by using adaptive bandwidth
@@ -430,18 +463,18 @@ In this section, you will learn how to derive adaptive kernel density estimation
 
 ```{r}
 #| fig-height: 6
-kde_childcareSG_adaptive <- adaptive.density(
-  childcareSG_ppp.km, 
+kde_childcareSG_ab <- adaptive.density(
+  childcareSG_ppp_km, 
   method="kernel")
-plot(kde_childcareSG_adaptive)
+plot(kde_childcareSG_ab)
 ```
 
 We can compare the fixed and adaptive kernel density estimation outputs by using the code chunk below.
 
 ```{r fig.width=16, fig.height=6}
 par(mfrow=c(1,2))
-plot(kde_childcareSG.bw, main = "Fixed bandwidth")
-plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
+plot(kde_childcareSG_fb, main = "Fixed bandwidth")
+plot(kde_childcareSG_ab, main = "Adaptive bandwidth")
 ```
 
 #### Converting gridded output into raster
@@ -449,7 +482,7 @@ plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
 Next, we will convert the im kernal density objects into **SpatRaster** object by using `rast()` of **terra** package.
 
 ```{r}
-kde_childcareSG_bw_terra <- rast(kde_childcareSG.bw)
+kde_childcareSG_bw_terra <- rast(kde_childcareSG_km)
 ```
 
 Again, `class()` is used to verify if *kde_childcareSG_bw_terra* data are belong to **SpatRaster** class.
@@ -549,7 +582,7 @@ ck_owin = as.owin(ck)
 jw_owin = as.owin(jw)
 ```
 
-#### Combining childcare points and the study area
+## First Order SPPA at the Planning Subzone Level
 
 By using the code chunk below, we are able to extract childcare that is within the specific region to do our analysis later on.
 
@@ -584,11 +617,39 @@ plot(st_geometry(childcare_jw_ppp.km),
   main="Jurong West")
 ```
 
+### Clark and Evans Test: Choa Chu Kang planning area
+
+In the code chunk below, [*clarkevans.test()*](https://rdrr.io/cran/spatstat/man/clarkevans.test.html) of **spatstat** is used to performs Clark-Evans test of aggregation for childcare centre in Choa Chu Kang planning area.
+
+```{r}
+clarkevans.test(childcare_ck_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=999)
+```
+
+### Clark and Evans Test: Tampines planning area
+
+In the code chunk below, the similar test is used to analyse the spatial point patterns of childcare centre in Tampines planning area.
+
+```{r}
+clarkevans.test(childcare_tm_ppp,
+                correction="none",
+                clipregion=NULL,
+                alternative=c("two.sided"),
+                nsim=999)
+```
+:::
+
+
 #### Computing KDE
 
 The code chunk below will be used to compute the KDE of these four planning area. ***bw.diggle*** method is used to derive the bandwidth of each
 
-```{r fig.width=16, fig.height=15}
+```{r}
+#| fig-width: 16
+#| fig-height: 15
 par(mfrow=c(2,2))
 plot(density(childcare_pg_ppp.km, 
              sigma=bw.diggle, 
@@ -616,7 +677,9 @@ plot(density(childcare_jw_ppp.km,
 
 For comparison purposes, we will use 250m as the bandwidth.
 
-```{r fig.width=16, fig.height=15}
+```{r}
+#| fig-width: 16
+#| fig-height: 15
 par(mfrow=c(2,2))
 plot(density(childcare_pg_ppp.km, 
              sigma=0.25, 
@@ -640,65 +703,4 @@ plot(density(childcare_jw_ppp.km,
      main="JUrong West")
 ```
 
-## Nearest Neighbour Analysis
 
-Yes, the Clark-Evans test of nearest neighbor analysis is considered a first-order spatial point pattern analysis. It focuses on the distribution of points in space and analyzes the distances between each point and its nearest neighbor. This type of analysis helps determine if the point pattern is random, clustered, or dispersed. 
-Here's why:
-
-    First-order analysis
-    examines the intensity of the point pattern, which is the density of points across the study area. The Clark-Evans test assesses the randomness of this intensity by comparing the observed nearest neighbor distances to what would be expected under a random distribution. 
-
-Nearest neighbor analysis
-is a fundamental method in spatial statistics that measures the distance between each point and its closest neighbor. This provides insights into the spatial arrangement of points, indicating whether they are clustered together, uniformly spaced, or randomly distributed. 
-The Clark-Evans test specifically
-uses the mean nearest neighbor distance to calculate an index (R) that quantifies the degree of clustering or dispersion. An R value close to 1 indicates a random pattern, while values significantly above or below 1 suggest dispersion or clustering, respectively. 
-In contrast to second-order statistics,
-which analyze the relationships between all pairs of points at various distances, first-order methods like the Clark-Evans test focus on individual point-to-neighbor relationships
-
-
-In this section, we will perform the Clark-Evans test of aggregation for a spatial point pattern by using [*clarkevans.test()*](https://www.rdocumentation.org/packages/spatstat/versions/1.63-3/topics/clarkevans.test) of **statspat**.
-
-The test hypotheses are:
-
-Ho = The distribution of childcare services are randomly distributed.
-
-H1= The distribution of childcare services are not randomly distributed.
-
-The 95% confident interval will be used.
-
-### Testing spatial point patterns using Clark and Evans Test
-
-```{r}
-clarkevans.test(childcareSG_ppp,
-                correction="none",
-                clipregion="sg_owin",
-                alternative=c("clustered"),
-                nsim=99)
-```
-
-What conclusion can you draw from the test result?
-
-### Clark and Evans Test: Choa Chu Kang planning area
-
-In the code chunk below, [*clarkevans.test()*](https://rdrr.io/cran/spatstat/man/clarkevans.test.html) of **spatstat** is used to performs Clark-Evans test of aggregation for childcare centre in Choa Chu Kang planning area.
-
-```{r}
-clarkevans.test(childcare_ck_ppp,
-                correction="none",
-                clipregion=NULL,
-                alternative=c("two.sided"),
-                nsim=999)
-```
-
-### Clark and Evans Test: Tampines planning area
-
-In the code chunk below, the similar test is used to analyse the spatial point patterns of childcare centre in Tampines planning area.
-
-```{r}
-clarkevans.test(childcare_tm_ppp,
-                correction="none",
-                clipregion=NULL,
-                alternative=c("two.sided"),
-                nsim=999)
-```
-:::
