@@ -374,7 +374,7 @@ plot(kde_childcareSG_km)
 
 Notice that output image looks identical to the earlier version, the only changes in the data values (refer to the legend).
 
-### Working with different automatic badwidth methods
+#### Working with different automatic badwidth methods
 
 Beside *bw.diggle()*, there are three other **spatstat** functions can be used to determine the bandwidth, they are: *bw.CvL()*, *bw.scott()*, and *bw.ppl()*.
 
@@ -400,7 +400,9 @@ Baddeley et. (2016) suggested the use of the *bw.ppl()* algorithm because past e
 
 The code chunk beow will be used to compare the output of using *bw.diggle* and *bw.ppl* methods.
 
-```{r fig.width=16, fig.height=6}
+```{r}
+#| fig-width: 16
+#| fig-height: 6
 kde_childcareSG.ppl <- density(childcareSG_ppp_km, 
                                sigma=bw.ppl, 
                                edge=TRUE,
@@ -410,7 +412,7 @@ plot(kde_childcareSG_km, main = "bw.diggle")
 plot(kde_childcareSG.ppl, main = "bw.ppl")
 ```
 
-### Working with different kernel methods
+#### Working with different kernel methods
 
 By default, the kernel method used in *density.ppp()* is *gaussian*. But there are three other options, namely: Epanechnikov, Quartic and Dics.
 
@@ -440,9 +442,9 @@ plot(density(childcareSG_ppp_km,
      main="Disc")
 ```
 
-## Fixed and Adaptive KDE
+### Fixed and Adaptive KDE
 
-### Computing KDE by using fixed bandwidth
+#### Computing KDE by using fixed bandwidth
 
 Next, you will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of ***childcareSG_ppp_km*** object is in kilometer, hence the 600m is 0.6km.
 
@@ -455,7 +457,7 @@ kde_childcareSG_fb <- density(childcareSG_ppp_km,
 plot(kde_childcareSG_fb)
 ```
 
-### Computing KDE by using adaptive bandwidth
+#### Computing KDE by using adaptive bandwidth
 
 Fixed bandwidth method is very sensitive to highly skew distribution of spatial point patterns over geographical units for example urban versus rural. One way to overcome this problem is by using adaptive bandwidth instead.
 
@@ -476,6 +478,8 @@ par(mfrow=c(1,2))
 plot(kde_childcareSG_fb, main = "Fixed bandwidth")
 plot(kde_childcareSG_ab, main = "Adaptive bandwidth")
 ```
+
+### Plotting cartographic quality KDE map
 
 #### Converting gridded output into raster
 
@@ -517,7 +521,7 @@ kde_childcareSG_bw_terra
 
 Notice that the coordicates reference (i.e. coord. ref.) is in **SVY21** now.
 
-### Visualising the output in **tmap**
+#### Plotting KDE map with **tmap**
 
 Finally, we will display the raster in cartographic quality map using **tmap** package.
 
@@ -542,9 +546,11 @@ tm_shape(kde_childcareSG_bw_terra) +
 
 Notice that the raster values are encoded explicitly onto the raster pixel using the values in "layer.1" field.
 
-## Comparing Spatial Point Patterns using KDE
+## First Order SPPA at the Planning Subzone Level
 
-In this section, you will learn how to compare KDE of childcare at Ponggol, Tampines, Chua Chu Kang and Jurong West planning areas.
+In this section, we would like to further our analysis at the planning area level.  For simplicity reason, we will focus on Punggol, Tampines Chua Chu Kand and Jurong West planning areas 
+
+### Geospatial data wrangling
 
 #### Extracting study area
 
@@ -561,9 +567,11 @@ jw <- mpsz_cl %>%
   filter(PLN_AREA_N == "JURONG WEST")
 ```
 
-Plotting target planning areas
+It is always a good practice to review the extracted areas.  The code chunk below will be used to plot the extracted planning areas.
 
-```{r fig.width=16, fig.height=12}
+```{r}
+#| fig-width: 16
+#| fig-height: 12
 par(mfrow=c(2,2))
 plot(st_geometry(pg), main = "Ponggol")
 plot(st_geometry(tm), main = "Tampines")
@@ -582,9 +590,7 @@ ck_owin = as.owin(ck)
 jw_owin = as.owin(jw)
 ```
 
-## First Order SPPA at the Planning Subzone Level
-
-By using the code chunk below, we are able to extract childcare that is within the specific region to do our analysis later on.
+#### Combining point events object and owin object
 
 ```{r}
 childcare_pg_ppp = childcare_ppp[pg_owin]
@@ -617,7 +623,9 @@ plot(st_geometry(childcare_jw_ppp.km),
   main="Jurong West")
 ```
 
-### Clark and Evans Test: Choa Chu Kang planning area
+### Clark and Evans Test 
+
+#### Choa Chu Kang planning area
 
 In the code chunk below, [*clarkevans.test()*](https://rdrr.io/cran/spatstat/man/clarkevans.test.html) of **spatstat** is used to performs Clark-Evans test of aggregation for childcare centre in Choa Chu Kang planning area.
 
@@ -629,7 +637,7 @@ clarkevans.test(childcare_ck_ppp,
                 nsim=999)
 ```
 
-### Clark and Evans Test: Tampines planning area
+#### Tampines planning area
 
 In the code chunk below, the similar test is used to analyse the spatial point patterns of childcare centre in Tampines planning area.
 
@@ -642,8 +650,7 @@ clarkevans.test(childcare_tm_ppp,
 ```
 :::
 
-
-#### Computing KDE
+### Computing KDE surfaces by planning area
 
 The code chunk below will be used to compute the KDE of these four planning area. ***bw.diggle*** method is used to derive the bandwidth of each
 
@@ -673,34 +680,5 @@ plot(density(childcare_jw_ppp.km,
      main="Jurong West")
 ```
 
-#### Computing fixed bandwidth KDE
-
-For comparison purposes, we will use 250m as the bandwidth.
-
-```{r}
-#| fig-width: 16
-#| fig-height: 15
-par(mfrow=c(2,2))
-plot(density(childcare_pg_ppp.km, 
-             sigma=0.25, 
-             edge=TRUE, 
-             kernel="gaussian"),
-     main="Punggol")
-plot(density(childcare_tm_ppp.km, 
-             sigma=0.25, 
-             edge=TRUE, 
-             kernel="gaussian"),
-     main="Tampines")
-plot(density(childcare_ck_ppp.km, 
-             sigma=0.25, 
-             edge=TRUE, 
-             kernel="gaussian"),
-     main="Chou Chu Kang")
-plot(density(childcare_jw_ppp.km, 
-             sigma=0.25, 
-             edge=TRUE, 
-             kernel="gaussian"),
-     main="JUrong West")
-```
 
 
