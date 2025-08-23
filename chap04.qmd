@@ -137,7 +137,7 @@ write_rds(mpsz_cl,
 mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
 ```
 
-Next, code chunk below will be used to import the childcare Service data downloaded from data.gov.sg into R environment as sf data frame called *chilcare_sf*.  The Simple Feature Geometry (sfg) of this geospatial data layer if 
+Next, code chunk below will be used to import the childcare Service data downloaded from data.gov.sg into R environment as sf data frame called *chilcare_sf*. The Simple Feature Geometry (sfg) of this geospatial data layer if
 
 ```{r}
 childcare_sf <- st_read("chap04/data/ChildCareServices.kml") %>% 
@@ -248,7 +248,7 @@ childcareSG_ppp
 
 ## Clark-Evan Test for Nearest Neighbour Analysis
 
-**Nearest Neighbor Analysis (NNA)** is a spatial statistics method that calculates the average distance between each point and its closest neighbor to determine if a pattern of points is clustered, dispersed, or randomly distributed. 
+**Nearest Neighbor Analysis (NNA)** is a spatial statistics method that calculates the average distance between each point and its closest neighbor to determine if a pattern of points is clustered, dispersed, or randomly distributed.
 
 Clark-Evans test is a specific statistical method used within NNA to quantify whether a point pattern is clustered, random, or uniformly spaced, using the Clark-Evans aggregation index (R) to describe this pattern. NNA provides a numerical value that describes the degree of clustering or regularity, and the Clark-Evans test calculates a specific index (R) for this purpose
 
@@ -268,7 +268,7 @@ The 95% confident interval will be used.
 
 ### Perform the Clark-Evans test without CSR
 
-`clarkevans.test()` of spatstat.explore package support two Clark-Evans test, namely: without CRS and with CRS.  In the code chunk below, Clark-Evans test without CSR method is used.
+`clarkevans.test()` of spatstat.explore package support two Clark-Evans test, namely: without CRS and with CRS. In the code chunk below, Clark-Evans test without CSR method is used.
 
 ```{r}
 clarkevans.test(childcareSG_ppp,
@@ -279,13 +279,14 @@ clarkevans.test(childcareSG_ppp,
 
 ::: callout-note
 ### Quiz
-- Draw statistical conclusion from the test result.
-- Provide business communication from the statistical analysis.
+
+-   Draw statistical conclusion from the test result.
+-   Provide business communication from the statistical analysis.
 :::
 
 ### Perform the Clark-Evans test with CSR
 
-In the code chunk below, the argument method = "MonteCarlo" is used.  In this case, the p-value for the test is computed by comparing the observed value of R to the results obtained from nsim (i.e. 39, 99, 999) simulated realisations of Complete Spatial Randomness conditional on the observed number of points. 
+In the code chunk below, the argument method = "MonteCarlo" is used. In this case, the p-value for the test is computed by comparing the observed value of R to the results obtained from nsim (i.e. 39, 99, 999) simulated realisations of Complete Spatial Randomness conditional on the observed number of points.
 
 ```{r}
 clarkevans.test(childcareSG_ppp,
@@ -298,8 +299,9 @@ clarkevans.test(childcareSG_ppp,
 
 ::: callout-note
 ### Quiz
-- Draw statistical conclusion from the test result.
-- Provide business communication from the statistical analysis.
+
+-   Draw statistical conclusion from the test result.
+-   Provide business communication from the statistical analysis.
 :::
 
 ## Kernel Density Estimation Method
@@ -308,7 +310,7 @@ clarkevans.test(childcareSG_ppp,
 
 In this section, you will learn how to compute the kernel density estimation (KDE) of childcare services in Singapore.
 
-### Computing kernel density estimation using automatic bandwidth selection method
+### Working with automatic bandwidth selection method
 
 The code chunk below computes a kernel density by using the following configurations of [*density()*](https://rdrr.io/cran/spatstat/man/density.ppp.html) of **spatstat**:
 
@@ -548,7 +550,7 @@ Notice that the raster values are encoded explicitly onto the raster pixel using
 
 ## First Order SPPA at the Planning Subzone Level
 
-In this section, we would like to further our analysis at the planning area level.  For simplicity reason, we will focus on Punggol, Tampines Chua Chu Kand and Jurong West planning areas 
+In this section, we would like to further our analysis at the planning area level. For simplicity reason, we will focus on Punggol, Tampines Chua Chu Kand and Jurong West planning areas
 
 ### Geospatial data wrangling
 
@@ -567,7 +569,7 @@ jw <- mpsz_cl %>%
   filter(PLN_AREA_N == "JURONG WEST")
 ```
 
-It is always a good practice to review the extracted areas.  The code chunk below will be used to plot the extracted planning areas.
+It is always a good practice to review the extracted areas. The code chunk below will be used to plot the extracted planning areas.
 
 ```{r}
 #| fig-width: 16
@@ -623,7 +625,7 @@ plot(st_geometry(childcare_jw_ppp.km),
   main="Jurong West")
 ```
 
-### Clark and Evans Test 
+### Clark and Evans Test
 
 #### Choa Chu Kang planning area
 
@@ -679,6 +681,3 @@ plot(density(childcare_jw_ppp.km,
              kernel="gaussian"),
      main="Jurong West")
 ```
-
-
-
