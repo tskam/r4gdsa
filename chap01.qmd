@@ -425,7 +425,7 @@ plot(st_geometry(buffer_cycling_selected))
 
 #### The scenario
 
-The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.   
+The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.
 
 #### The solution
 
@@ -464,7 +464,6 @@ Next, [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) of [**dply
 mpsz <- mpsz %>%
   mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
 ```
-
 
 In this section, you will visualise the derive variables by using appropriate Exploratory data Analysis methods of [ggplot2](https://ggplot2.tidyverse.org/).
 

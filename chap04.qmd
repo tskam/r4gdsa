@@ -5,7 +5,7 @@ date-modified: "last-modified"
 format: 
   html:
     toc: true
-    toc-depth: 5
+    toc-depth: 6
 execute:
   echo: true
   eval: true
@@ -326,8 +326,9 @@ kde_SG_diggle <- density(
   kernel="gaussian") 
 ```
 
-::: callout-node
+::: callout-note
 The output of `density()` of spatstat is an **im** class, represents a two-dimensional pixel image. It's a class used to store and manipulate raster data, where the spatial domain is divided into a grid of rectangular pixels. Each pixel has an associated value, which can be numerical or a factor.
+:::
 
 The *plot()* function of Base R is then used to display the kernel density derived.
 
@@ -336,11 +337,15 @@ The *plot()* function of Base R is then used to display the kernel density deriv
 plot(kde_SG_diggle)
 ```
 
+In the code chunk below, `summary()` of Base R is used to print the summary report of the 
+
 ```{r}
 summary(kde_SG_diggle)
 ```
 
+::: callout-warning
 The density values of the output range from 0 to 0.00003727443 which is way too small to comprehend. This is because the default unit of measurement of svy21 is in meter. As a result, the density values computed is in "number of points per square meter".
+:::
 
 Before we move on to next section, it is good to know that you can retrieve the bandwidth used to compute the kde layer by using the code chunk below.
 
@@ -349,7 +354,7 @@ bw <- bw.diggle(childcareSG_ppp)
 bw
 ```
 
-#### Rescalling KDE values
+### Rescalling KDE values
 
 In the code chunk below, *rescale.ppp()* is used to covert the unit of measurement from meter to kilometer.
 
@@ -376,7 +381,7 @@ plot(kde_childcareSG_km)
 
 Notice that output image looks identical to the earlier version, the only changes in the data values (refer to the legend).
 
-#### Working with different automatic badwidth methods
+### Working with different automatic badwidth methods
 
 Beside *bw.diggle()*, there are three other **spatstat** functions can be used to determine the bandwidth, they are: *bw.CvL()*, *bw.scott()*, and *bw.ppl()*.
 
@@ -414,7 +419,7 @@ plot(kde_childcareSG_km, main = "bw.diggle")
 plot(kde_childcareSG.ppl, main = "bw.ppl")
 ```
 
-#### Working with different kernel methods
+### Working with different kernel methods
 
 By default, the kernel method used in *density.ppp()* is *gaussian*. But there are three other options, namely: Epanechnikov, Quartic and Dics.
 
@@ -444,9 +449,9 @@ plot(density(childcareSG_ppp_km,
      main="Disc")
 ```
 
-### Fixed and Adaptive KDE
+## Fixed and Adaptive KDE
 
-#### Computing KDE by using fixed bandwidth
+### Computing KDE by using fixed bandwidth
 
 Next, you will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of ***childcareSG_ppp_km*** object is in kilometer, hence the 600m is 0.6km.
 
@@ -459,7 +464,7 @@ kde_childcareSG_fb <- density(childcareSG_ppp_km,
 plot(kde_childcareSG_fb)
 ```
 
-#### Computing KDE by using adaptive bandwidth
+### Computing KDE by using adaptive bandwidth
 
 Fixed bandwidth method is very sensitive to highly skew distribution of spatial point patterns over geographical units for example urban versus rural. One way to overcome this problem is by using adaptive bandwidth instead.
 
@@ -481,9 +486,9 @@ plot(kde_childcareSG_fb, main = "Fixed bandwidth")
 plot(kde_childcareSG_ab, main = "Adaptive bandwidth")
 ```
 
-### Plotting cartographic quality KDE map
+## Plotting cartographic quality KDE map
 
-#### Converting gridded output into raster
+### Converting gridded output into raster
 
 Next, we will convert the im kernal density objects into **SpatRaster** object by using `rast()` of **terra** package.
 
@@ -507,7 +512,7 @@ kde_childcareSG_bw_terra
 
 Notice that the crs property is empty.
 
-#### Assigning projection systems
+### Assigning projection systems
 
 In code chunk below, `crs()` of terra is used to assign the CRS information on *kde_childcareSG_bw_terra* layer.
 
@@ -523,7 +528,7 @@ kde_childcareSG_bw_terra
 
 Notice that the coordicates reference (i.e. coord. ref.) is in **SVY21** now.
 
-#### Plotting KDE map with **tmap**
+### Plotting KDE map with **tmap**
 
 Finally, we will display the raster in cartographic quality map using **tmap** package.
 
@@ -650,7 +655,7 @@ clarkevans.test(childcare_tm_ppp,
                 alternative=c("two.sided"),
                 nsim=999)
 ```
-:::
+
 
 ### Computing KDE surfaces by planning area
 

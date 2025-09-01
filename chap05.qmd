@@ -23,277 +23,38 @@ The specific questions we would like to answer are as follows:
 
 ## The data
 
-To provide answers to the questions above, three data sets will be used. They are:
+To provide answers to the questions above, two data sets will be used. They are:
 
--   `CHILDCARE`, a point feature data providing both location and attribute information of childcare centres. It was downloaded from Data.gov.sg and is in geojson format.
--   `MP14_SUBZONE_WEB_PL`, a polygon feature data providing information of URA 2014 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from Data.gov.sg.
--   `CostalOutline`, a polygon feature data showing the national boundary of Singapore. It is provided by SLA and is in ESRI shapefile format.
+-   *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
+-   *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
+
+Both data sets are available at [Singapore's
+open data portal](data.gov.sg).  They are provided in kml and geojson format. Students are free to download their preferred data format.
+
 
 ## Installing and Loading the R packages
 
-In this hands-on exercise, five R packages will be used, they are:
+In this hands-on exercise, three R packages will be used, they are:
 
 -   [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
 -   [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
--   [**raster**](https://cran.r-project.org/web/packages/raster/) which reads, writes, manipulates, analyses and model of gridded spatial data (i.e. raster). In this hands-on exercise, it will be used to convert image output generate by spatstat into raster format.
--   [**maptools**](https://cran.r-project.org/web/packages/maptools/index.html) which provides a set of tools for manipulating geographic data. In this hands-on exercise, we mainly use it to convert *Spatial* objects into *ppp* format of **spatstat**.
 -   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
+-   [tidyverse](https://www.tidyverse.org/), a family of R packages designed for modern data science. These packages are developed to work together seamlessly, sharing a common design philosophy, grammar, and data structures, which aims to make data manipulation, analysis, and visualization in R more intuitive and efficient.
+
 
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
-pacman::p_load(sf, raster, spatstat, tmap, tidyverse)
+pacman::p_load(sf, spatstat, tmap, tidyverse)
 ```
 
-## Spatial Data Wrangling
+## Data Import and Preparation
 
-### Importing the spatial data
+The processes of importing and preparing the geospatial data to meet the analysis are similar to Chapter 4.  Please refer to the following sub-sections, if necessary:
 
-In this section, [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package will be used to import these three geospatial data sets into R.
-
-```{r}
-childcare_sf <- st_read("chap05/data/child-care-services-geojson.geojson") %>%
-  st_transform(crs = 3414)
-sg_sf <- st_read(dsn = "chap05/data", layer="CostalOutline")
-mpsz_sf <- st_read(dsn = "chap05/data", 
-                layer = "MP14_SUBZONE_WEB_PL")
-```
-
-Before we can use these data for analysis, it is important for us to ensure that they are projected in same projection system.
-
-> DIY: Using the appropriate **sf** function you learned in Hands-on Exercise 2, retrieve the referencing system information of these geospatial data.
-
-```{r echo=FALSE, eval=FALSE}
-st_crs(childcare_sf)
-st_crs(mpsz_sf)
-st_crs(sg_sf)
-```
-
-Notice that except `childcare_sf`, both `mpsz_sf` and `sg_sf` do not have proper crs information.
-
-> DIY: Using the method you learned in Lesson 2, assign the correct crs to mpsz_sf and sg_sf simple feature data frames.
-
-> DIY: If necessary, changing the referencing system to Singapore national projected coordinate system.
-
-### Mapping the geospatial data sets
-
-After checking the referencing system of each geospatial data data frame, it is also useful for us to plot a map to show their spatial patterns.
-
-> DIY: Using the mapping methods you learned in Hands-on Exercise 3, prepare a map as shown below.
-
-```{r echo=FALSE}
-tm_shape(sg_sf) +
-  tm_polygons() +
-tm_shape(mpsz_sf) +
-  tm_polygons() +
-tm_shape(childcare_sf)+
-  tm_dots()
-```
-
-Notice that all the geospatial layers are within the same map extend. This shows that their referencing system and coordinate values are referred to similar spatial context. This is very important in any geospatial analysis.
-
-Alternatively, we can also prepare a pin map by using the code chunk below.
-
-```{r}
-tmap_mode('view')
-tm_shape(childcare_sf)+
-  tm_dots()
-tmap_mode('plot')
-```
-
-Notice that at the interactive mode, **tmap** is using [**leaflet for R**](https://rstudio.github.io/leaflet/) API. The advantage of this interactive pin map is it allows us to navigate and zoom around the map freely. We can also query the information of each simple feature (i.e. the point) by clicking of them. Last but not least, you can also change the background of the internet map layer. Currently, three internet map layers are provided. They are: ESRI.WorldGrayCanvas, OpenStreetMap, and ESRI.WorldTopoMap. The default is ESRI.WorldGrayCanvas.
-
-> Reminder: Always remember to switch back to plot mode after the interactive map. This is because, each interactive mode will consume a connection. You should also avoid displaying ecessive numbers of interactive maps (i.e. not more than 10) in one RMarkdown document when publish on Netlify.
-
-## Geospatial Data wrangling
-
-Although simple feature data frame is gaining popularity again sp's Spatial\* classes, there are, however, many geospatial analysis packages require the input geospatial data in sp's Spatial\* classes. In this section, you will learn how to convert simple feature data frame to sp's Spatial\* class.
-
-### Converting from sf format into spatstat's ppp format
-
-Now, we will use *as.ppp()* function of **spatstat** to convert the spatial data into **spatstat**'s ***ppp*** object format.
-
-```{r}
-childcare_ppp <- as.ppp(childcare_sf)
-childcare_ppp
-```
-
-Now, let us plot ***childcare_ppp*** and examine the different.
-
-```{r}
-plot(childcare_ppp)
-```
-
-You can take a quick look at the summary statistics of the newly created ppp object by using the code chunk below.
-
-```{r}
-summary(childcare_ppp)
-```
-
-Notice the warning message about duplicates. In spatial point patterns analysis an issue of significant is the presence of duplicates. The statistical methodology used for spatial point patterns processes is based largely on the assumption that process are *simple*, that is, that the points cannot be coincident.
-
-### Handling duplicated points
-
-We can check the duplication in a ***ppp*** object by using the code chunk below.
-
-```{r}
-any(duplicated(childcare_ppp))
-```
-
-To count the number of co-indicence point, we will use the *multiplicity()* function as shown in the code chunk below.
-
-```{r eval=FALSE}
-multiplicity(childcare_ppp)
-```
-
-If we want to know how many locations have more than one point event, we can use the code chunk below.
-
-```{r}
-sum(multiplicity(childcare_ppp) > 1)
-```
-
-The output shows that there are 128 duplicated point events.
-
-To view the locations of these duplicate point events, we will plot `childcare` data by using the code chunk below.
-
-```{r}
-tmap_mode('view')
-tm_shape(childcare_sf) +
-  tm_dots(alpha=0.4, 
-          size=0.05)
-tmap_mode('plot')
-```
-
-> Challenge: Do you know how to spot the duplicate points from the map shown above?
-
-There are three ways to overcome this problem. The easiest way is to delete the duplicates. But, that will also mean that some useful point events will be lost.
-
-The second solution is use *jittering*, which will add a small perturbation to the duplicate points so that they do not occupy the exact same space.
-
-The third solution is to make each point "unique" and then attach the duplicates of the points to the patterns as **marks**, as attributes of the points. Then you would need analytical techniques that take into account these marks.
-
-The code chunk below implements the jittering approach.
-
-```{r}
-childcare_ppp_jit <- rjitter(childcare_ppp, 
-                             retry=TRUE, 
-                             nsim=1, 
-                             drop=TRUE)
-```
-
-> DIY: Using the method you learned in previous section, check if any dusplicated point in this geospatial data.
-
-```{r}
-any(duplicated(childcare_ppp_jit))
-```
-
-### Creating ***owin*** object
-
-When analysing spatial point patterns, it is a good practice to confine the analysis with a geographical area like Singapore boundary. In **spatstat**, an object called ***owin*** is specially designed to represent this polygonal region.
-
-The code chunk below is used to covert *sg* SpatialPolygon object into owin object of **spatstat**.
-
-```{r}
-sg_owin <- as.owin(sg_sf)
-```
-
-The ouput object can be displayed by using *plot()* function
-
-```{r}
-plot(sg_owin)
-```
-
-and *summary()* function of Base R.
-
-```{r eval=FALSE}
-summary(sg_owin)
-```
-
-### Combining point events object and owin object
-
-In this last step of geospatial data wrangling, we will extract childcare events that are located within Singapore by using the code chunk below.
-
-```{r}
-childcareSG_ppp = childcare_ppp[sg_owin]
-```
-
-The output object combined both the point and polygon feature in one ppp object class as shown below.
-
-```{r eval=FALSE}
-summary(childcareSG_ppp)
-```
-
-> DIY: Using the method you learned in previous exercise, plot the newly derived childcareSG_ppp as shown below.
-
-```{r echo=FALSE}
-plot(childcareSG_ppp)
-```
-
-#### Extracting study area
-
-The code chunk below will be used to extract the target planning areas.
-
-```{r}
-pg <- mpsz_sf %>%
-  filter(PLN_AREA_N == "PUNGGOL")
-tm <- mpsz_sf %>%
-  filter(PLN_AREA_N == "TAMPINES")
-ck <- mpsz_sf %>%
-  filter(PLN_AREA_N == "CHOA CHU KANG")
-jw <- mpsz_sf %>%
-  filter(PLN_AREA_N == "JURONG WEST")
-```
-
-Plotting target planning areas
-
-```{r fig.width=16, fig.height=10}
-par(mfrow=c(2,2))
-plot(pg, main = "Ponggol")
-plot(tm, main = "Tampines")
-plot(ck, main = "Choa Chu Kang")
-plot(jw, main = "Jurong West")
-```
-
-#### Converting sf objects into ***owin*** objects
-
-Now, we will convert these sf objects into owin objects that is required by **spatstat**.
-
-```{r}
-pg_owin = as.owin(pg)
-tm_owin = as.owin(tm)
-ck_owin = as.owin(ck)
-jw_owin = as.owin(jw)
-```
-
-#### Combining childcare points and the study area
-
-By using the code chunk below, we are able to extract childcare that is within the specific region to do our analysis later on.
-
-```{r}
-childcare_pg_ppp = childcare_ppp_jit[pg_owin]
-childcare_tm_ppp = childcare_ppp_jit[tm_owin]
-childcare_ck_ppp = childcare_ppp_jit[ck_owin]
-childcare_jw_ppp = childcare_ppp_jit[jw_owin]
-```
-
-Next, *rescale()* function is used to trasnform the unit of measurement from metre to kilometre.
-
-```{r}
-childcare_pg_ppp.km = rescale(childcare_pg_ppp, 1000, "km")
-childcare_tm_ppp.km = rescale(childcare_tm_ppp, 1000, "km")
-childcare_ck_ppp.km = rescale(childcare_ck_ppp, 1000, "km")
-childcare_jw_ppp.km = rescale(childcare_jw_ppp, 1000, "km")
-```
-
-The code chunk below is used to plot these four study areas and the locations of the childcare centres.
-
-```{r fig.width=16, fig.height=10}
-par(mfrow=c(2,2))
-plot(childcare_pg_ppp.km, main="Punggol")
-plot(childcare_tm_ppp.km, main="Tampines")
-plot(childcare_ck_ppp.km, main="Choa Chu Kang")
-plot(childcare_jw_ppp.km, main="Jurong West")
-```
+- [Importing and Wrangling Geospatial Data Sets](file:///C:/tskam/r4gdsa/_book/chap04.html#importing-and-wrangling-geospatial-data-sets)
+- [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
+- 
 
 ## Second-order Spatial Point Patterns Analysis
 
