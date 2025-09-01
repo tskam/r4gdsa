@@ -337,7 +337,7 @@ The *plot()* function of Base R is then used to display the kernel density deriv
 plot(kde_SG_diggle)
 ```
 
-In the code chunk below, `summary()` of Base R is used to print the summary report of the 
+In the code chunk below, `summary()` of Base R is used to print the summary report of the
 
 ```{r}
 summary(kde_SG_diggle)
@@ -618,15 +618,14 @@ childcare_jw_ppp.km = rescale.ppp(childcare_jw_ppp, 1000, "km")
 The code chunk below is used to plot these four study areas and the locations of the childcare centres.
 
 ```{r fig.width=16, fig.height=12}
-#| eval: false
 par(mfrow=c(2,2))
-plot(st_geometry(childcare_pg_ppp.km), 
+plot(unmark(childcare_pg_ppp.km), 
   main="Punggol")
-plot(st_geometry(childcare_tm_ppp.km), 
+plot(unmark(childcare_tm_ppp.km), 
   main="Tampines")
-plot(st_geometry(childcare_ck_ppp.km), 
+plot(unmark(childcare_ck_ppp.km), 
   main="Choa Chu Kang")
-plot(st_geometry(childcare_jw_ppp.km), 
+plot(unmark(childcare_jw_ppp.km), 
   main="Jurong West")
 ```
 
@@ -655,7 +654,6 @@ clarkevans.test(childcare_tm_ppp,
                 alternative=c("two.sided"),
                 nsim=999)
 ```
-
 
 ### Computing KDE surfaces by planning area
 

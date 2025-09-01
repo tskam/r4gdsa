@@ -4,6 +4,8 @@ date: "January 23, 2023"
 date-modified: "last-modified"
 format: html
 execute:
+  echo: true
+  eval: true
   message: false
   warning: false
   freeze: true
@@ -28,9 +30,7 @@ To provide answers to the questions above, two data sets will be used. They are:
 -   *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
 -   *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
 
-Both data sets are available at [Singapore's
-open data portal](data.gov.sg).  They are provided in kml and geojson format. Students are free to download their preferred data format.
-
+Both data sets are available at [Singapore's open data portal](data.gov.sg). They are provided in kml and geojson format. Students are free to download their preferred data format.
 
 ## Installing and Loading the R packages
 
@@ -41,7 +41,6 @@ In this hands-on exercise, three R packages will be used, they are:
 -   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
 -   [tidyverse](https://www.tidyverse.org/), a family of R packages designed for modern data science. These packages are developed to work together seamlessly, sharing a common design philosophy, grammar, and data structures, which aims to make data manipulation, analysis, and visualization in R more intuitive and efficient.
 
-
 Use the code chunk below to install and launch the five R packages.
 
 ```{r}
@@ -50,11 +49,66 @@ pacman::p_load(sf, spatstat, tmap, tidyverse)
 
 ## Data Import and Preparation
 
-The processes of importing and preparing the geospatial data to meet the analysis are similar to Chapter 4.  Please refer to the following sub-sections, if necessary:
+The processes of importing and preparing the geospatial data to meet the analysis are similar to Chapter 4. Please refer to the following sub-sections, if necessary:
 
-- [Importing and Wrangling Geospatial Data Sets](file:///C:/tskam/r4gdsa/_book/chap04.html#importing-and-wrangling-geospatial-data-sets)
-- [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
-- 
+-   [Importing and Wrangling Geospatial Data Sets](file:///C:/tskam/r4gdsa/_book/chap04.html#importing-and-wrangling-geospatial-data-sets)
+-   [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
+
+```{r}
+#| echo: false
+mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
+```
+
+```{r}
+#| echo: false
+childcare_sf <- read_rds("chap04/data/childcare_sf.rds")
+```
+
+```{r}
+#| echo: false
+childcare_ppp <- as.ppp(childcare_sf) %>%
+  rjitter(retry = TRUE,
+          nsim = 1,
+          drop = TRUE)
+
+sg_owin <- as.owin(mpsz_cl)
+```
+
+```{r}
+#| echo: false
+pg <- mpsz_cl %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+tm <- mpsz_cl %>%
+  filter(PLN_AREA_N == "TAMPINES")
+ck <- mpsz_cl %>%
+  filter(PLN_AREA_N == "CHOA CHU KANG")
+jw <- mpsz_cl %>%
+  filter(PLN_AREA_N == "JURONG WEST")
+
+pg_owin = as.owin(pg)
+tm_owin = as.owin(tm)
+ck_owin = as.owin(ck)
+jw_owin = as.owin(jw)
+
+childcare_pg_ppp = childcare_ppp[pg_owin]
+childcare_tm_ppp = childcare_ppp[tm_owin]
+childcare_ck_ppp = childcare_ppp[ck_owin]
+childcare_jw_ppp = childcare_ppp[jw_owin]
+
+childcare_pg_ppp.km = rescale.ppp(childcare_pg_ppp, 1000, "km")
+childcare_tm_ppp.km = rescale.ppp(childcare_tm_ppp, 1000, "km")
+childcare_ck_ppp.km = rescale.ppp(childcare_ck_ppp, 1000, "km")
+childcare_jw_ppp.km = rescale.ppp(childcare_jw_ppp, 1000, "km")
+```
+
+```{r fig.width=16, fig.height=12}
+#| echo: false
+par(mfrow=c(2,2))
+plot(unmark(childcare_pg_ppp.km), main="Punggol")
+plot(unmark(childcare_tm_ppp.km), main="Tampines")
+plot(unmark(childcare_ck_ppp.km), main="Choa Chu Kang")
+plot(unmark(childcare_jw_ppp.km), main="Jurong West")
+```
 
 ## Second-order Spatial Point Patterns Analysis
 
@@ -65,6 +119,10 @@ The G function measures the distribution of the distances from an arbitrary even
 ### Choa Chu Kang planning area
 
 #### Computing G-function estimation
+
+```{r}
+set.seed(1234)
+```
 
 The code chunk below is used to compute G-function using *Gest()* of **spatat** package.
 
@@ -308,7 +366,7 @@ L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
 
 Then, plot the model output by using the code chun below.
 
-```{r fig.width=7,  fig.height=4.5}
+```{r fig.width=7,  fig.height=5.5}
 plot(L_tm.csr, . - r ~ r, 
      xlab="d", ylab="L(d)-r", xlim=c(0,500))
 ```
