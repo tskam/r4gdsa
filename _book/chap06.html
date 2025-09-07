@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap04.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">1st Order Spatial Point Patterns Analysis Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">First-order Spatial Point Patterns Analysis Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 10, 2025</p>
+      <p class="date-modified">September 7, 2025</p>
     </div>
   </div>
     
@@ -457,7 +457,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, terra, spatstat, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -481,8 +481,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32748</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `Kepulauan_Bangka_Belitung' from data source 
-  `D:\tskam\r4gdsa\chap06\data\rawdata' using driver `ESRI Shapefile'
-Simple feature collection with 298 features and 27 fields
+  `C:\tskam\r4gdsa\chap06\data\rawdata' using driver `ESRI Shapefile'
+Simple feature collection with 297 features and 26 fields
 Geometry type: POLYGON
 Dimension:     XYZ
 Bounding box:  xmin: 105.1085 ymin: -3.116593 xmax: 106.8488 ymax: -1.501603
@@ -657,7 +657,7 @@ Window area = 29728200000 square units</code></pre>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fire_month_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Marked planar point pattern:  741 points
-Average intensity 6.424519e-08 points per square unit
+Average intensity 6.42469e-08 points per square unit
 
 Coordinates are given to 10 decimal places
 
@@ -667,13 +667,10 @@ Summary:
   1.000   8.000   9.000   8.579  10.000  12.000 
 
 Window: polygonal boundary
-2 separate polygons (no holes)
-           vertices        area relative.area
-polygon 1     47493 11533600000      1.00e+00
-polygon 2       256      306427      2.66e-05
+single connected closed polygon with 47493 vertices
 enclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units
                      (193500 x 178600 units)
-Window area = 11533900000 square units
+Window area = 11533600000 square units
 Fraction of frame area: 0.334</code></pre>
 </div>
 </div>
@@ -760,7 +757,7 @@ Evaluation
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fire_yday_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Marked planar point pattern:  741 points
-Average intensity 6.424519e-08 points per square unit
+Average intensity 6.42469e-08 points per square unit
 
 Coordinates are given to 10 decimal places
 
@@ -770,13 +767,10 @@ Summary:
    10.0   213.0   258.0   245.9   287.0   352.0 
 
 Window: polygonal boundary
-2 separate polygons (no holes)
-           vertices        area relative.area
-polygon 1     47493 11533600000      1.00e+00
-polygon 2       256      306427      2.66e-05
+single connected closed polygon with 47493 vertices
 enclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units
                      (193500 x 178600 units)
-Window area = 11533900000 square units
+Window area = 11533600000 square units
 Fraction of frame area: 0.334</code></pre>
 </div>
 </div>
@@ -3267,2415 +3261,2437 @@ Done.</code></pre>
 <section id="computing-spatio-temporal-kde-1" class="level3" data-number="6.10.1">
 <h3 data-number="6.10.1" class="anchored" data-anchor-id="computing-spatio-temporal-kde-1"><span class="header-section-number">6.10.1</span> Computing spatio-temporal KDE</h3>
 <p>Now, the STKDE will be derived by using h and lambda values derive in previous step.</p>
-<pre class="ngywn"><code>kde_yday &lt;- spattemp.density(
-  fire_yday_owin,
-  h = 9000,
-  lambda = 19)
-summary(kde_yday)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>kde_yday <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(fire_yday_owin,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">h =</span> <span class="dv">9000</span>,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">lambda =</span> <span class="dv">19</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(kde_yday)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spatiotemporal Kernel Density Estimate
+
+Bandwidths
+  h = 9000 (spatial)
+  lambda = 19 (temporal)
+
+No. of observations
+  741 
+
+Spatial bound
+  Type: polygonal
+  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]
+
+Temporal bound
+  [10, 352]
+
+Evaluation
+  128 x 128 x 343 trivariate lattice
+  Density range: [2.001642e-19, 2.445724e-12]</code></pre>
+</div>
+</div>
 </section>
 <section id="plotting-the-output-spatio-temporal-kde" class="level3" data-number="6.10.2">
 <h3 data-number="6.10.2" class="anchored" data-anchor-id="plotting-the-output-spatio-temporal-kde"><span class="header-section-number">6.10.2</span> Plotting the output spatio-temporal KDE</h3>
 <p>Last, <code>plot()</code> of <strong>sparr</strong> package is used to plot the output as shown below.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_yday)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_yday)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-6.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-7.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-7.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-8.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-8.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-9.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-9.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-10.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-10.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-11.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-11.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-12.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-12.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-13.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-13.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-14.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-14.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-15.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-15.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-16.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-16.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-17.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-17.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-18.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-18.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-19.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-19.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-20.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-20.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-21.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-21.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-22.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-22.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-23.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-23.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-24.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-24.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-25.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-25.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-26.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-26.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-27.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-27.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-28.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-28.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-29.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-29.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-30.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-30.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-31.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-31.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-32.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-32.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-33.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-33.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-34.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-34.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-35.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-35.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-36.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-36.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-37.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-37.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-38.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-38.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-39.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-39.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-40.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-40.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-41.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-41.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-42.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-42.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-43.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-43.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-44.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-44.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-45.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-45.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-46.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-46.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-47.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-47.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-48.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-48.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-49.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-49.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-50.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-50.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-51.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-51.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-52.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-52.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-53.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-53.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-54.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-54.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-55.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-55.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-56.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-56.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-57.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-57.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-58.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-58.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-59.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-59.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-60.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-60.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-61.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-61.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-62.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-62.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-63.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-63.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-64.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-64.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-65.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-65.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-66.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-66.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-67.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-67.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-68.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-68.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-69.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-69.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-70.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-70.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-71.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-71.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-72.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-72.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-73.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-73.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-74.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-74.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-75.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-75.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-76.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-76.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-77.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-77.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-78.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-78.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-79.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-79.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-80.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-80.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-81.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-81.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-82.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-82.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-83.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-83.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-84.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-84.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-85.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-85.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-86.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-86.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-87.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-87.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-88.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-88.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-89.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-89.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-90.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-90.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-91.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-91.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-92.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-92.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-93.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-93.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-94.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-94.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-95.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-95.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-96.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-96.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-97.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-97.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-98.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-98.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-99.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-99.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-100.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-100.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-101.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-101.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-102.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-102.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-103.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-103.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-104.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-104.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-105.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-105.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-106.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-106.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-107.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-107.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-108.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-108.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-109.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-109.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-110.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-110.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-111.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-111.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-112.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-112.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-113.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-113.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-114.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-114.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-115.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-115.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-116.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-116.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-117.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-117.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-118.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-118.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-119.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-119.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-120.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-120.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-121.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-121.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-122.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-122.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-123.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-123.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-124.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-124.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-125.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-125.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-126.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-126.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-127.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-127.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-128.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-128.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-129.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-129.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-130.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-130.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-131.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-131.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-132.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-132.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-133.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-133.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-134.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-134.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-135.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-135.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-136.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-136.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-137.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-137.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-138.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-138.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-139.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-139.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-140.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-140.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-141.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-141.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-142.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-142.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-143.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-143.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-144.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-144.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-145.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-145.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-146.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-146.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-147.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-147.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-148.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-148.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-149.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-149.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-150.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-150.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-151.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-151.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-152.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-152.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-153.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-153.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-154.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-154.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-155.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-155.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-156.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-156.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-157.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-157.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-158.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-158.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-159.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-159.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-160.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-160.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-161.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-161.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-162.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-162.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-163.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-163.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-164.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-164.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-165.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-165.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-166.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-166.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-167.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-167.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-168.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-168.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-169.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-169.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-170.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-170.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-171.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-171.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-172.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-172.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-173.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-173.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-174.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-174.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-175.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-175.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-176.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-176.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-177.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-177.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-178.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-178.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-179.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-179.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-180.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-180.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-181.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-181.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-182.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-182.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-183.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-183.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-184.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-184.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-185.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-185.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-186.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-186.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-187.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-187.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-188.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-188.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-189.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-189.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-190.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-190.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-191.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-191.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-192.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-192.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-193.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-193.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-194.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-194.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-195.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-195.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-196.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-196.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-197.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-197.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-198.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-198.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-199.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-199.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-200.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-200.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-201.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-201.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-202.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-202.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-203.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-203.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-204.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-204.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-205.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-205.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-206.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-206.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-207.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-207.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-208.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-208.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-209.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-209.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-210.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-210.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-211.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-211.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-212.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-212.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-213.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-213.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-214.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-214.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-215.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-215.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-216.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-216.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-217.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-217.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-218.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-218.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-219.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-219.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-220.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-220.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-221.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-221.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-222.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-222.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-223.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-223.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-224.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-224.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-225.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-225.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-226.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-226.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-227.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-227.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-228.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-228.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-229.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-229.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-230.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-230.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-231.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-231.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-232.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-232.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-233.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-233.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-234.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-234.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-235.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-235.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-236.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-236.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-237.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-237.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-238.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-238.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-239.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-239.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-240.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-240.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-241.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-241.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-242.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-242.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-243.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-243.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-244.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-244.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-245.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-245.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-246.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-246.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-247.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-247.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-248.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-248.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-249.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-249.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-250.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-250.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-251.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-251.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-252.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-252.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-253.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-253.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-254.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-254.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-255.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-255.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-256.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-256.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-257.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-257.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-258.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-258.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-259.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-259.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-260.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-260.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-261.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-261.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-262.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-262.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-263.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-263.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-264.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-264.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-265.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-265.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-266.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-266.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-267.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-267.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-268.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-268.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-269.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-269.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-270.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-270.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-271.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-271.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-272.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-272.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-273.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-273.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-274.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-274.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-275.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-275.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-276.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-276.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-277.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-277.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-278.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-278.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-279.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-279.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-280.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-280.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-281.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-281.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-282.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-282.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-283.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-283.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-284.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-284.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-285.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-285.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-286.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-286.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-287.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-287.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-288.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-288.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-289.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-289.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-290.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-290.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-291.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-291.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-292.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-292.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-293.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-293.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-294.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-294.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-295.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-295.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-296.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-296.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-297.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-297.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-298.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-298.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-299.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-299.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-300.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-300.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-301.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-301.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-302.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-302.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-303.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-303.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-304.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-304.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-305.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-305.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-306.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-306.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-307.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-307.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-308.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-308.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-309.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-309.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-310.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-310.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-311.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-311.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-312.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-312.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-313.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-313.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-314.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-314.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-315.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-315.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-316.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-316.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-317.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-317.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-318.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-318.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-319.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-319.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-320.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-320.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-321.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-321.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-322.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-322.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-323.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-323.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-324.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-324.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-325.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-325.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-326.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-326.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-327.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-327.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-328.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-328.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-329.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-329.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-330.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-330.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-331.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-331.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-332.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-332.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-333.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-333.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-334.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-334.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-335.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-335.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-336.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-336.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-337.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-337.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-338.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-338.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-339.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-339.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-340.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-340.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-341.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-341.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-342.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-342.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="chap06_files/figure-html/unnamed-chunk-25-343.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="chap06_files/figure-html/unnamed-chunk-26-343.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

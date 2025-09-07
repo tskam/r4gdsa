@@ -51,7 +51,7 @@ Using the steps you learned from previous chapter, write a code chunk to load th
 ### The solution
 
 ```{r}
-pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
+pacman::p_load(sf, terra, spatstat, sparr, tmap, tidyverse)
 ```
 :::
 
@@ -118,11 +118,10 @@ fire_sf <- fire_sf %>%
 
 ### Overall plot
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### DIY
 
-Using the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the distribution of fire points.  The map should look similar to the figure below.
+Using the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the distribution of fire points. The map should look similar to the figure below.
 
 ```{r}
 #| echo: false
@@ -143,13 +142,12 @@ tm_shape(fire_sf) +
 ```
 :::
 
-### Visuaising geographic distribution of forest fires by month 
+### Visuaising geographic distribution of forest fires by month
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### DIY
 
-Using the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the monthly geographic distribution of forest fires in 2023.  The map should look similar to the figure below.
+Using the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the monthly geographic distribution of forest fires in 2023. The map should look similar to the figure below.
 
 ```{r}
 #| echo: false
@@ -176,14 +174,13 @@ tm_facets(by="Month_fac",
 ```
 :::
 
-## Computing STKDE by Month 
+## Computing STKDE by Month
 
-In this section, you will learn how to compute STKDE by using [`spattemp.density()`](https://tilmandavies.github.io/sparr/reference/spattemp.density.html) of **sparr** package.  Before using the function, it is highly recommended you read the function's reference guide in detail in order to understand the input data requirements and the output object generated.
+In this section, you will learn how to compute STKDE by using [`spattemp.density()`](https://tilmandavies.github.io/sparr/reference/spattemp.density.html) of **sparr** package. Before using the function, it is highly recommended you read the function's reference guide in detail in order to understand the input data requirements and the output object generated.
 
 ### Extracting forest fires by month
 
 The code chunk below is used to remove the unwanted fields from *fire_sf* sf data.frame. This is because `as.ppp()` only need the mark field and geometry field from the input sf data.frame.
-
 
 ```{r}
 fire_month <- fire_sf %>% 
@@ -228,7 +225,7 @@ plot(fire_month_owin)
 
 ### Computing Spatio-temporal KDE
 
-Next, `spattemp.density()` of sparr package is used to compute the STKDE. 
+Next, `spattemp.density()` of sparr package is used to compute the STKDE.
 
 ```{r}
 st_kde <- spattemp.density(fire_month_owin)
@@ -268,13 +265,12 @@ fire_yday_ppp <- fire_sf %>%
 
 ### Including Owin object
 
-Next, code chunk below is used to combine the ppp object and the owin object. 
+Next, code chunk below is used to combine the ppp object and the owin object.
 
 ```{r}
 fire_yday_owin <- fire_yday_ppp[kbb_owin]
 summary(fire_yday_owin)
 ```
-
 
 ### 
 
@@ -284,14 +280,13 @@ kde_yday <- spattemp.density(
 summary(kde_yday)
 ```
 
-
 ```{r}
 plot(kde_yday)
 ```
 
 ## Computing STKDE by Day of Year: Improved method
 
-One of the nice function provides in sparr package is `BOOT.spattemp()`.  It support bandwidth selection for standalone spatiotemporal density/intensity based on bootstrap estimation of the MISE, providing an isotropic scalar spatial bandwidth and a scalar temporal bandwidth.
+One of the nice function provides in sparr package is `BOOT.spattemp()`. It support bandwidth selection for standalone spatiotemporal density/intensity based on bootstrap estimation of the MISE, providing an isotropic scalar spatial bandwidth and a scalar temporal bandwidth.
 
 Code chunk below uses `BOOT.spattemp()` to determine both the spatial bandwidth and the scalar temporal bandwidth.
 
@@ -304,11 +299,10 @@ BOOT.spattemp(fire_yday_owin)
 
 Now, the STKDE will be derived by using h and lambda values derive in previous step.
 
-```{r}wn
-kde_yday <- spattemp.density(
-  fire_yday_owin,
-  h = 9000,
-  lambda = 19)
+```{r}
+kde_yday <- spattemp.density(fire_yday_owin,
+                             h = 9000,
+                             lambda = 19)
 summary(kde_yday)
 ```
 
@@ -319,4 +313,3 @@ Last, `plot()` of **sparr** package is used to plot the output as shown below.
 ```{r}
 plot(kde_yday)
 ```
-
