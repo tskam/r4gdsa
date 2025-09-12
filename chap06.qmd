@@ -4,7 +4,8 @@ date: "July 21, 2024"
 date-modified: "last-modified"
 format: html
 execute:
-  message: false
+  eval: true
+  echo: true
   warning: false
   freeze: true
 editor: visual
@@ -51,7 +52,8 @@ Using the steps you learned from previous chapter, write a code chunk to load th
 ### The solution
 
 ```{r}
-pacman::p_load(sf, terra, spatstat, sparr, tmap, tidyverse)
+pacman::p_load(sf, spatstat, sparr, 
+               tmap, stpp, tidyverse)
 ```
 :::
 
@@ -313,3 +315,76 @@ Last, `plot()` of **sparr** package is used to plot the output as shown below.
 ```{r}
 plot(kde_yday)
 ```
+
+## Spatio-temporal Point Patterns Analysis: stpp methods
+
+In this section, you will gain hands-on experience on using functions of stpp package to perform spatio-temporal point patterns analysis.
+
+::: callout-info
+Students are encouraged to read [stpp: An R Package for Plotting, Simulating and Analyzing Spatio-Temporal Point Patterns](https://www.jstatsoft.org/article/view/v053i02) to learn more about the package.
+:::
+
+### Preparing spatio-temporal point process object of stpp
+
+Step 1: Extracting forest fire coordinates from the fire point events
+
+```{r}
+coords <- st_coordinates(fire_sf)
+```
+
+Step 2: Creating a data frame by combining the x- and y-coordinates and temporal event. Note that the temporal event must be in integer.
+
+```{r}
+fire_df <- data.frame(
+  x = coords[, 1],  
+  y = coords[, 2],
+  t = fire_sf$`DayofYear`)
+```
+
+Step 3: Creating stpp spatio-temporal object
+
+In the code chunk below, `as.3dpoint()` of stpp package is used to create stpp spatio-temporal object class.
+
+```{r}
+fire_stpp <- as.3dpoints(fire_df)
+```
+
+Use the code chunk below to confirm that the output is in stpp spatio-temporal object class.
+
+```{r}
+class(fire_stpp)
+```
+
+Next we can visual *fire_stpp* by using the code chunk below.
+
+```{r}
+plot(fire_stpp)
+```
+
+### Computing spatio-temporal k-function
+
+In the code chunk below, [`STIKhat()`](https://cran.r-project.org/web/packages/stpp/refman/stpp.html#STIKhat) of stpp package is used to compute space-time inhomogeneous K-function.
+
+```{r}
+kbb_stik <- STIKhat(fire_stpp)
+```
+
+Next, [`plotK()`](https://cran.r-project.org/web/packages/stpp/refman/stpp.html#plotK) is used to visualise the output space-time inhomogeneous K-function.
+
+```{r}
+#| eval: false
+plotK(kbb_stik)
+```
+
+![](chap06/kbb_stik.png)
+
+### Guide to interpret the plot
+
+-   If the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.
+-   If the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.
+
+The spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. In the plot above, we can see clustering at specific distances by observing the spacing and values of the contour lines.
+
+## Reference
+
+Peter Hall (1990) "[Using the Bootstrap to Estimate Mean Squared Error and Select Smoothing Parameter in Nonparametric Problems](https://core.ac.uk/download/pdf/81131953.pdf)", *JOURNAL OF MULTIVARIATE ANALYSIS*, Vol. 32, pp. 177-203.

@@ -55,7 +55,7 @@ The processes of importing and preparing the geospatial data to meet the analysi
 -   [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
 
 ```{r}
-#| echo: false
+#| eval: false
 mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
 ```
 

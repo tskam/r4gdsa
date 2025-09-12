@@ -443,7 +443,7 @@
     "href": "chap06.html#installing-and-loading-the-r-packages",
     "title": "6  Spatio-Temporal Point Patterns Analysis",
     "section": "6.4 Installing and Loading the R packages",
-    "text": "6.4 Installing and Loading the R packages\nFor the purpose of this study, six R packages will be used. They are:\n\nsf provides functions for importing processing and wrangling geospatial data,,\nraster for handling raster data in R,\nspatstat for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,\nsparr provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported\ntmap provides functions to produce cartographic quality thematic maps, and\ntidyverse, a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.\n\n\nDIYThe solution\n\n\nUsing the steps you learned from previous chapter, write a code chunk to load the packages above onto R environment.\n\n\n\npacman::p_load(sf, terra, spatstat, sparr, tmap, tidyverse)",
+    "text": "6.4 Installing and Loading the R packages\nFor the purpose of this study, six R packages will be used. They are:\n\nsf provides functions for importing processing and wrangling geospatial data,,\nraster for handling raster data in R,\nspatstat for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,\nsparr provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported\ntmap provides functions to produce cartographic quality thematic maps, and\ntidyverse, a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.\n\n\nDIYThe solution\n\n\nUsing the steps you learned from previous chapter, write a code chunk to load the packages above onto R environment.\n\n\n\npacman::p_load(sf, spatstat, sparr, \n               tmap, stpp, tidyverse)",
     "crumbs": [
       "Spatial Point Patterns Analysis",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
@@ -1766,6 +1766,28 @@
     "crumbs": [
       "Spatial Point Patterns Analysis",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#spatio-temporal-point-patterns-analysis-stpp-methods",
+    "href": "chap06.html#spatio-temporal-point-patterns-analysis-stpp-methods",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.11 Spatio-temporal Point Patterns Analysis: stpp methods",
+    "text": "6.11 Spatio-temporal Point Patterns Analysis: stpp methods\nIn this section, you will gain hands-on experience on using functions of stpp package to perform spatio-temporal point patterns analysis.\n\nStudents are encouraged to read stpp: An R Package for Plotting, Simulating and Analyzing Spatio-Temporal Point Patterns to learn more about the package.\n\n\n6.11.1 Preparing spatio-temporal point process object of stpp\nStep 1: Extracting forest fire coordinates from the fire point events\n\ncoords &lt;- st_coordinates(fire_sf)\n\nStep 2: Creating a data frame by combining the x- and y-coordinates and temporal event. Note that the temporal event must be in integer.\n\nfire_df &lt;- data.frame(\n  x = coords[, 1],  \n  y = coords[, 2],\n  t = fire_sf$`DayofYear`)\n\nStep 3: Creating stpp spatio-temporal object\nIn the code chunk below, as.3dpoint() of stpp package is used to create stpp spatio-temporal object class.\n\nfire_stpp &lt;- as.3dpoints(fire_df)\n\nUse the code chunk below to confirm that the output is in stpp spatio-temporal object class.\n\nclass(fire_stpp)\n\n[1] \"stpp\"\n\n\nNext we can visual fire_stpp by using the code chunk below.\n\nplot(fire_stpp)\n\n\n\n\n\n\n\n\n\n\n6.11.2 Computing spatio-temporal k-function\nIn the code chunk below, STIKhat() of stpp package is used to compute space-time inhomogeneous K-function.\n\nkbb_stik &lt;- STIKhat(fire_stpp)\n\nNext, plotK() is used to visualise the output space-time inhomogeneous K-function.\n\nplotK(kbb_stik)\n\n\n\n\n6.11.3 Guide to interpret the plot\n\nIf the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.\nIf the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.\n\nThe spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. In the plot above, we can see clustering at specific distances by observing the spacing and values of the contour lines.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#reference",
+    "href": "chap06.html#reference",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.12 Reference",
+    "text": "6.12 Reference\nPeter Hall (1990) “Using the Bootstrap to Estimate Mean Squared Error and Select Smoothing Parameter in Nonparametric Problems”, JOURNAL OF MULTIVARIATE ANALYSIS, Vol. 32, pp. 177-203.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
     ]
   }
 ]
