@@ -126,7 +126,8 @@ The message above reveals that there are a total of 4651 features and 19 fields 
 The `PreSchoolsLocation` is in [**kml**](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) format. The code chunk below will be used to import the kml into R.
 
 ```{r}
-preschool = st_read("chap01/data/geospatial/PreSchoolsLocation.kml")
+preschool = st_read("chap01/data/geospatial/PreSchoolsLocation.kml") %>% 
+  st_transform(crs = 3414)
 ```
 
 ::: callout-tip
