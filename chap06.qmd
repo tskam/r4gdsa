@@ -53,7 +53,8 @@ Using the steps you learned from previous chapter, write a code chunk to load th
 
 ```{r}
 pacman::p_load(sf, spatstat, sparr, 
-               tmap, stpp, tidyverse)
+               tmap, stpp, tidyverse,
+               animation)
 ```
 :::
 
@@ -283,8 +284,24 @@ summary(kde_yday)
 ```
 
 ```{r}
+#| fig-height: 6
 plot(kde_yday)
 ```
+
+```{r}
+#| echo: false
+#| eval: false
+saveGIF({
+  for (t in 10:352) {
+    plot(kde_yday, tselect = t,
+         main = paste("KDE - Day", t))
+  }
+}, movie.name = "chap06/kde_animation.gif", interval = 0.2)
+```
+
+![](chap06/)
+
+
 
 ## Computing STKDE by Day of Year: Improved method
 
@@ -313,7 +330,18 @@ summary(kde_yday)
 Last, `plot()` of **sparr** package is used to plot the output as shown below.
 
 ```{r}
+#| fig-height: 6
 plot(kde_yday)
+```
+
+```{r}
+library()
+
+saveGIF({
+  for(i in 1:length(kde_yday$time)) {
+    plot(kde_yday, i)
+  }
+}, movie.name = "kde_animation.gif", interval = 0.25)
 ```
 
 ## Spatio-temporal Point Patterns Analysis: stpp methods
