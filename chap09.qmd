@@ -96,18 +96,23 @@ Now, we are going to prepare a basemap and a choropleth map showing the distribu
 #| fig-width: 12
 #| fig-height: 8
 equal <- tm_shape(hunan) +
-  tm_fill("GDPPC",
-          n = 5,
-          style = "equal") +
-  tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal interval classification")
+  tm_polygons(fill = "GDPPC",
+              fill.scale = tm_scale_intervals(
+                style = "equal",
+                n = 5,
+                values = "brewer.blues")) +
+  tm_borders(fiil_alpha = 0.5) + 
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Equal interval classification")
 
 quantile <- tm_shape(hunan) +
-  tm_fill("GDPPC",
-          n = 5,
-          style = "quantile") +
-  tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal quantile classification")
+  tm_polygons(fill = "GDPPC",
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5)) +
+  tm_borders(fiil_alpha = 0.5) + 
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Quantile classification")
 
 tmap_arrange(equal, 
              quantile, 
