@@ -4,7 +4,8 @@ date: "January 28, 2024"
 date-modified: "last-modified"
 format: html
 execute:
-  message: false
+  eval: true
+  echo: true
   warning: false
   freeze: true
 editor: visual
@@ -25,13 +26,13 @@ In this hands-on exercise, you will learn how to compute spatial weights using R
 Two data sets will be used in this hands-on exercise, they are:
 
 -   Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
--   Hunan_2012.csv: This csv file contains selected Hunan's local development indicators in 2012.
+-   *Hunan_2012.csv*: This csv file contains selected Hunan's local development indicators in 2012.
 
 ### Getting Started
 
 Before we get started, we need to ensure that **spdep**, **sf**, **tmap** and **tidyverse** packages of R are currently installed in your R.
 
-```{r echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
+```{r}
 pacman::p_load(sf, spdep, tmap, tidyverse, knitr)
 ```
 
@@ -61,7 +62,7 @@ hunan2012 <- read_csv("chap08/data/aspatial/Hunan_2012.csv")
 The code chunk below will be used to update the attribute table of *hunan*'s SpatialPolygonsDataFrame with the attribute fields of *hunan2012* dataframe. This is performed by using *left_join()* of **dplyr** package.
 
 ```{r}
-hunan <- left_join(hunan,hunan2012)%>%
+hunan <- left_join(hunan,hunan2012) %>%
   select(1:4, 7, 15)
 ```
 
@@ -74,7 +75,9 @@ basemap <- tm_shape(hunan) +
   tm_polygons() +
   tm_text("NAME_3", size=0.5)
 
-gdppc <- qtm(hunan, "GDPPC")
+gdppc <- qtm(hunan, "GDPPC") +
+  tm_layout(
+    legend.position = c("left", "bottom"))
 tmap_arrange(basemap, gdppc, asp=1, ncol=2)
 ```
 

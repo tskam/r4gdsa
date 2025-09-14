@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./chap04.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">1st Order Spatial Point Patterns Analysis Methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">First-order Spatial Point Patterns Analysis Methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -399,7 +399,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">Invalid Date</p>
+      <p class="date-modified">September 14, 2025</p>
     </div>
   </div>
     
@@ -426,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Two data sets will be used in this hands-on exercise, they are:</p>
 <ul>
 <li>Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.</li>
-<li>Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.</li>
+<li><em>Hunan_2012.csv</em>: This csv file contains selected Hunan’s local development indicators in 2012.</li>
 </ul>
 <section id="getting-started" class="level3" data-number="8.2.1">
 <h3 data-number="8.2.1" class="anchored" data-anchor-id="getting-started"><span class="header-section-number">8.2.1</span> Getting Started</h3>
@@ -446,7 +446,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"chap08/data/geospatial"</span>, </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `Hunan' from data source `D:\tskam\r4gdsa\chap08\data\geospatial' using driver `ESRI Shapefile'
+<pre><code>Reading layer `Hunan' from data source `C:\tskam\r4gdsa\chap08\data\geospatial' using driver `ESRI Shapefile'
 Simple feature collection with 88 features and 7 fields
 Geometry type: POLYGON
 Dimension:     XY
@@ -466,7 +466,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <h3 data-number="8.3.3" class="anchored" data-anchor-id="performing-relational-join"><span class="header-section-number">8.3.3</span> Performing relational join</h3>
 <p>The code chunk below will be used to update the attribute table of <em>hunan</em>’s SpatialPolygonsDataFrame with the attribute fields of <em>hunan2012</em> dataframe. This is performed by using <em>left_join()</em> of <strong>dplyr</strong> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan,hunan2012)<span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -479,8 +479,10 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_text</span>(<span class="st">"NAME_3"</span>, <span class="at">size=</span><span class="fl">0.5</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(basemap, gdppc, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>) <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(basemap, gdppc, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -646,7 +648,11 @@ Link number distribution:
  - attr(*, "region.id")= chr [1:88] "1" "2" "3" "4" ...
  - attr(*, "call")= language poly2nb(pl = hunan, queen = TRUE)
  - attr(*, "type")= chr "queen"
- - attr(*, "sym")= logi TRUE</code></pre>
+ - attr(*, "snap")= num 9e-08
+ - attr(*, "sym")= logi TRUE
+ - attr(*, "ncomp")=List of 2
+  ..$ nc     : num 1
+  ..$ comp.id: num [1:88] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 </div>
 </div>
 <p>Be warned: The output might cut across several pages. Save the trees if you are going to print out the report.</p>
@@ -890,7 +896,10 @@ Average number of links: 3.681818 </code></pre>
  - attr(*, "dnn")= num [1:2] 0 62
  - attr(*, "bounds")= chr [1:2] "GE" "LE"
  - attr(*, "nbtype")= chr "distance"
- - attr(*, "sym")= logi TRUE</code></pre>
+ - attr(*, "sym")= logi TRUE
+ - attr(*, "ncomp")=List of 2
+  ..$ nc     : num 1
+  ..$ comp.id: num [1:88] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 </div>
 </div>
 <p>Another way to display the structure of the weight matrix is to combine <a href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table"><em>table()</em></a> and <a href="https://r-spatial.github.io/spdep/reference/card.html"><em>card()</em></a> of spdep.</p>
@@ -1151,7 +1160,10 @@ Non-symmetric neighbours list</code></pre>
  - attr(*, "sym")= logi FALSE
  - attr(*, "type")= chr "knn"
  - attr(*, "knn-k")= num 6
- - attr(*, "class")= chr "nb"</code></pre>
+ - attr(*, "class")= chr "nb"
+ - attr(*, "ncomp")=List of 2
+  ..$ nc     : num 1
+  ..$ comp.id: num [1:88] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 </div>
 </div>
 <p>Notice that each county has six neighbours, no less no more!</p>
