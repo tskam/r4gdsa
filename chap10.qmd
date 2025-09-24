@@ -195,7 +195,7 @@ Next, we need to assign weights to each neighboring polygon. In our case, each n
 
 ### Computing local Moran's I
 
-To compute local Moran's I, the [*local_moran()*](https://sfdep.josiahparry.com/reference/local_moran) function of **sfdep** will be used. It computes *Ii* values, given a set of *zi* values and a listw object providing neighbour weighting information for the polygon associated with the zi values.
+To compute local Moran's I, the [`local_moran()`](https://sfdep.josiahparry.com/reference/local_moran) function of **sfdep** will be used. It computes *Ii* values, given a set of *zi* values and a listw object providing neighbour weighting information for the polygon associated with the zi values.
 
 The code chunks below are used to compute local Moran's I of *GDPPC2012* at the county level.
 
@@ -207,7 +207,7 @@ lisa <- wm_q %>%
   unnest(local_moran)
 ```
 
-*local_moran()* function returns a matrix of values whose columns are:
+`local_moran()` function returns a matrix of values whose columns are:
 
 -   Ii: the local Moran's I statistics
 -   E.Ii: the expectation of local moran statistic under the randomisation hypothesis
@@ -234,8 +234,7 @@ tm_shape(lisa) +
                 values = "brewer.RdBu"),
               fill.legend = tm_legend(
                 title = "Local Morans'I",
-                position = tm_pos_in(
-                  "left", "bottom"))) + 
+                position = tm_pos_out())) + 
   tm_borders(fill_alpha = 0.5) +
   tm_title("Loal Morans'I of GDPPC (Queen's method)")
 ```
@@ -254,8 +253,7 @@ tm_shape(lisa) +
                 values = "-brewer.Reds"),
               fill.legend = tm_legend(
                 title = "p-value",
-      position = tm_pos_in("left", "bottom")
-    )) + 
+      position = tm_pos_out())) + 
   tm_borders(fill_alpha = 0.5) +
   tm_title("p-values of Loal Moran's I of GDPPC (Queen's method)")
 ```
@@ -295,15 +293,17 @@ p_ii.map <- tm_shape(lisa) +
 tmap_arrange(ii.map, p_ii.map, asp=1, ncol=2)
 ```
 
-## Creating a LISA Cluster Map
+### Preparing and Visualising LISA Map
+
+Visualizing LISA involves creating maps that highlight significant spatial patterns, such as hot spots (high values clustered together) and cold spots (low values clustered together), as well as identifying spatial outliers. Common methods include choropleth maps showing LISA values, Moran scatterplots which depict local spatial autocorrelation for individual locations, and hot spot analysis maps.
 
 The LISA Cluster Map shows the significant locations color coded by type of spatial autocorrelation. The first step before we can generate the LISA cluster map is to plot the Moran scatterplot.
 
-### Plotting Moran scatterplot
+#### Plotting Moran scatterplot
 
-The Moran scatterplot is an illustration of the relationship between the values of the chosen attribute at each location and the average value of the same attribute at neighboring locations.
+A Moran Scatterplot is a graphical tool in spatial analysis that visualizes the relationship between a variable's values and the average values of its neighboring locations (its spatial lag) to identify spatial autocorrelation. By plotting standardized values of the variable on the x-axis and its spatial lag on the y-axis, the plot's slope represents Moran's I, revealing patterns of high-high or low-low value clusters and high-low or low-high value outliers.
 
-The code chunk below plots the Moran scatterplot of GDPPC 2012 by using [*moran.plot()*](https://r-spatial.github.io/spdep/reference/moran.plot.html) of **spdep**.
+In the code chunk below, [`st_lag()`](https://sfdep.josiahparry.com/reference/st_lag) of **sfdep** package is used to calculates the spatial lag of GDPPC given a neighbor (i.e. nb) and weights list (i.e. wt).
 
 ```{r}
 lisa <- lisa %>%
@@ -312,6 +312,8 @@ lisa <- lisa %>%
     .before = 1) %>%
   unnest(lag_GDPPC)
 ```
+
+Then, the code chunk below is used to plot the Moran Scatterplot of GDPPC against its spatial lag version as shown in the code cunk below.
 
 ```{r}
 ggplot(data = lisa, 
@@ -326,6 +328,8 @@ ggplot(data = lisa,
        title = "Moran Scatterplot") +
   theme_minimal()
 ```
+
+The Moran Scatterplot above is not very intuitive. To support effective visual communication, the code chunk below is used.
 
 ```{r}
 ggplot(data = lisa, 
@@ -349,9 +353,11 @@ ggplot(data = lisa,
   theme_minimal()
 ```
 
+::: callout-note
 Notice that the plot is split in 4 quadrants. The top right corner belongs to areas that have high GDPPC and are surrounded by other areas that have the average level of GDPPC. This are the high-high locations in the lesson slide.
+:::
 
-### Plotting Moran scatterplot with standardised variable
+#### Plotting Moran scatterplot with standardised variable
 
 First we will use [*scale()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/scale) to centers and scales the variable. Here centering is done by subtracting the mean (omitting NAs) the corresponding columns, and scaling is done by dividing the (centered) variable by their standard deviations.
 
@@ -388,7 +394,7 @@ ggplot(data = lisa,
   theme_minimal()
 ```
 
-### Preparing LISA map classes
+#### Preparing LISA map classes
 
 The code chunks below show the steps to prepare a LISA cluster map.
 
@@ -402,24 +408,17 @@ Next, we will set a statistical significance level for the local Moran.
 signif <- 0.05       
 ```
 
-These four command lines define the low-low (1), low-high (2), high-low (3) and high-high (4) categories.
+#### Plotting and visualising LISA map
 
-Lastly, places non-significant Moran in the category 0.
-
-In fact, we can combined all the steps into one single code chunk as shown below:
-
-### Plotting LISA map
-
-Now, we can build the LISA map by using the code chunks below.
+By default, the LISA classes are stored in *mean*, *median* and *pysal* fields of lisa sf data frame. To prepare the LISA map, we will derive a new field called LISA-cluster from either one of these three field by using the code chunk below.
 
 ```{r}
 lisa <- lisa %>%
   mutate(
     LISA_cluster = ifelse(
       p_ii < 0.05,
-      as.character(mean),              # keep original "High-High", etc.
-      "Insignificant"     # match capitalisation style
-    ),
+      as.character(mean), 
+      "Insignificant"),
     LISA_cluster = factor(
       LISA_cluster,
       levels = c("Insignificant", "Low-Low", "Low-High", "High-Low", "High-High")
@@ -427,8 +426,14 @@ lisa <- lisa %>%
   )
 ```
 
+::: callout-note
+Notice that a new class called *Insignificant* has been added for records whereby p_ii \> 0.05.
+:::
+
+Now, we can plot the LISA map by using the code chunk below.
+
 ```{r}
-tm_shape(lisa) +
+lisa_map <- tm_shape(lisa) + 
   tm_polygons(
     fill = "LISA_cluster",
     fill.scale = tm_scale_categorical(
@@ -440,10 +445,13 @@ tm_shape(lisa) +
         "red"          # High-High
       )
     ),
-    fill.legend = tm_legend(title = "LISA Cluster")
+    fill.legend = tm_legend(
+      title = "LISA Cluster",
+      position = tm_pos_in("left", "bottom"))
   ) +
   tm_borders() +
   tm_title("Local Moran's I Clusters (p < 0.05)")
+lisa_map
 ```
 
 For effective interpretation, it is better to plot both the local Moran's I values map and its corresponding p-values map next to each other.
@@ -457,41 +465,43 @@ We can also include the local Moran's I map and p-value map as shown below for e
 #| fig-width: 12
 #| fig-height: 8
 
+tmap_arrange(ii.map, lisa_map, asp=1, ncol=2)
 ```
 
 > Question: What statistical observations can you draw from the LISA map above?
 
 ## Hot Spots and Cold Spots Analysis (HCSA)
 
-Hot spots and cold spots analysis is a technique used in spatial statistics to identify statistically significant clusters of high values (hot spots) and low values (cold spots) within a dataset. These analyses help visualize and understand spatial patterns, revealing areas where data points are clustered more densely than would be expected by random chance
+Hot spots and cold spots analysis is a technique used in spatial statistics to identify statistically significant clusters of high values (hot spots) and low values (cold spots) of a geographically referenced attribute (i.e. GDPPC). These analyses help visualize and understand spatial patterns, revealing areas where data points are clustered more densely than would be expected by random chance.
 
-The term hot spots refer to areas where high values are concentrated and surrounded by other high values. For example, a hot spot analysis might reveal clusters of high GDP per capita in a province, indicating areas with significantly higher GDP per capita than other parts of the province.
+Figure below shows the hot spots and cold spots of GDP per capita of Hunan Provice, People Republic of China.
+
+The term hot spots refer to areas where high values are concentrated and surrounded by other high values. It has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).  For example, a hot spot analysis might reveal clusters of high GDP per capita in a province, indicating areas with significantly higher GDP per capita than other parts of the province.
 
 On the other hands, the term cold spots refer to areas where low values are concentrated and surrounded by other low values. An example could be clusters of low GDP per capita, indicating areas where GDP per capita is consistently low.
 
-The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).
-
 HCSA uses statistical methods, like the Getis-Ord Gi\* statistic, to determine if the observed clustering is statistically significant or could have occurred randomly.
 
-The analysis consists of three steps:
+The analysis consists of four steps:
 
 -   Deriving spatial weight matrix
 -   Computing Gi\* statistics
 -   Mapping Gi\* statistics
 -   Communicating the analysis results
 
-### Deriving fixed distance weight matrix
+### Deriving distance weight matrix
 
 Whist the spatial autocorrelation considered units which shared borders, for Getis-Ord Gi\* statistics, we are defining neighbours based on distance.
 
 There are two type of distance-based proximity matrix, they are:
 
--   fixed distance weight matrix; and
--   adaptive distance weight matrix.
+-   fixed distance weight matrix,
+-   adaptive distance weight matrix, and 
+-   inverse distance weights.
+
+#### Computing fixed distance weights
 
 In this section, you will learn how to compute fixed distance weight matrix by using `st_dist_band()` and `st_weights()` of sfdep package.
-
-#### Determine the cut-off distance
 
 Firstly, we need to determine the upper limit for distance band by using the steps below:
 
@@ -502,15 +512,15 @@ ct
 
 The summary report shows that the largest first nearest neighbour distance is 60.80 km, so using this as the upper threshold gives certainty that all units will have at least one neighbour.
 
-Using the critical threshold value computed above, code chunl below is used to compute the fixed distance weight.
+Using the critical threshold value computed above, code chunk below is used to compute the fixed distance weight.
 
 ```{r}
-wm_fd <- hunan %>% 
+hunan_fdw <- hunan %>% 
   mutate(nb = include_self(
     st_dist_band(
       st_geometry(geometry), 
                  upper = ct)),
-    wts = st_weights(nb, 
+    wt = st_weights(nb, 
                       style = "W"),
     .before = 1) 
 ```
@@ -519,16 +529,49 @@ wm_fd <- hunan %>%
 Noted that for Gi\* `include_self()` must be used to endure that ![](chap10/images/img1.jpg){width="70"}.
 :::
 
+#### Computing adaptive distance weights
+
+One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smooth the neighbour relationship across more neighbours.
+
+It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry as shown in the code chunk below.
+
+In this section, you will learn how to compute fixed distance weight matrix by using `st_dist_band()` and `st_weights()` of sfdep package.
+
 ```{r}
-HCSA_fdw <- wm_fd %>% 
-  mutate(local_Gi = local_gstar_perm(
-    GDPPC, nb, wts, nsim = 99),
-         .before = 1) %>%
-  unnest(local_Gi)
-HCSA_fdw
+hunan_adw <- hunan %>%
+  mutate(nb = include_self(
+    st_knn(
+      st_geometry(geometry),
+      k = 6)),
+    wt = st_weights(
+      nb, style = "W"),
+    .before = 1)
 ```
 
-#### Mapping HCSA
+#### Computing adaptive distance weights
+
+
+
+### Computing local Gi\*
+
+Local Gi\* (pronounced "G-i-star") is a Getis-Ord statistic used in spatial analysis to identify statistically significant hot spots and cold spots of high or low attribute values within a dataset. It measures the spatial clustering of values by comparing the total value within a specified neighborhood to the global total, producing a Z-score and p-value for each location to determine the likelihood that the observed pattern is not due to random chance.
+
+In this sub-section, you will gain hands-on experience on performing Gi\* analysis by using `local_gstar_perm()` of sfdep package.
+
+```{r}
+HCSA_fdw <- hunan_fdw %>%
+  mutate(
+    gistar = local_gstar_perm(
+      GDPPC, nb, wt, nsim = 99),
+    .before = 1) %>%
+  unnest(gistar)
+```
+
+### Preparing and Visualising HCSA Map
+
+#### Mapping Gi\* with fix distance weights
+
+In the code chunk below, thematic mapping functions of tmaps are used to prepare a choropleth map showing the distribution of Gi* values.
 
 ```{r}
 tm_shape(HCSA_fdw) +
@@ -539,129 +582,122 @@ tm_shape(HCSA_fdw) +
                 values = "brewer.rd_bu"),
               fill.legend = tm_legend(
                 title = "Gi*",
-                position = tm_pos_in(
-                  "left", "bottom"))) + 
+                position = tm_pos_out())) + 
   tm_borders(fill_alpha = 0.5) +
   tm_title("Gi* of GDPPC (Fixed Bandwidth d = 60799.91m)")
 ```
 
-#### Mapping local Moran's I p-values
+#### Mapping local Gi\* p-values
 
 The choropleth shows there is evidence for both positive and negative Ii values. However, it is useful to consider the p-values for each of these values, as consider above.
 
-The code chunks below produce a choropleth map of Moran's I p-values by using functions of **tmap** package.
+The code chunk below plots a choropleth map of p-values of Gi* by using functions of **tmap** package.
 
 ```{r}
-tm_shape(lisa) +
-  tm_polygons(fill = "p_ii", 
+tm_shape(HCSA_fdw) +
+  tm_polygons(fill = "p_sim", 
               fill.scale = tm_scale_intervals(
                 breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
                 values = "-brewer.Reds"),
               fill.legend = tm_legend(
-                title = "p-value",
-      position = tm_pos_in("left", "bottom")
-    )) + 
+                title = "simulated p-value",
+      position = tm_pos_out())) + 
   tm_borders(fill_alpha = 0.5) +
-  tm_title("p-values of Loal Moran's I of GDPPC (Queen's method)")
+  tm_title("p-values of local Gi* of GDPPC (Fixed distance)")
 ```
 
-#### Mapping both local Moran's I values and p-values
+#### Mapping both Gi* values and p-values
 
-For effective interpretation, it is better to plot both the local Moran's I values map and its corresponding p-values map next to each other.
+For effective interpretation, it is better to plot both the Gi* values map and its corresponding p-values map next to each other.
 
 The code chunk below will be used to create such visualisation.
 
 ```{r fig.width=12, fig.height=8}
-ii.map <- tm_shape(lisa) +
-  tm_polygons(fill = "ii",
+Gi_star_map <- tm_shape(HCSA_fdw) +
+  tm_polygons(fill = "gi_star",
               fill.scale = tm_scale_intervals(
                 style = "pretty",
                 n = 5,
-                values = "brewer.RdBu"),
+                values = "-brewer.rd_bu"),
               fill.legend = tm_legend(
-                title = "Local Moran's I",
+                title = "local Gi*",
                 position = tm_pos_in(
                   "left", "bottom"))) + 
   tm_borders(fill_alpha = 0.5) +
-  tm_title("Loal Moran's I of GDPPC (Queen's method)")
+  tm_title("Local Gi* of GDPPC")
 
-p_ii.map <- tm_shape(lisa) +
-  tm_polygons(fill = "p_ii", 
+p_values_map <- tm_shape(HCSA_fdw) +
+  tm_polygons(fill = "p_sim", 
               fill.scale = tm_scale_intervals(
-                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                values = "-brewer.Reds"),
+                breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                values = "-brewer.reds"),
               fill.legend = tm_legend(
                 title = "p-value",
       position = tm_pos_in("left", "bottom")
     )) + 
   tm_borders(fill_alpha = 0.5) +
-  tm_title("p-values of Loal Moran's I of GDPPC (Queen's method)")
+  tm_title("p-values of local Gi* of GDPPC (fixed distance)")
 
-tmap_arrange(ii.map, p_ii.map, asp=1, ncol=2)
+tmap_arrange(Gi_star_map, p_values_map, asp=1, ncol=2)
 ```
 
-### Computing adaptive distance weight matrix
+#### Plotting and visualising HCSA Map
 
-One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.
-
-It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry as shown in the code chunk below.
+By default, the HCSA classes are stored in *cluster* field of *HCSA_fdw* sf data frame. To prepare the HSCA map, we will derive a new field called *HCSA_cluster* from *cluster* field by using the code chunk below.
 
 ```{r}
-st_knn(st_geometry(hunan), k = 8)
+HCSA_fdw <- HCSA_fdw %>%
+  mutate(HCSA_cluster = case_when(
+    p_sim > 0.05 ~ "Insignificant",
+    p_sim <= 0.05 & cluster == "High" ~ "Hot spot",
+    p_sim <= 0.05 & cluster == "Low"  ~ "Cold spot",
+    TRUE ~ "Other"),
+    HCSA_cluster = factor(
+      HCSA_cluster,
+      levels = c("Insignificant", "Hot spot", "Cold spot")
+    ),
+    .before = 1
+  )
 ```
 
-Next, *nb2listw()* is used to convert the nb object into spatial weights object.
+::: callout-note
+Notice that a new class called *Insignificant* has been added for records whereby p_sim \> 0.05.
+:::
+
+Now, we can plot the HCSA map by using the code chunk below.
 
 ```{r}
-wm_ad <- hunan %>% 
-  mutate(nb = include_self(
-    st_knn(
-      st_geometry(geometry), 
-      k = 8)),
-    wts = st_weights(nb, 
-                      style = "W"),
-    .before = 1) 
+HCSA_map <- tm_shape(HCSA_fdw) + 
+  tm_polygons(
+    fill = "HCSA_cluster",
+    fill.scale = tm_scale_categorical(
+      values = c(
+        "grey80",      # Insignificant
+        "red",        # Low-Low
+        "blue"          # High-High
+      )
+    ),
+    fill.legend = tm_legend(
+      title = "HSCA Cluster",
+      position = tm_pos_in("left", "bottom"))
+  ) +
+  tm_borders() +
+  tm_title("HCSA Clusters (p < 0.05)")
+HCSA_map
 ```
+
+For effective interpretation, it is better to plot both the local Gi* values map and its corresponding HCSA map next to each other.
+
+The code chunk below will be used to create such visualisation.
 
 ```{r}
-HCSA_adw <- wm_ad %>% 
-  mutate(local_Gi = local_gstar_perm(
-    GDPPC, nb, wts, nsim = 99),
-         .before = 1) %>%
-  unnest(local_Gi)
-HCSA_adw
+#| fig-width: 12
+#| fig-height: 8
+
+tmap_arrange(Gi_star_map, HCSA_map, asp=1, ncol=2)
 ```
 
-## Computing Gi statistics
+> Question: What statistical observations can you draw from the LISA map above?
 
-### Gi statistics using fixed distance
 
-The output of localG() is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".
 
-The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
-
-Next, we will join the Gi values to their corresponding hunan sf data frame by using the code chunk below.
-
-In fact, the code chunk above performs three tasks. First, it convert the output vector (i.e. *gi.fixed*) into r matrix object by using *as.matrix()*. Next, *cbind()* is used to join hunan\@data and *gi.fixed* matrix to produce a new SpatialPolygonDataFrame called *hunan.gi*. Lastly, the field name of the gi values is renamed to *gstat_fixed* by using *rename()*.
-
-### Mapping Gi values with fixed distance weights
-
-The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.
-
-> Question: What statistical observation can you draw from the Gi map above?
-
-### Gi statistics using adaptive distance
-
-The code chunk below are used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e *knb_lw*).
-
-### Mapping Gi values with adaptive distance weights
-
-It is time for us to visualise the locations of hot spot and cold spot areas. The choropleth mapping functions of **tmap** package will be used to map the Gi values.
-
-The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.
-
-```{r fig.width=12, fig.height=8}
-
-```
-
-> Question: What statistical observation can you draw from the Gi map above?
