@@ -200,6 +200,10 @@ To compute local Moran's I, the [`local_moran()`](https://sfdep.josiahparry.com/
 The code chunks below are used to compute local Moran's I of *GDPPC2012* at the county level.
 
 ```{r}
+set.seed(1234)
+```
+
+```{r}
 lisa <- wm_q %>% 
   mutate(local_moran = local_moran(
     GDPPC, nb, wt, nsim = 99),
@@ -476,7 +480,7 @@ Hot spots and cold spots analysis is a technique used in spatial statistics to i
 
 Figure below shows the hot spots and cold spots of GDP per capita of Hunan Provice, People Republic of China.
 
-The term hot spots refer to areas where high values are concentrated and surrounded by other high values. It has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).  For example, a hot spot analysis might reveal clusters of high GDP per capita in a province, indicating areas with significantly higher GDP per capita than other parts of the province.
+The term hot spots refer to areas where high values are concentrated and surrounded by other high values. It has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015). For example, a hot spot analysis might reveal clusters of high GDP per capita in a province, indicating areas with significantly higher GDP per capita than other parts of the province.
 
 On the other hands, the term cold spots refer to areas where low values are concentrated and surrounded by other low values. An example could be clusters of low GDP per capita, indicating areas where GDP per capita is consistently low.
 
@@ -496,7 +500,7 @@ Whist the spatial autocorrelation considered units which shared borders, for Get
 There are two type of distance-based proximity matrix, they are:
 
 -   fixed distance weight matrix,
--   adaptive distance weight matrix, and 
+-   adaptive distance weight matrix, and
 -   inverse distance weights.
 
 #### Computing fixed distance weights
@@ -550,8 +554,6 @@ hunan_adw <- hunan %>%
 
 #### Computing adaptive distance weights
 
-
-
 ### Computing local Gi\*
 
 Local Gi\* (pronounced "G-i-star") is a Getis-Ord statistic used in spatial analysis to identify statistically significant hot spots and cold spots of high or low attribute values within a dataset. It measures the spatial clustering of values by comparing the total value within a specified neighborhood to the global total, producing a Z-score and p-value for each location to determine the likelihood that the observed pattern is not due to random chance.
@@ -571,7 +573,7 @@ HCSA_fdw <- hunan_fdw %>%
 
 #### Mapping Gi\* with fix distance weights
 
-In the code chunk below, thematic mapping functions of tmaps are used to prepare a choropleth map showing the distribution of Gi* values.
+In the code chunk below, thematic mapping functions of tmaps are used to prepare a choropleth map showing the distribution of Gi\* values.
 
 ```{r}
 tm_shape(HCSA_fdw) +
@@ -591,7 +593,7 @@ tm_shape(HCSA_fdw) +
 
 The choropleth shows there is evidence for both positive and negative Ii values. However, it is useful to consider the p-values for each of these values, as consider above.
 
-The code chunk below plots a choropleth map of p-values of Gi* by using functions of **tmap** package.
+The code chunk below plots a choropleth map of p-values of Gi\* by using functions of **tmap** package.
 
 ```{r}
 tm_shape(HCSA_fdw) +
@@ -606,9 +608,9 @@ tm_shape(HCSA_fdw) +
   tm_title("p-values of local Gi* of GDPPC (Fixed distance)")
 ```
 
-#### Mapping both Gi* values and p-values
+#### Mapping both Gi\* values and p-values
 
-For effective interpretation, it is better to plot both the Gi* values map and its corresponding p-values map next to each other.
+For effective interpretation, it is better to plot both the Gi\* values map and its corresponding p-values map next to each other.
 
 The code chunk below will be used to create such visualisation.
 
@@ -686,7 +688,7 @@ HCSA_map <- tm_shape(HCSA_fdw) +
 HCSA_map
 ```
 
-For effective interpretation, it is better to plot both the local Gi* values map and its corresponding HCSA map next to each other.
+For effective interpretation, it is better to plot both the local Gi\* values map and its corresponding HCSA map next to each other.
 
 The code chunk below will be used to create such visualisation.
 
@@ -698,6 +700,3 @@ tmap_arrange(Gi_star_map, HCSA_map, asp=1, ncol=2)
 ```
 
 > Question: What statistical observations can you draw from the LISA map above?
-
-
-
