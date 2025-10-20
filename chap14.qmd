@@ -71,7 +71,7 @@ pacman::p_load(sf, spdep, GWmodel, SpatialML,
 Reading the input data sets. It is in simple feature data frame.
 
 ```{r}
-mdata <- read_rds("chap14/data/model/mdata.rds")
+mdata <- read_rds("chap14/data/rawdata/mdata.rds")
 ```
 
 ### Data Sampling
@@ -143,16 +143,9 @@ write_rds(price_mlr, "chap14/data/model/price_mlr.rds" )
 
 In this section, you will learn how to calibrate a model to predict HDB resale price by using geographically weighted regression method of [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html) package.
 
-### Converting the sf data.frame to SpatialPointDataFrame
-
-```{r}
-train_data_sp <- as_Spatial(train_data)
-train_data_sp
-```
-
 ### Computing adaptive bandwidth
 
-Next, `bw.gwr()` of **GWmodel** package will be used to determine the optimal bandwidth to be used.
+Firstly, `bw.gwr()` of **GWmodel** package will be used to determine the optimal bandwidth to be used.
 
 ::: callout-note
 The code chunk below is used to determine adaptive bandwidth and CV method is used to determine the optimal bandwidth.
@@ -160,18 +153,19 @@ The code chunk below is used to determine adaptive bandwidth and CV method is us
 
 ```{r}
 #| eval: false
-bw_adaptive <- bw.gwr(resale_price ~ floor_area_sqm +
-                  storey_order + remaining_lease_mths +
-                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
-                  PROX_MRT + PROX_PARK + PROX_MALL + 
-                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                  WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
-                  WITHIN_1KM_PRISCH,
-                  data=train_data_sp,
-                  approach="CV",
-                  kernel="gaussian",
-                  adaptive=TRUE,
-                  longlat=FALSE)
+bw_adaptive <- bw.gwr(
+  formula = resale_price ~ floor_area_sqm +
+    storey_order + remaining_lease_mths +
+    PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
+    PROX_MRT + PROX_PARK + PROX_MALL + 
+    PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+    WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+    WITHIN_1KM_PRISCH,
+  data=train_data,
+  approach="CV",
+  kernel="gaussian",
+  adaptive=TRUE,
+  longlat=FALSE)
 ```
 
 The result shows that 40 neighbour points will be the optimal bandwidth to be used if adaptive bandwidth is used for this data set.
@@ -193,19 +187,20 @@ Now, we can go ahead to calibrate the gwr-based hedonic pricing model by using a
 
 ```{r}
 #| eval: false
-gwr_adaptive <- gwr.basic(formula = resale_price ~
-                            floor_area_sqm + storey_order +
-                            remaining_lease_mths + PROX_CBD + 
-                            PROX_ELDERLYCARE + PROX_HAWKER +
-                            PROX_MRT + PROX_PARK + PROX_MALL + 
-                            PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                            WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
-                            WITHIN_1KM_PRISCH,
-                          data=train_data_sp,
-                          bw=bw_adaptive, 
-                          kernel = 'gaussian', 
-                          adaptive=TRUE,
-                          longlat = FALSE)
+gwr_adaptive <- gwr.basic(
+  formula = resale_price ~ floor_area_sqm +
+    storey_order + remaining_lease_mths + 
+    PROX_CBD + PROX_ELDERLYCARE + 
+    PROX_HAWKER + PROX_MRT + PROX_PARK + 
+    PROX_MALL + PROX_SUPERMARKET +
+    WITHIN_350M_KINDERGARTEN +
+    WITHIN_350M_CHILDCARE + 
+    WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
+  data=train_data,
+  bw=bw_adaptive, 
+  kernel = 'gaussian', 
+  adaptive=TRUE,
+  longlat = FALSE)
 ```
 
 The code chunk below will be used to save the model in rds format for future use.
@@ -241,14 +236,15 @@ test_data_sp
 
 ```{r}
 #| eval: false
-gwr_bw_test_adaptive <- bw.gwr(resale_price ~ floor_area_sqm +
-                  storey_order + remaining_lease_mths +
-                  PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
-                  PROX_MRT + PROX_PARK + PROX_MALL + 
-                  PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                  WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
-                  WITHIN_1KM_PRISCH,
-                  data=test_data_sp,
+gwr_bw_test_adaptive <- bw.gwr(
+  formula = resale_price ~ floor_area_sqm +
+    storey_order + remaining_lease_mths +
+    PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER +
+    PROX_MRT + PROX_PARK + PROX_MALL + 
+    PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+    WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
+    WITHIN_1KM_PRISCH,
+  data=test_data_sp,
                   approach="CV",
                   kernel="gaussian",
                   adaptive=TRUE,
@@ -300,7 +296,7 @@ coords_test <- write_rds(coords_test, "chap14/data/model/coords_test.rds" )
 First, we will drop geometry column of the sf data.frame by using `st_drop_geometry()` of sf package.
 
 ```{r}
-train_data <- train_data %>% 
+train_data_nogeom <- train_data %>% 
   st_drop_geometry()
 ```
 
@@ -310,13 +306,17 @@ In this section, you will learn how to calibrate a model to predict HDB resale p
 
 ```{r}
 set.seed(1234)
-rf <- ranger(resale_price ~ floor_area_sqm + storey_order + 
-               remaining_lease_mths + PROX_CBD + PROX_ELDERLYCARE + 
-               PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_MALL + 
-               PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-               WITHIN_350M_CHILDCARE + WITHIN_350M_BUS + 
-               WITHIN_1KM_PRISCH,
-             data=train_data)
+rf <- ranger(
+  formula = resale_price ~ floor_area_sqm +
+    storey_order + remaining_lease_mths + 
+    PROX_CBD + PROX_ELDERLYCARE + 
+    PROX_HAWKER + PROX_MRT + PROX_PARK + 
+    PROX_MALL + PROX_SUPERMARKET +
+    WITHIN_350M_KINDERGARTEN + 
+    WITHIN_350M_CHILDCARE + 
+    WITHIN_350M_BUS +  
+    WITHIN_1KM_PRISCH,
+  data=train_data_nogeom)
 rf
 ```
 
@@ -340,16 +340,19 @@ The code chunk below calibrate a geographic ranform forest model by using `grf()
 ```{r}
 #| eval: false
 set.seed(1234)
-gwRF_adaptive <- grf(formula = resale_price ~ floor_area_sqm + storey_order +
-                       remaining_lease_mths + PROX_CBD + PROX_ELDERLYCARE +
-                       PROX_HAWKER + PROX_MRT + PROX_PARK + PROX_MALL +
-                       PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                       WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
-                       WITHIN_1KM_PRISCH,
-                     dframe=train_data, 
-                     bw=55,
-                     kernel="adaptive",
-                     coords=coords_train)
+gwRF_adaptive <- grf(
+  formula = resale_price ~ floor_area_sqm +
+    storey_order + remaining_lease_mths + 
+    PROX_CBD + PROX_ELDERLYCARE + 
+    PROX_HAWKER + PROX_MRT + PROX_PARK + 
+    PROX_MALL + PROX_SUPERMARKET +
+    WITHIN_350M_KINDERGARTEN +
+    WITHIN_350M_CHILDCARE + 
+    WITHIN_350M_BUS + WITHIN_1KM_PRISCH,
+  dframe=train_data_nogeom, 
+  bw=40,
+  kernel="adaptive",
+  coords=coords_train)
 ```
 
 Let's save the model output by using the code chunk below.
@@ -372,7 +375,8 @@ gwRF_adaptive <- read_rds("chap14/data/model/gwRF_adaptive.rds")
 The code chunk below will be used to combine the test data with its corresponding coordinates data.
 
 ```{r}
-test_data <- cbind(test_data, coords_test) %>%
+test_data_nogeom <- cbind(
+  test_data, coords_test) %>%
   st_drop_geometry()
 ```
 
@@ -383,7 +387,7 @@ Next, `predict.grf()` of spatialML package will be used to predict the resale va
 ```{r}
 #| eval: false
 gwRF_pred <- predict.grf(gwRF_adaptive, 
-                           test_data, 
+                           test_data_nogeom, 
                            x.var.name="X",
                            y.var.name="Y", 
                            local.w=1,
@@ -409,7 +413,9 @@ GRF_pred_df <- as.data.frame(GRF_pred)
 In the code chunk below, `cbind()` is used to append the predicted values onto test_datathe
 
 ```{r}
-test_data_p <- cbind(test_data, GRF_pred_df)
+test_data_p <- cbind(
+  test_data, GRF_pred_df) %>%
+  select(resale_price, GRF_pred)
 ```
 
 ```{r}
