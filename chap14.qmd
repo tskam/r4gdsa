@@ -166,21 +166,24 @@ bw_adaptive <- bw.gwr(
   kernel="gaussian",
   adaptive=TRUE,
   longlat=FALSE)
+
+write_rds(bw_adaptive, "chap14/data/model/bw_adaptive.rds")
 ```
+
+::: callout-tip
+This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+:::
 
 The result shows that 40 neighbour points will be the optimal bandwidth to be used if adaptive bandwidth is used for this data set.
 
-```{r}
-#| eval: false
-write_rds(bw_adaptive, "chap14/data/model/bw_adaptive.rds")
-```
 
 ### Constructing the adaptive bandwidth gwr model
 
 First, let us call the save bandwidth by using the code chunk below.
 
 ```{r}
-bw_adaptive <- read_rds("chap14/data/model/bw_adaptive.rds")
+bw_adaptive <- read_rds(
+  "chap14/data/model/bw_adaptive.rds")
 ```
 
 Now, we can go ahead to calibrate the gwr-based hedonic pricing model by using adaptive bandwidth and Gaussian kernel as shown in the code chunk below.
@@ -201,14 +204,14 @@ gwr_adaptive <- gwr.basic(
   kernel = 'gaussian', 
   adaptive=TRUE,
   longlat = FALSE)
+
+write_rds(gwr_adaptive, 
+          "chap14/data/model/gwr_adaptive.rds")
 ```
 
-The code chunk below will be used to save the model in rds format for future use.
-
-```{r}
-#| eval: false
-write_rds(gwr_adaptive, "chap14/data/model/gwr_adaptive.rds")
-```
+::: callout-tip
+This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+:::
 
 ### Retrieve gwr output object
 
@@ -224,14 +227,6 @@ The code below can be used to display the model output.
 gwr_adaptive
 ```
 
-### Converting the test data from sf data.frame to SpatialPointDataFrame
-
-```{r}
-test_data_sp <- test_data %>%
-  as_Spatial()
-test_data_sp
-```
-
 ### Computing adaptive bandwidth for the test data
 
 ```{r}
@@ -244,36 +239,44 @@ gwr_bw_test_adaptive <- bw.gwr(
     PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
     WITHIN_350M_CHILDCARE + WITHIN_350M_BUS +
     WITHIN_1KM_PRISCH,
-  data=test_data_sp,
-                  approach="CV",
-                  kernel="gaussian",
-                  adaptive=TRUE,
-                  longlat=FALSE)
+  data=test_data,
+  approach="CV",
+  kernel="gaussian",
+  adaptive=TRUE,
+  longlat=FALSE)
+
+write_rds(gwr_bw_test_adaptive, 
+          "chap14/data/model/gwr_bw_test_adaptive.rds")
 ```
 
 ### Computing predicted values of the test data
 
 ```{r}
 #| eval: false
-gwr_pred <- gwr.predict(formula = resale_price ~
-                          floor_area_sqm + storey_order +
-                          remaining_lease_mths + PROX_CBD + 
-                          PROX_ELDERLYCARE + PROX_HAWKER + 
-                          PROX_MRT + PROX_PARK + PROX_MALL + 
-                          PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
-                          WITHIN_350M_CHILDCARE + WITHIN_350M_BUS + 
-                          WITHIN_1KM_PRISCH, 
-                        data=train_data_sp, 
-                        predictdata = test_data_sp, 
-                        bw=40, 
-                        kernel = 'gaussian', 
-                        adaptive=TRUE, 
-                        longlat = FALSE)
+gwr_pred <- gwr.predict(
+  formula = resale_price ~ floor_area_sqm + 
+    storey_order + remaining_lease_mths + 
+    PROX_CBD + PROX_ELDERLYCARE + PROX_HAWKER + 
+    PROX_MRT + PROX_PARK + PROX_MALL + 
+    PROX_SUPERMARKET + WITHIN_350M_KINDERGARTEN +
+    WITHIN_350M_CHILDCARE + WITHIN_350M_BUS + 
+    WITHIN_1KM_PRISCH, 
+  data=train_data, 
+  predictdata = test_data, 
+  bw=40, 
+  kernel = 'gaussian', 
+  adaptive=TRUE, 
+  longlat = FALSE)
+
+write_rds(gwr_pred, 
+          "chap14/data/model/gwr_pred.rds")
 ```
 
-## Preparing coordinates data
+## Calibrating Random Forest Model
 
-### Extracting coordinates data
+In this section, you will learn how to calibrate a model to predict HDB resale price by using random forest function of [**ranger**](https://cran.r-project.org/web/packages/ranger/index.html) package.
+
+### Preparing coordinates data
 
 The code chunk below extract the x,y coordinates of the full, training and test data sets.
 
@@ -287,8 +290,12 @@ Before continue, we write all the output into rds for future used.
 
 ```{r}
 #| eval: false
-coords_train <- write_rds(coords_train, "chap14/data/model/coords_train.rds" )
-coords_test <- write_rds(coords_test, "chap14/data/model/coords_test.rds" )
+coords_train <- write_rds(
+  coords_train, 
+  "chap14/data/model/coords_train.rds" )
+coords_test <- write_rds(
+  coords_test, 
+  "chap14/data/model/coords_test.rds" )
 ```
 
 ### Droping geometry field
@@ -298,11 +305,12 @@ First, we will drop geometry column of the sf data.frame by using `st_drop_geome
 ```{r}
 train_data_nogeom <- train_data %>% 
   st_drop_geometry()
+
+test_data_nogeom <- test_data %>% 
+  st_drop_geometry()
 ```
 
-## Calibrating Random Forest Model
-
-In this section, you will learn how to calibrate a model to predict HDB resale price by using random forest function of [**ranger**](https://cran.r-project.org/web/packages/ranger/index.html) package.
+### Calibrating a non-spatial random forest model
 
 ```{r}
 set.seed(1234)
@@ -318,18 +326,11 @@ rf <- ranger(
     WITHIN_1KM_PRISCH,
   data=train_data_nogeom)
 rf
-```
 
-```{r}
 write_rds(rf, "chap14/data/model/rf.rds")
 ```
 
-```{r}
-rf <- read_rds("chap14/data/model/rf.rds")
-rf
-```
-
-## Calibrating Geographical Random Forest Model
+## Calibrating Geographical Weighted Random Forest Model
 
 In this section, you will learn how to calibrate a model to predict HDB resale price by using `grf()` of [**SpatialML**](https://cran.r-project.org/web/packages/ranger/index.html) package.
 
@@ -353,14 +354,13 @@ gwRF_adaptive <- grf(
   bw=40,
   kernel="adaptive",
   coords=coords_train)
-```
 
-Let's save the model output by using the code chunk below.
-
-```{r eval=FALSE}
-#| eval: false
 write_rds(gwRF_adaptive, "chap14/data/model/gwRF_adaptive.rds")
 ```
+
+::: callout-tip
+This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+:::
 
 The code chunk below can be used to retrieve the save model in future.
 
@@ -392,12 +392,7 @@ gwRF_pred <- predict.grf(gwRF_adaptive,
                            y.var.name="Y", 
                            local.w=1,
                            global.w=0)
-```
 
-Before moving on, let us save the output into rds file for future use.
-
-```{r}
-#| eval: false
 GRF_pred <- write_rds(gwRF_pred, "chap14/data/model/GRF_pred.rds")
 ```
 
@@ -406,7 +401,8 @@ GRF_pred <- write_rds(gwRF_pred, "chap14/data/model/GRF_pred.rds")
 The output of the `predict.grf()` is a vector of predicted values. It is wiser to convert it into a data frame for further visualisation and analysis.
 
 ```{r}
-GRF_pred <- read_rds("chap14/data/model/GRF_pred.rds")
+GRF_pred <- read_rds(
+  "chap14/data/model/GRF_pred.rds")
 GRF_pred_df <- as.data.frame(GRF_pred)
 ```
 
@@ -419,7 +415,8 @@ test_data_p <- cbind(
 ```
 
 ```{r}
-write_rds(test_data_p, "chap14/data/model/test_data_p.rds")
+write_rds(test_data_p, 
+          "chap14/data/model/test_data_p.rds")
 ```
 
 ### Calculating Root Mean Square Error
