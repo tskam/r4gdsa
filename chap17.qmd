@@ -7,6 +7,7 @@ execute:
   echo: true
   eval: true
   warning: false
+  freeze: true
 editor: visual
 ---
 
@@ -103,7 +104,7 @@ hexagons <- st_transform(hexagons, 3414)
 
 After transforming the projection metadata, you can verify the projection of the newly transformed *mpsz_svy21* by using *st_crs()* of sf package.
 
-The code chunk below will be used to varify the newly transformed *mpsz_svy21*.
+The code chunk below will be used to verify the newly transformed *mpsz_svy21*.
 
 ```{r echo=TRUE, eval=TRUE}
 st_crs(mpsz)
@@ -200,7 +201,7 @@ Notice that the field name is much more tidier now.
 Next, we will convert the data table into tibble format by using the code chunk below.
 
 ```{r}
-acc_Hansen <- tbl_df(acc_Hansen)
+acc_Hansen <- as_tibble(acc_Hansen)
 ```
 
 Lastly, *bind_cols()* of dplyr will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called `hexagon_Hansen`.
@@ -224,7 +225,7 @@ acc_Hansen <- data.frame(ac(hexagons$demand,
                             family = "Hansen"))
 
 colnames(acc_Hansen) <- "accHansen"
-acc_Hansen <- tbl_df(acc_Hansen)
+acc_Hansen <- as_tibble(acc_Hansen)
 hexagon_Hansen <- bind_cols(hexagons, acc_Hansen)
 ```
 
@@ -240,29 +241,25 @@ mapex <- st_bbox(hexagons)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
 
-```{r fig.width=12, fig.height=8}
-tmap_mode("plot")
+```{r} 
+#| fig_width: 12
+#| fig-height: 8 
 tm_shape(hexagon_Hansen,
          bbox = mapex) + 
-  tm_fill(col = "accHansen",
-          n = 10,
-          style = "quantile",
-          border.col = "black",
-          border.lwd = 1) +
+  tm_polygons(fill = "accHansen", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 10,
+                values = "brewer.blues")) +
 tm_shape(eldercare) +
-  tm_symbols(size = 0.1) +
-  tm_layout(main.title = "Accessibility to eldercare: Hansen method",
-            main.title.position = "center",
-            main.title.size = 2,
-            legend.outside = FALSE,
-            legend.height = 0.45, 
-            legend.width = 3.0,
-            legend.format = list(digits = 6),
-            legend.position = c("right", "top"),
-            frame = TRUE) +
+  tm_dots(size = 0.3,
+          fill = "red",
+          col = "black") +
+  tm_title("Accessibility to eldercare: Hansen method") +
+  tm_layout(frame = TRUE) +
   tm_compass(type="8star", size = 2) +
-  tm_scale_bar(width = 0.15) +
-  tm_grid(lwd = 0.1, alpha = 0.5)
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
 ```
 
 ### Statistical graphic visualisation
@@ -300,12 +297,12 @@ The code chunk below calculates Hansen's accessibility using *ac()* of **Spatial
 acc_KD2SFCA <- data.frame(ac(hexagons$demand,
                             eldercare$capacity,
                             distmat_km, 
-                            d0 = 50,
+                            d0 = 5,
                             power = 2, 
                             family = "KD2SFCA"))
 
 colnames(acc_KD2SFCA) <- "accKD2SFCA"
-acc_KD2SFCA <- tbl_df(acc_KD2SFCA)
+acc_KD2SFCA <- as_tibble(acc_KD2SFCA)
 hexagon_KD2SFCA <- bind_cols(hexagons, acc_KD2SFCA)
 ```
 
@@ -313,29 +310,25 @@ hexagon_KD2SFCA <- bind_cols(hexagons, acc_KD2SFCA)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r fig.width=12, fig.height=8}
-tmap_mode("plot")
+```{r} 
+#| fig_width: 12
+#| fig-height: 8 
 tm_shape(hexagon_KD2SFCA,
          bbox = mapex) + 
-  tm_fill(col = "accKD2SFCA",
-          n = 10,
-          style = "quantile",
-          border.col = "black",
-          border.lwd = 1) +
+  tm_polygons(fill = "accKD2SFCA", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 10,
+                values = "brewer.blues")) +
 tm_shape(eldercare) +
-  tm_symbols(size = 0.1) +
-  tm_layout(main.title = "Accessibility to eldercare: KD2SFCA method",
-            main.title.position = "center",
-            main.title.size = 2,
-            legend.outside = FALSE,
-            legend.height = 0.45, 
-            legend.width = 3.0,
-            legend.format = list(digits = 6),
-            legend.position = c("right", "top"),
-            frame = TRUE) +
+  tm_dots(size = 0.3,
+          fill = "red",
+          col = "black") +
+  tm_title("Accessibility to eldercare: KD2SFCA method") +
+  tm_layout(frame = TRUE) +
   tm_compass(type="8star", size = 2) +
-  tm_scale_bar(width = 0.15) +
-  tm_grid(lwd = 0.1, alpha = 0.5)
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
 ```
 
 ### Statistical graphic visualisation
@@ -373,12 +366,12 @@ The code chunk below calculates Hansen's accessibility using *ac()* of **Spatial
 acc_SAM <- data.frame(ac(hexagons$demand,
                          eldercare$capacity,
                          distmat_km, 
-                         d0 = 50,
+                         d0 = 5,
                          power = 2, 
                          family = "SAM"))
 
 colnames(acc_SAM) <- "accSAM"
-acc_SAM <- tbl_df(acc_SAM)
+acc_SAM <- as_tibble(acc_SAM)
 hexagon_SAM <- bind_cols(hexagons, acc_SAM)
 ```
 
@@ -386,29 +379,25 @@ hexagon_SAM <- bind_cols(hexagons, acc_SAM)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r fig.width=12, fig.height=8}
-tmap_mode("plot")
+```{r} 
+#| fig_width: 12
+#| fig-height: 8 
 tm_shape(hexagon_SAM,
          bbox = mapex) + 
-  tm_fill(col = "accSAM",
-          n = 10,
-          style = "quantile",
-          border.col = "black",
-          border.lwd = 1) +
+  tm_polygons(fill = "accSAM", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 10,
+                values = "brewer.blues")) +
 tm_shape(eldercare) +
-  tm_symbols(size = 0.1) +
-  tm_layout(main.title = "Accessibility to eldercare: SAM method",
-            main.title.position = "center",
-            main.title.size = 2,
-            legend.outside = FALSE,
-            legend.height = 0.45, 
-            legend.width = 3.0,
-            legend.format = list(digits = 3),
-            legend.position = c("right", "top"),
-            frame = TRUE) +
+  tm_dots(size = 0.3,
+          fill = "red",
+          col = "black") +
+  tm_title("Accessibility to eldercare: SAM method") +
+  tm_layout(frame = TRUE) +
   tm_compass(type="8star", size = 2) +
-  tm_scale_bar(width = 0.15) +
-  tm_grid(lwd = 0.1, alpha = 0.5)
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
 ```
 
 ### Statistical graphic visualisation

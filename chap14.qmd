@@ -74,6 +74,32 @@ Reading the input data sets. It is in simple feature data frame.
 mdata <- read_rds("chap14/data/rawdata/mdata.rds")
 ```
 
+### Checking of overlapping point
+
+::: callout-warning
+When using GWmodel to calibrate explanatory or predictive models, it is very important to ensure that there are no overlapping point features
+:::
+
+The code chunk below is used to check if there are overlapping point features.
+
+```{r}
+overlapping_points <- test_data %>%
+  mutate(overlap = lengths(st_equals(., .)) > 1)
+```
+:::
+
+### Spatial jitter
+
+In the code code chunk below, [`st_jitter()`](https://r-spatial.github.io/sf/reference/st_jitter.html) of **sf** package is used to move the point features by 5m to avoid overlapping point features.
+
+::: {style="font-size: 1.50em"}
+```{r}
+mdata_jittered <- mdata %>%
+  st_jitter(amount = 0.1)
+```
+:::
+::::::::
+
 ### Data Sampling
 
 The entire data are split into training and test data sets with 65% and 35% respectively by using *initial_split()* of **rsample** package. rsample is one of the package of tigymodels.
@@ -81,8 +107,8 @@ The entire data are split into training and test data sets with 65% and 35% resp
 ```{r}
 #| eval: false
 set.seed(1234)
-resale_split <- initial_split(mdata, 
-                              prop = 6.5/10,)
+resale_split <- initial_split(mdata_jittered, 
+                              prop = 7/10,)
 train_data <- training(resale_split)
 test_data <- testing(resale_split)
 ```
@@ -204,14 +230,16 @@ gwr_adaptive <- gwr.basic(
   kernel = 'gaussian', 
   adaptive=TRUE,
   longlat = FALSE)
-
-write_rds(gwr_adaptive, 
-          "chap14/data/model/gwr_adaptive.rds")
 ```
 
 ::: callout-tip
 This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
 :::
+
+```{r}
+write_rds(gwr_adaptive, 
+          "chap14/data/model/gwr_adaptive.rds")
+```
 
 ### Retrieve gwr output object
 
@@ -244,7 +272,10 @@ gwr_bw_test_adaptive <- bw.gwr(
   kernel="gaussian",
   adaptive=TRUE,
   longlat=FALSE)
+```
 
+
+```{r}
 write_rds(gwr_bw_test_adaptive, 
           "chap14/data/model/gwr_bw_test_adaptive.rds")
 ```
@@ -263,11 +294,13 @@ gwr_pred <- gwr.predict(
     WITHIN_1KM_PRISCH, 
   data=train_data, 
   predictdata = test_data, 
-  bw=40, 
+  bw=25, 
   kernel = 'gaussian', 
   adaptive=TRUE, 
   longlat = FALSE)
+```
 
+```{r}
 write_rds(gwr_pred, 
           "chap14/data/model/gwr_pred.rds")
 ```
