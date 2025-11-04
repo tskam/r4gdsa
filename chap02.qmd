@@ -58,7 +58,7 @@ Two data set will be used to create the choropleth map. They are:
 
 ### Importing Geospatial Data into R
 
-The code chunk below uses the *st_read()* function of **sf** package to import `MP14_SUBZONE_WEB_PL` shapefile into R as a simple feature data frame called `mpsz`.
+The code chunk below uses the *st_read()* function of **sf** package to import [Master Plan 2019 Subzone Boundary (No Sea) (KML)](https://data.gov.sg/datasets?query=Master+Plan+2019+Subzone+Boundary+NoSea&resultId=d_0900fdcfdb4666fe2a630f37a532fc06&page=1) into R as a simple feature data frame called `mpsz`.
 
 ```{r}
 mpsz <- st_read("chap02/data/geospatial/MasterPlan2019SubzoneBoundaryNoSeaKML.kml") %>%
