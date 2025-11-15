@@ -287,6 +287,8 @@ selected_store <- stores %>%
 Now, use the code chunk below to plot the trade areas of the selected store.
 
 ```{r}
+#| fig-width: 14
+#| fig-height: 12
 tm_shape(Trade_area) +
   tm_polygons(fill = "p_ij",
               fill.scale = tm_scale_intervals(
