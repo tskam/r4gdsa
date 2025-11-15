@@ -36,6 +36,7 @@ book:
       - chap15.qmd
       - chap16.qmd
       - chap17.qmd
+      - chap18.qmd
     - summary.qmd
     - references.qmd
 

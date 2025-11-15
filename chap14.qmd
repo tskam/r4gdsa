@@ -83,19 +83,20 @@ When using GWmodel to calibrate explanatory or predictive models, it is very imp
 The code chunk below is used to check if there are overlapping point features.
 
 ```{r}
-overlapping_points <- test_data %>%
+overlapping_points <- mdata %>%
   mutate(overlap = lengths(st_equals(., .)) > 1)
 ```
+
 :::
 
 ### Spatial jitter
 
-In the code code chunk below, [`st_jitter()`](https://r-spatial.github.io/sf/reference/st_jitter.html) of **sf** package is used to move the point features by 5m to avoid overlapping point features.
+In the code code chunk below, [`st_jitter()`](https://r-spatial.github.io/sf/reference/st_jitter.html) of **sf** package is used to move the point features by 1m to avoid overlapping point features.
 
 ::: {style="font-size: 1.50em"}
 ```{r}
-mdata_jittered <- mdata %>%
-  st_jitter(amount = 0.1)
+mdata <- mdata %>%
+  st_jitter(amount = 1)
 ```
 :::
 ::::::::
@@ -108,7 +109,7 @@ The entire data are split into training and test data sets with 65% and 35% resp
 #| eval: false
 set.seed(1234)
 resale_split <- initial_split(mdata_jittered, 
-                              prop = 7/10,)
+                              prop = 7.5/10,)
 train_data <- training(resale_split)
 test_data <- testing(resale_split)
 ```
@@ -192,16 +193,17 @@ bw_adaptive <- bw.gwr(
   kernel="gaussian",
   adaptive=TRUE,
   longlat=FALSE)
-
-write_rds(bw_adaptive, "chap14/data/model/bw_adaptive.rds")
 ```
 
+The result shows that 48 neighbour points will be the optimal bandwidth to be used if adaptive bandwidth is used for this data set.
+
 ::: callout-tip
-This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+This is a computational intensity and time consuming process. It is wiser to save the output as an rds file for future used without having to re-run the process again.
 :::
 
-The result shows that 40 neighbour points will be the optimal bandwidth to be used if adaptive bandwidth is used for this data set.
-
+```{r}
+write_rds(bw_adaptive, "chap14/data/model/bw_adaptive.rds")
+```
 
 ### Constructing the adaptive bandwidth gwr model
 
@@ -233,7 +235,7 @@ gwr_adaptive <- gwr.basic(
 ```
 
 ::: callout-tip
-This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+This is a computational intensity and time consuming process. It is wiser to save the output as an rds file for future used without having to re-run the process again.
 :::
 
 ```{r}
@@ -274,13 +276,17 @@ gwr_bw_test_adaptive <- bw.gwr(
   longlat=FALSE)
 ```
 
-
 ```{r}
 write_rds(gwr_bw_test_adaptive, 
           "chap14/data/model/gwr_bw_test_adaptive.rds")
 ```
 
 ### Computing predicted values of the test data
+
+```{r}
+train_data_sp <- as(train_data, "Spatial")
+test_data_sp <- as(test_data, "Spatial")
+```
 
 ```{r}
 #| eval: false
@@ -294,7 +300,7 @@ gwr_pred <- gwr.predict(
     WITHIN_1KM_PRISCH, 
   data=train_data, 
   predictdata = test_data, 
-  bw=25, 
+  bw=200, 
   kernel = 'gaussian', 
   adaptive=TRUE, 
   longlat = FALSE)
@@ -392,7 +398,7 @@ write_rds(gwRF_adaptive, "chap14/data/model/gwRF_adaptive.rds")
 ```
 
 ::: callout-tip
-This is a computational intensity and time consuming process.  It is wiser to save the output as an rds file for future used without having to re-run the process again.
+This is a computational intensity and time consuming process. It is wiser to save the output as an rds file for future used without having to re-run the process again.
 :::
 
 The code chunk below can be used to retrieve the save model in future.
