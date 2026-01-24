@@ -263,11 +263,11 @@ huff_share <- huff.shares(
 
 ### Trade area analysis for a single store
 
-First, let us select market share data of a store by usign *Store_CD* field (i.e. TG).
+First, let us select market share data of a store by using *Store_CD* field (i.e. TG).
 
 ```{r}
 market_share <- huff_share %>%
-  filter(Store_CD == "TG")
+  filter(Store_CD == "BT")
 ```
 
 Next, trade areas of the selected will be derived by using the code chun below.
@@ -281,7 +281,7 @@ Before plotting the trade area map, code chunk below is used to extract the sele
 
 ```{r}
 selected_store <- stores %>%
-  filter(Store_CD == "TG")
+  filter(Store_CD == "BT")
 ```
 
 Now, use the code chunk below to plot the trade areas of the selected store.
@@ -345,7 +345,8 @@ store_sales_est <- stores %>%
 Now, we can visualise how well the estimate sales as compare to the actual sales by using the code chunk below.
 
 ```{r}
-store_sales_nongeom <- store_sales_est %>% st_drop_geometry()
+store_sales_nongeom <- store_sales_est %>% 
+  st_drop_geometry()
 
 ggscatterstats(
   store_sales_nongeom,
