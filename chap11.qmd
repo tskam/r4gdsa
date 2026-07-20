@@ -9,22 +9,20 @@ Emerging Hot Spots Analysis (EHSA) is a spatio-temporal statistical technique th
 
 The analysis consist of four main steps:
 
--   Building a space-time cube,
--   Calculating Getis-Ord local Gi\* statistic for each bin by using an FDR correction,
--   Evaluating these hot and cold spot trends by using Mann-Kendall trend test,
--   Categorising each study area location by referring to the resultant trend z-score and p-value for each location with data, and with the hot spot z-score and p-value for each bin.
+- Building a space-time cube,
+- Calculating Getis-Ord local Gi\* statistic for each bin by using an FDR correction,
+- Evaluating these hot and cold spot trends by using Mann-Kendall trend test,
+- Categorising each study area location by referring to the resultant trend z-score and p-value for each location with data, and with the hot spot z-score and p-value for each bin.
 
 ::: callout-important
 It is highly recommended to read [Emerging Hot Spot Analysis](https://sfdep.josiahparry.com/articles/understanding-emerging-hotspots) before you continue the exercise.
 :::
 
 :::: :::::
-
 ::: {.column width="50%"}
 ![](chap11/img/image3.png)
 :::
-
-:::::::
+::::
 
 ## Getting started
 
@@ -46,8 +44,8 @@ pacman::p_load(sf, sfdep, tmap,
 
 For the purpose of this in-class exercise, the Hunan data sets will be used. There are two data sets in this use case, they are:
 
--   Hunan, a geospatial data set in ESRI shapefile format, and
--   Hunan_GDPPC, an attribute data set in csv format.
+- Hunan, a geospatial data set in ESRI shapefile format, and
+- Hunan_GDPPC, an attribute data set in csv format.
 
 Before getting started, reveal the content of *Hunan_GDPPC.csv* by using Notepad and MS Excel.
 
@@ -116,10 +114,10 @@ GDPPC_nb <- GDPPC_st %>%
 ::: callout-tip
 # Things to learn from the code chunk above
 
--   `activate()` of dplyr package is used to activate the geometry context
--   `mutate()` of dplyr package is used to create two new columns *nb* and *wt*.
--   Then we will activate the data context again and copy over the nb and wt columns to each time-slice using `set_nbs()` and `set_wts()`
-    -   row order is very important so do not rearrange the observations after using `set_nbs()` or `set_wts()`.
+- `activate()` of dplyr package is used to activate the geometry context
+- `mutate()` of dplyr package is used to create two new columns *nb* and *wt*.
+- Then we will activate the data context again and copy over the nb and wt columns to each time-slice using `set_nbs()` and `set_wts()`
+  - row order is very important so do not rearrange the observations after using `set_nbs()` or `set_wts()`.
 :::
 
 Note that this dataset now has neighbors and weights for each time-slice.
@@ -146,10 +144,10 @@ H1: Monotonic trend is present
 
 **Interpretation**
 
--   Reject the null-hypothesis null if the p-value is smaller than the alpha value (i.e. 1-confident level)
--   Tau ranges between -1 and 1 where:
-    -   -1 is a perfectly decreasing series, and
-    -   1 is a perfectly increasing series.
+- Reject the null-hypothesis null if the p-value is smaller than the alpha value (i.e. 1-confident level)
+- Tau ranges between -1 and 1 where:
+  - -1 is a perfectly decreasing series, and
+  - 1 is a perfectly increasing series.
 
 ::: callout-important
 You are encouraged to read [Mann-Kendall Test For Monotonic Trend](https://vsp.pnnl.gov/help/vsample/design_trend_mann_kendall.htm) to learn more about the concepts and method of Mann-Kendall test..
