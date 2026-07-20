@@ -23,26 +23,26 @@ The analysis of spatio-temporal point patterns is becoming increasingly necessar
 
 The specific questions we would like to answer are:
 
--   are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?
--   if the answer is NO, where and when the observed forest fire locations tend to cluster?
+- are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?
+- if the answer is NO, where and when the observed forest fire locations tend to cluster?
 
 ## The data
 
 For the purpose of this exercise, two data sets will be used, they are:
 
--   *forestfires*, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from [Fire Information for Resource Management System](https://firms.modaps.eosdis.nasa.gov/download/). For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.\
--   *Kepulauan_Bangka_Belitung*, an ESRI shapefile showing the sub-district (i.e. [kelurahan](https://en.wikipedia.org/wiki/Villages_of_Indonesia)) boundary of Kepulauan Bangka Belitung. The data set was downloaded from [Indonesia Geospatial](https://www.indonesia-geospasial.com/2023/05/download-shapefile-batas-administrasi.html) portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.
+- *forestfires*, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from [Fire Information for Resource Management System](https://firms.modaps.eosdis.nasa.gov/download/). For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.\
+- *Kepulauan_Bangka_Belitung*, an ESRI shapefile showing the sub-district (i.e. [kelurahan](https://en.wikipedia.org/wiki/Villages_of_Indonesia)) boundary of Kepulauan Bangka Belitung. The data set was downloaded from [Indonesia Geospatial](https://www.indonesia-geospasial.com/2023/05/download-shapefile-batas-administrasi.html) portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.
 
 ## Installing and Loading the R packages
 
 For the purpose of this study, six R packages will be used. They are:
 
--   [**sf**](https://r-spatial.github.io/sf/) provides functions for importing processing and wrangling geospatial data,,
--   [**raster**](https://rspatial.org/raster/) for handling raster data in R,
--   [**spatstat**](https://cran.r-project.org/web/packages/spatstat/index.html) for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,
--   [**sparr**](https://tilmandavies.github.io/sparr/index.html) provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported
--   [**tmap**](https://r-tmap.github.io/tmap/) provides functions to produce cartographic quality thematic maps, and
--   [**tidyverse**](https://www.tidyverse.org/), a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.
+- [**sf**](https://r-spatial.github.io/sf/) provides functions for importing processing and wrangling geospatial data,,
+- [**raster**](https://rspatial.org/raster/) for handling raster data in R,
+- [**spatstat**](https://cran.r-project.org/web/packages/spatstat/index.html) for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,
+- [**sparr**](https://tilmandavies.github.io/sparr/index.html) provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported
+- [**tmap**](https://r-tmap.github.io/tmap/) provides functions to produce cartographic quality thematic maps, and
+- [**tidyverse**](https://www.tidyverse.org/), a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.
 
 ::: panel-tabset
 ### DIY
@@ -301,8 +301,6 @@ saveGIF({
 
 ![](chap06/)
 
-
-
 ## Computing STKDE by Day of Year: Improved method
 
 One of the nice function provides in sparr package is `BOOT.spattemp()`. It support bandwidth selection for standalone spatiotemporal density/intensity based on bootstrap estimation of the MISE, providing an isotropic scalar spatial bandwidth and a scalar temporal bandwidth.
@@ -408,8 +406,8 @@ plotK(kbb_stik)
 
 ### Guide to interpret the plot
 
--   If the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.
--   If the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.
+- If the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.
+- If the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.
 
 The spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. In the plot above, we can see clustering at specific distances by observing the spacing and values of the contour lines.
 
