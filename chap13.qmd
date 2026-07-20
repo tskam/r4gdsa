@@ -18,8 +18,8 @@ execute:
 
 Two data sets will be used in this model building exercise, they are:
 
--   URA Master Plan subzone boundary in shapefile format (i.e. *MP14_SUBZONE_WEB_PL*)
--   condo_resale_2015 in csv format (i.e. *condo_resale_2015.csv*)
+- URA Master Plan subzone boundary in shapefile format (i.e. *MP14_SUBZONE_WEB_PL*)
+- condo_resale_2015 in csv format (i.e. *condo_resale_2015.csv*)
 
 ## Getting Started
 
@@ -27,18 +27,18 @@ Before we get started, it is important for us to install the necessary R package
 
 The R packages needed for this exercise are as follows:
 
--   R package for building OLS and performing diagnostics tests
-    -   [**olsrr**](https://olsrr.rsquaredacademy.com/index.html)
--   R package for calibrating geographical weighted family of models
-    -   [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html)
--   R package for multivariate data visualisation and analysis
-    -   [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)
--   Spatial data handling
-    -   **sf**
--   Attribute data handling
-    -   **tidyverse**, especially **readr**, **ggplot2** and **dplyr**
--   Choropleth mapping
-    -   **tmap**
+- R package for building OLS and performing diagnostics tests
+  - [**olsrr**](https://olsrr.rsquaredacademy.com/index.html)
+- R package for calibrating geographical weighted family of models
+  - [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html)
+- R package for multivariate data visualisation and analysis
+  - [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)
+- Spatial data handling
+  - **sf**
+- Attribute data handling
+  - **tidyverse**, especially **readr**, **ggplot2** and **dplyr**
+- Choropleth mapping
+  - **tmap**
 
 The code chunks below installs and launches these R packages into R environment.
 
@@ -397,9 +397,7 @@ summary(condo.mlr)
 ```
 
 ::: callout-note
-The code chunk above consists of two parts:
-- `lm()` of Base R is used to calibrate a multiple linear regression model.  The model output is stored in an lm object called *condo.mlr*.
-- `summary()` is used to print the model output.
+The code chunk above consists of two parts: - `lm()` of Base R is used to calibrate a multiple linear regression model. The model output is stored in an lm object called *condo.mlr*. - `summary()` is used to print the model output.
 :::
 
 ### Revising the model
@@ -452,14 +450,14 @@ Regression diagnostics are a set of procedures used to check if a regression mod
 
 In this section, we would like to introduce you a fantastic R package specially programmed for performing OLS regression diagnostics. It is called [**olsrr**](https://olsrr.rsquaredacademy.com/). It provides a collection of very useful methods for building better multiple linear regression models:
 
--   comprehensive regression output
--   residual diagnostics
--   measures of influence
--   heteroskedasticity tests
--   collinearity diagnostics
--   model fit assessment
--   variable contribution assessment
--   variable selection procedures
+- comprehensive regression output
+- residual diagnostics
+- measures of influence
+- heteroskedasticity tests
+- collinearity diagnostics
+- model fit assessment
+- variable contribution assessment
+- variable selection procedures
 
 #### Multicollinearity test
 
@@ -495,7 +493,7 @@ The figure above reveals that most of the data poitns are scattered around the 0
 
 #### Test for Normality Assumption
 
-The normality assumption test for multiple linear regression checks **if the model's residuals (the differences between observed and predicted values) are normally distributed**. This is crucial for accurate hypothesis testing and confidence intervals. To test this, you can use visual methods like histograms and Q-Q plots of the residuals, or conduct statistical tests like Shapiro-Wilk test and Kolmogorov-Smirnov test. 
+The normality assumption test for multiple linear regression checks **if the model's residuals (the differences between observed and predicted values) are normally distributed**. This is crucial for accurate hypothesis testing and confidence intervals. To test this, you can use visual methods like histograms and Q-Q plots of the residuals, or conduct statistical tests like Shapiro-Wilk test and Kolmogorov-Smirnov test.
 
 In the code chunk below, `check_normality()` of performance package is used to perform normality assumption test on condo.mlr1 model.
 
@@ -503,11 +501,11 @@ In the code chunk below, `check_normality()` of performance package is used to p
 check_normality(condo.mlr1)
 ```
 
-The print above reveals that the p-value of the normality assumption test is less than alpha value of 0.05.  Hence we reject the normality assumption at 95% confident level.
+The print above reveals that the p-value of the normality assumption test is less than alpha value of 0.05. Hence we reject the normality assumption at 95% confident level.
 
 ::: callout-note
 - `check_normality()` calls *stats::shapiro.test* and checks the standardized residuals (or studentized residuals for mixed models) for normal distribution.
-- Note that this formal test almost always yields significant results for the distribution of residuals and visual inspection (e.g. Q-Q plots) are preferable. 
+- Note that this formal test almost always yields significant results for the distribution of residuals and visual inspection (e.g. Q-Q plots) are preferable.
 :::
 
 Instead of showing the test statistic, `plot()` of **see** package can be used to plot a the output of `check_normality()` for visual inspection as shown below.
@@ -530,8 +528,7 @@ The figure reveals that the residual of the multiple linear regression model (i.
 
 #### Testing for Spatial Autocorrelation
 
-The hedonic model we try to build are using geographically referenced data.  Hence, it is crucial to check for spatial autocorrelation because its presence can produce unreliable and misleading results. 
-Traditional regression models, such as ordinary least squares (OLS), assume that observations are independent of one another. However, spatial data often violates this assumption. 
+The hedonic model we try to build are using geographically referenced data. Hence, it is crucial to check for spatial autocorrelation because its presence can produce unreliable and misleading results. Traditional regression models, such as ordinary least squares (OLS), assume that observations are independent of one another. However, spatial data often violates this assumption.
 
 Spatial autocorrelation is the correlation of a variable with itself across different spatial locations. Positive spatial autocorrelation means nearby features tend to be more similar, while negative autocorrelation means they tend to be more dissimilar. This phenomenon is based on the first law of geography: "Everything is related to everything else, but nearby things are more related than distant things".
 
@@ -540,9 +537,9 @@ Ignoring spatial autocorrelation in a regression model can lead to serious stati
 - Biased and inefficient coefficient estimates: If autocorrelation is present, standard errors of the model coefficients can be wrong, leading to unreliable hypothesis tests (p-values). The model might appear more significant than it is.
 - Misleading significance tests: Standard regression models cannot distinguish between true explanatory power and the influence of spatial patterns, resulting in inaccurate p-values.
 - Model misspecification: Significant spatial autocorrelation in the regression residuals often signals that important explanatory variables are missing from the model. The spatial patterning of the residuals (over- and under-predictions) can provide clues about what these missing variables might be.
-- Inflated Type I error rates: Researchers might incorrectly reject a true null. 
+- Inflated Type I error rates: Researchers might incorrectly reject a true null.
 
-To test for spatial autocorrelation, We can run a Moran's I test on the model's residuals. Significant spatial autocorrelation in the residuals means the model is not capturing the full spatial story. 
+To test for spatial autocorrelation, We can run a Moran's I test on the model's residuals. Significant spatial autocorrelation in the residuals means the model is not capturing the full spatial story.
 
 In order to perform spatial autocorrelation test, we need to export the residual of the hedonic pricing model and save it as a data frame first.
 
@@ -601,7 +598,6 @@ The figure above reveal that there is sign of spatial autocorrelation.
 To proof that our observation is indeed true, Global Moran's I test will be performed
 
 First, we will compute the distance-based weight matrix by using [`st_dist_band()`](https://sfdep.josiahparry.com/reference/st_dist_band) function of **sfdep**.
-
 
 ```{r}
 condo_resale.sf <- condo_resale.sf %>% 
@@ -742,15 +738,15 @@ The report shows that the AICc the adaptive distance gwr is 41982.22 which is ev
 
 In addition to regression residuals, the output feature class table includes fields for observed and predicted y values, condition number (cond), Local R2, residuals, and explanatory variable coefficients and standard errors:
 
--   Condition Number: this diagnostic evaluates local collinearity. In the presence of strong local collinearity, results become unstable. Results associated with condition numbers larger than 30, may be unreliable.
+- Condition Number: this diagnostic evaluates local collinearity. In the presence of strong local collinearity, results become unstable. Results associated with condition numbers larger than 30, may be unreliable.
 
--   Local R2: these values range between 0.0 and 1.0 and indicate how well the local regression model fits observed y values. Very low values indicate the local model is performing poorly. Mapping the Local R2 values to see where GWR predicts well and where it predicts poorly may provide clues about important variables that may be missing from the regression model.
+- Local R2: these values range between 0.0 and 1.0 and indicate how well the local regression model fits observed y values. Very low values indicate the local model is performing poorly. Mapping the Local R2 values to see where GWR predicts well and where it predicts poorly may provide clues about important variables that may be missing from the regression model.
 
--   Predicted: these are the estimated (or fitted) y values 3. computed by GWR.
+- Predicted: these are the estimated (or fitted) y values 3. computed by GWR.
 
--   Residuals: to obtain the residual values, the fitted y values are subtracted from the observed y values. Standardized residuals have a mean of zero and a standard deviation of 1. A cold-to-hot rendered map of standardized residuals can be produce by using these values.
+- Residuals: to obtain the residual values, the fitted y values are subtracted from the observed y values. Standardized residuals have a mean of zero and a standard deviation of 1. A cold-to-hot rendered map of standardized residuals can be produce by using these values.
 
--   Coefficient Standard Error: these values measure the reliability of each coefficient estimate. Confidence in those estimates are higher when standard errors are small in relation to the actual coefficient values. Large standard errors may indicate problems with local collinearity.
+- Coefficient Standard Error: these values measure the reliability of each coefficient estimate. Confidence in those estimates are higher when standard errors are small in relation to the actual coefficient values. Large standard errors may indicate problems with local collinearity.
 
 They are all stored in a SpatialPointsDataFrame or SpatialPolygonsDataFrame object integrated with fit.points, GWR coefficient estimates, y value, predicted values, coefficient standard errors and t-values in its "data" slot in an object called **SDF** of the output list.
 
