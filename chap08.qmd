@@ -15,18 +15,18 @@ editor: visual
 
 In this hands-on exercise, you will learn how to compute spatial weights using R. By the end to this hands-on exercise, you will be able to:
 
--   import geospatial data using appropriate function(s) of **sf** package,
--   import csv file using appropriate function of **readr** package,
--   perform relational join using appropriate join function of **dplyr** package,
--   compute spatial weights using appropriate functions of **spdep** package, and
--   calculate spatially lagged variables using appropriate functions of **spdep** package.
+- import geospatial data using appropriate function(s) of **sf** package,
+- import csv file using appropriate function of **readr** package,
+- perform relational join using appropriate join function of **dplyr** package,
+- compute spatial weights using appropriate functions of **spdep** package, and
+- calculate spatially lagged variables using appropriate functions of **spdep** package.
 
 ## The Study Area and Data
 
 Two data sets will be used in this hands-on exercise, they are:
 
--   Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
--   *Hunan_2012.csv*: This csv file contains selected Hunan's local development indicators in 2012.
+- Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
+- *Hunan_2012.csv*: This csv file contains selected Hunan's local development indicators in 2012.
 
 ### Getting Started
 
@@ -211,10 +211,10 @@ The function identifies neighbours of region points by Euclidean distance with a
 
 Firstly, we need to determine the upper limit for distance band by using the steps below:
 
--   Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other by using [*knearneigh()*](https://r-spatial.github.io/spdep/reference/knearneigh.html) of **spdep**.
--   Convert the knn object returned by *knearneigh()* into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using [*knn2nb()*](https://r-spatial.github.io/spdep/reference/knn2nb.html).
--   Return the length of neighbour relationship edges by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html) of **spdep**. The function returns in the units of the coordinates if the coordinates are projected, in km otherwise.
--   Remove the list structure of the returned object by using [**unlist()**](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist).
+- Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other by using [*knearneigh()*](https://r-spatial.github.io/spdep/reference/knearneigh.html) of **spdep**.
+- Convert the knn object returned by *knearneigh()* into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using [*knn2nb()*](https://r-spatial.github.io/spdep/reference/knn2nb.html).
+- Return the length of neighbour relationship edges by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html) of **spdep**. The function returns in the units of the coordinates if the coordinates are projected, in km otherwise.
+- Remove the list structure of the returned object by using [**unlist()**](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist).
 
 ```{r}
 #coords <- coordinates(hunan)
@@ -357,10 +357,10 @@ summary(unlist(rswm_ids$weights))
 
 In this section, you will learn how to create four different spatial lagged variables, they are:
 
--   spatial lag with row-standardized weights,
--   spatial lag as a sum of neighbouring values,
--   spatial window average, and
--   spatial window sum.
+- spatial lag with row-standardized weights,
+- spatial lag as a sum of neighbouring values,
+- spatial window average, and
+- spatial window sum.
 
 ### Spatial lag with row-standardized weights
 
@@ -590,4 +590,4 @@ Note: For more effective comparison, it is advicible to use the core tmap mappin
 
 ## References
 
--   [Creating Neighbours using sf objects](https://cran.r-project.org/web/packages/spdep/vignettes/nb_sf.html)
+- [Creating Neighbours using sf objects](https://cran.r-project.org/web/packages/spdep/vignettes/nb_sf.html)
