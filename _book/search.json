@@ -1184,5 +1184,346 @@
       "Spatial Point Patterns Analysis",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>First-order Spatial Point Patterns Analysis Methods</span>"
     ]
+  },
+  {
+    "objectID": "chap07.html",
+    "href": "chap07.html",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "",
+    "text": "7.1 Overview\nNetwork constrained Spatial Point Patterns Analysis (NetSPAA) is a collection of spatial point patterns analysis methods special developed for analysing spatial point event occurs on or alongside network. The spatial point event can be locations of traffic accident or childcare centre for example. The network, on the other hand can be a road network or river network.\nIn this hands-on exercise, you are going to gain hands-on experience on using appropriate functions of spNetwork package:",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#overview",
+    "href": "chap07.html#overview",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "",
+    "text": "to derive network kernel density estimation (NKDE), and\nto perform network G-function and k-function analysis",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#the-data",
+    "href": "chap07.html#the-data",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.2 The Data",
+    "text": "7.2 The Data\nIn this study, we will analyse the spatial distribution of childcare centre in Punggol planning area. For the purpose of this study, two geospatial data sets will be used. They are:\n\nPunggol_St, a line features geospatial data which store the road network within Punggol Planning Area.\nPunggol_CC, a point feature geospatial data which store the location of childcare centres within Punggol Planning Area.\n\nBoth data sets are in ESRI shapefile format.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#installing-and-launching-the-r-packages",
+    "href": "chap07.html#installing-and-launching-the-r-packages",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.3 Installing and launching the R packages",
+    "text": "7.3 Installing and launching the R packages\nIn this hands-on exercise, four R packages will be used, they are:\n\nspNetwork, which provides functions to perform Spatial Point Patterns Analysis such as kernel density estimation (KDE) and K-function on network. It also can be used to build spatial matrices (‘listw’ objects like in ‘spdep’ package) to conduct any kind of traditional spatial analysis with spatial weights based on reticular distances.\nsf package provides functions to manage, processing, and manipulate Simple Features, a formal geospatial data standard that specifies a storage and access model of spatial geometries such as points, lines, and polygons.\ntmap which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.\n\nUse the code chunk below to install and launch the four R packages.\n\npacman::p_load(sf, spNetwork, tmap, tidyverse)\n\npackage 'cubature' successfully unpacked and MD5 sums checked\npackage 'dbscan' successfully unpacked and MD5 sums checked\npackage 'cppRouting' successfully unpacked and MD5 sums checked\npackage 'RcppProgress' successfully unpacked and MD5 sums checked\npackage 'spNetwork' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\tskam\\AppData\\Local\\Temp\\RtmpGqVAVk\\downloaded_packages",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#data-import-and-preparation",
+    "href": "chap07.html#data-import-and-preparation",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.4 Data Import and Preparation",
+    "text": "7.4 Data Import and Preparation\nThe code chunk below uses st_read() of sf package to important Punggol_St and Punggol_CC geospatial data sets into RStudio as sf data frames.\n\nnetwork &lt;- st_read(dsn=\"chap07/data/geospatial\", \n                   layer=\"Punggol_St\")\n\nReading layer `Punggol_St' from data source \n  `C:\\tskam\\r4gdsa\\chap07\\data\\geospatial' using driver `ESRI Shapefile'\nSimple feature collection with 2642 features and 2 fields\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: 34038.56 ymin: 40941.11 xmax: 38882.85 ymax: 44801.27\nProjected CRS: SVY21 / Singapore TM\n\nchildcare &lt;- st_read(dsn=\"chap07/data/geospatial\",\n                     layer=\"Punggol_CC\")\n\nReading layer `Punggol_CC' from data source \n  `C:\\tskam\\r4gdsa\\chap07\\data\\geospatial' using driver `ESRI Shapefile'\nSimple feature collection with 61 features and 1 field\nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 34423.98 ymin: 41503.6 xmax: 37619.47 ymax: 44685.77\nz_range:       zmin: 0 zmax: 0\nProjected CRS: SVY21 / Singapore TM\n\n\nWe can examine the structure of the output simple features data tables in RStudio. Alternative, code chunk below can be used to print the content of network and childcare simple features objects by using the code chunk below.\n\nChildcareNetwork\n\n\n\nchildcare\n\nSimple feature collection with 61 features and 1 field\nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 34423.98 ymin: 41503.6 xmax: 37619.47 ymax: 44685.77\nz_range:       zmin: 0 zmax: 0\nProjected CRS: SVY21 / Singapore TM\nFirst 10 features:\n      Name                      geometry\n1   kml_10 POINT Z (36173.81 42550.33 0)\n2   kml_99 POINT Z (36479.56 42405.21 0)\n3  kml_100 POINT Z (36618.72 41989.13 0)\n4  kml_101 POINT Z (36285.37 42261.42 0)\n5  kml_122  POINT Z (35414.54 42625.1 0)\n6  kml_161 POINT Z (36545.16 42580.09 0)\n7  kml_172 POINT Z (35289.44 44083.57 0)\n8  kml_188 POINT Z (36520.56 42844.74 0)\n9  kml_205  POINT Z (36924.01 41503.6 0)\n10 kml_222 POINT Z (37141.76 42326.36 0)\n\n\n\n\n\nnetwork\n\nSimple feature collection with 2642 features and 2 fields\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: 34038.56 ymin: 40941.11 xmax: 38882.85 ymax: 44801.27\nProjected CRS: SVY21 / Singapore TM\nFirst 10 features:\n     LINK_ID                   ST_NAME                       geometry\n1  116130894                PUNGGOL RD LINESTRING (36546.89 44574....\n2  116130897 PONGGOL TWENTY-FOURTH AVE LINESTRING (36546.89 44574....\n3  116130901   PONGGOL SEVENTEENTH AVE LINESTRING (36012.73 44154....\n4  116130902   PONGGOL SEVENTEENTH AVE LINESTRING (36062.81 44197....\n5  116130907           PUNGGOL CENTRAL LINESTRING (36131.85 42755....\n6  116130908                PUNGGOL RD LINESTRING (36112.93 42752....\n7  116130909           PUNGGOL CENTRAL LINESTRING (36127.4 42744.5...\n8  116130910               PUNGGOL FLD LINESTRING (35994.98 42428....\n9  116130911               PUNGGOL FLD LINESTRING (35984.97 42407....\n10 116130912            EDGEFIELD PLNS LINESTRING (36200.87 42219....\n\n\n\n\n\nWhen I exploring spNetwork’s functions, it came to my attention that spNetwork is expecting the geospatial data contains complete CRS information.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#visualising-the-geospatial-data",
+    "href": "chap07.html#visualising-the-geospatial-data",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.5 Visualising the Geospatial Data",
+    "text": "7.5 Visualising the Geospatial Data\nBefore we jump into the analysis, it is a good practice to visualise the geospatial data. There are at least two ways to visualise the geospatial data. One way is by using plot() of Base R as shown in the code chunk below.\n\nplot(st_geometry(network))\nplot(childcare,add=T,col='red',pch = 19)\n\n\n\n\n\n\n\n\nTo visualise the geospatial data with high cartographic quality and interactive manner, the mapping function of tmap package can be used as shown in the code chunk below.\n\ntmap_mode('view')\ntm_shape(childcare) + \n  tm_dots() + \n  tm_shape(network) +\n  tm_lines()\n\n\n\n\ntmap_mode('plot')",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#network-kde-nkde-analysis",
+    "href": "chap07.html#network-kde-nkde-analysis",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.6 Network KDE (NKDE) Analysis",
+    "text": "7.6 Network KDE (NKDE) Analysis\nIn this section, we will perform NKDE analysis by using appropriate functions provided in spNetwork package.\n\n7.6.1 Preparing the lixels objects\nBefore computing NKDE, the SpatialLines object need to be cut into lixels with a specified minimal distance. This task can be performed by using with lixelize_lines() of spNetwork as shown in the code chunk below.\n\nlixels &lt;- lixelize_lines(network, \n                         700, \n                         mindist = 375)\n\nWhat can we learned from the code chunk above:\n\nThe length of a lixel, lx_length is set to 700m, and\nThe minimum length of a lixel, mindist is set to 350m.\n\nAfter cut, if the length of the final lixel is shorter than the minimum distance, then it is added to the previous lixel. If NULL, then mindist = maxdist/10. Also note that the segments that are already shorter than the minimum distance are not modified\nNote: There is another function called lixelize_lines.mc() which provide multicore support.\n\n\n7.6.2 Generating line centre points\nNext, lines_center() of spNetwork will be used to generate a SpatialPointsDataFrame (i.e. samples) with line centre points as shown in the code chunk below.\n\nsamples &lt;- lines_center(lixels) \n\nThe points are located at center of the line based on the length of the line.\n\n\n7.6.3 Performing NKDE\nWe are ready to computer the NKDE by using the code chunk below.\n\ndensities &lt;- nkde(network, \n                  events = childcare,\n                  w = rep(1, nrow(childcare)),\n                  samples = samples,\n                  kernel_name = \"quartic\",\n                  bw = 300, \n                  div= \"bw\", \n                  method = \"simple\", \n                  digits = 1, \n                  tol = 1,\n                  grid_shape = c(1,1), \n                  max_depth = 8,\n                  agg = 5, \n                  sparse = TRUE,\n                  verbose = FALSE)\n\nWhat can we learn from the code chunk above?\n\nkernel_name argument indicates that quartic kernel is used. Are possible kernel methods supported by spNetwork are: triangle, gaussian, scaled gaussian, tricube, cosine ,triweight, epanechnikov or uniform.\nmethod argument indicates that simple method is used to calculate the NKDE. Currently, spNetwork support three popular methods, they are:\n\nmethod=“simple”. This first method was presented by Xie et al. (2008) and proposes an intuitive solution. The distances between events and sampling points are replaced by network distances, and the formula of the kernel is adapted to calculate the density over a linear unit instead of an areal unit.\nmethod=“discontinuous”. The method is proposed by Okabe et al (2008), which equally “divides” the mass density of an event at intersections of lixels.\nmethod=“continuous”. If the discontinuous method is unbiased, it leads to a discontinuous kernel function which is a bit counter-intuitive. Okabe et al (2008) proposed another version of the kernel, that divide the mass of the density at intersection but adjusts the density before the intersection to make the function continuous.\n\n\nThe user guide of spNetwork package provide a comprehensive discussion of nkde(). You should read them at least once to have a basic understanding of the various parameters that can be used to calibrate the NKDE model.\n\n7.6.3.1 Visualising NKDE\nBefore we can visualise the NKDE values, code chunk below will be used to insert the computed density values (i.e. densities) into samples and lixels objects as density field.\n\nsamples$density &lt;- densities\nlixels$density &lt;- densities\n\nSince svy21 projection system is in meter, the computed density values are very small i.e. 0.0000005. The code chunk below is used to resale the density values from number of events per meter to number of events per kilometer.\n\n# rescaling to help the mapping\nsamples$density &lt;- samples$density*1000\nlixels$density &lt;- lixels$density*1000\n\nThe code below uses appropriate functions of tmap package to prepare interactive and high cartographic quality map visualisation.\n\ntmap_mode('view')\ntm_shape(lixels)+\n  tm_lines(col=\"density\")+\ntm_shape(childcare)+\n  tm_dots()\ntmap_mode('plot')\n\nThe interactive map above effectively reveals road segments (darker color) with relatively higher density of childcare centres than road segments with relatively lower density of childcare centres (lighter color)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#network-constrained-g--and-k-function-analysis",
+    "href": "chap07.html#network-constrained-g--and-k-function-analysis",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.7 Network Constrained G- and K-Function Analysis",
+    "text": "7.7 Network Constrained G- and K-Function Analysis\nIn this section, we are going to perform complete spatial randomness (CSR) test by using kfunctions() of spNetwork package. The null hypothesis is defined as:\nHo: The observed spatial point events (i.e distribution of childcare centres) are uniformly distributed over a street network in Punggol Planning Area.\nThe CSR test is based on the assumption of the binomial point process which implies the hypothesis that the childcare centres are randomly and independently distributed over the street network.\nIf this hypothesis is rejected, we may infer that the distribution of childcare centres are spatially interacting and dependent on each other; as a result, they may form nonrandom patterns.\n\nkfun_childcare &lt;- kfunctions(network, \n                             childcare,\n                             start = 0, \n                             end = 1000, \n                             step = 50, \n                             width = 50, \n                             nsim = 50, \n                             resolution = 50,\n                             verbose = FALSE, \n                             conf_int = 0.05)\n\nWhat can we learn from the code chunk above?\nThere are ten arguments used in the code chunk above they are:\n\nlines: A SpatialLinesDataFrame with the sampling points. The geometries must be a SpatialLinesDataFrame (may crash if some geometries are invalid).\npoints: A SpatialPointsDataFrame representing the points on the network. These points will be snapped on the network.\nstart: A double, the start value for evaluating the k and g functions.\nend: A double, the last value for evaluating the k and g functions.\nstep: A double, the jump between two evaluations of the k and g function.\nwidth: The width of each donut for the g-function.\nnsim: An integer indicating the number of Monte Carlo simulations required. In the above example, 50 simulation was performed. Note: most of the time, more simulations are required for inference\nresolution: When simulating random points on the network, selecting a resolution will reduce greatly the calculation time. When resolution is null the random points can occur everywhere on the graph. If a value is specified, the edges are split according to this value and the random points are selected vertices on the new network.\nconf_int: A double indicating the width confidence interval (default = 0.05).\n\nFor the usage of other arguments, you should refer to the user guide of spNetwork package.\nThe output of kfunctions() is a list with the following values:\n\nplotkA, a ggplot2 object representing the values of the k-function\nplotgA, a ggplot2 object representing the values of the g-function\nvaluesA, a DataFrame with the values used to build the plots\n\nFor example, we can visualise the ggplot2 object of k-function by using the code chunk below.\n\nkfun_childcare$plotk\n\n\n\n\n\n\n\n\nThe blue line is the empirical network K-function of the childcare centres in Punggol planning area. The gray envelop represents the results of the 50 simulations in the interval 2.5% - 97.5%. Because the blue line between the distance of 250m-400m are below the gray area, we can infer that the childcare centres in Punggol planning area resemble regular pattern at the distance of 250m-400m.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap07.html#references",
+    "href": "chap07.html#references",
+    "title": "7  Network Constrained Spatial Point Patterns Analysis",
+    "section": "7.8 References",
+    "text": "7.8 References\n\nspNetwork: Spatial Analysis on Network\nNetwork Kernel Density Estimate\nDetails about NKDE\nNetwork k Functions",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Network Constrained Spatial Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html",
+    "href": "chap05.html",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "",
+    "text": "5.1 Overview\nSecond-order spatial point pattern analysis examines the spatial relationships between points in a pattern, specifically focusing on how the presence of one point influences the location of others. It goes beyond simply describing the overall density of points (first-order effects) by investigating clustering, dispersion, or randomness at various spatial scales.\nUsing appropriate functions of spatstat, this hands-on exercise aims to discover the spatial point processes of childecare centres in Singapore.\nThe specific questions we would like to answer are as follows:",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#overview",
+    "href": "chap05.html#overview",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "",
+    "text": "are the childcare centres in Singapore randomly distributed throughout the country?\n\nif the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#the-data",
+    "href": "chap05.html#the-data",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.2 The data",
+    "text": "5.2 The data\nTo provide answers to the questions above, two data sets will be used. They are:\n\nChild Care Services data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\n\nMaster Plan 2019 Subzone Boundary (No Sea), a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.\n\nBoth data sets are available at Singapore’s open data portal. They are provided in kml and geojson format. Students are free to download their preferred data format.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#installing-and-loading-the-r-packages",
+    "href": "chap05.html#installing-and-loading-the-r-packages",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.3 Installing and Loading the R packages",
+    "text": "5.3 Installing and Loading the R packages\nIn this hands-on exercise, three R packages will be used, they are:\n\nsf, a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.\nspatstat, which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.\ntmap which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.\ntidyverse, a family of R packages designed for modern data science. These packages are developed to work together seamlessly, sharing a common design philosophy, grammar, and data structures, which aims to make data manipulation, analysis, and visualization in R more intuitive and efficient.\n\nUse the code chunk below to install and launch the five R packages.\n\npacman::p_load(sf, spatstat, tmap, tidyverse)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#data-import-and-preparation",
+    "href": "chap05.html#data-import-and-preparation",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.4 Data Import and Preparation",
+    "text": "5.4 Data Import and Preparation\nThe processes of importing and preparing the geospatial data to meet the analysis are similar to Chapter 4. Please refer to the following sub-sections, if necessary:\n\nImporting and Wrangling Geospatial Data Sets\nGeospatial Data wrangling for preparing geospatial data in ppp object class required by spatstat package.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#second-order-spatial-point-patterns-analysis",
+    "href": "chap05.html#second-order-spatial-point-patterns-analysis",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.5 Second-order Spatial Point Patterns Analysis",
+    "text": "5.5 Second-order Spatial Point Patterns Analysis",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#analysing-spatial-point-process-using-g-function",
+    "href": "chap05.html#analysing-spatial-point-process-using-g-function",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.6 Analysing Spatial Point Process Using G-Function",
+    "text": "5.6 Analysing Spatial Point Process Using G-Function\nThe G function measures the distribution of the distances from an arbitrary event to its nearest event. In this section, you will learn how to compute G-function estimation by using Gest() of spatstat package. You will also learn how to perform monta carlo simulation test using envelope() of spatstat package.\n\n5.6.1 Choa Chu Kang planning area\n\n5.6.1.1 Computing G-function estimation\n\nset.seed(1234)\n\nThe code chunk below is used to compute G-function using Gest() of spatat package.\n\nG_CK = Gest(childcare_ck_ppp, correction = \"border\")\nplot(G_CK, xlim=c(0,500))\n\n\n\n\n\n\n\n\n\n\n5.6.1.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Choa Chu Kang are randomly distributed.\nH1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.\nThe null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.\nMonte Carlo test with G-fucntion\n\nG_CK.csr &lt;- envelope(childcare_ck_ppp, Gest, nsim = 999)\n\nGenerating 999 simulations of CSR  ...\n1, 2, 3, ......10.........20.........30.........40.........50.........60..\n.......70.........80.........90.........100.........110.........120.........130\n.........140.........150.........160.........170.........180.........190........\n.200.........210.........220.........230.........240.........250.........260......\n...270.........280.........290.........300.........310.........320.........330....\n.....340.........350.........360.........370.........380.........390.........400..\n.......410.........420.........430.........440.........450.........460.........470\n.........480.........490.........500.........510.........520.........530........\n.540.........550.........560.........570.........580.........590.........600......\n...610.........620.........630.........640.........650.........660.........670....\n.....680.........690.........700.........710.........720.........730.........740..\n.......750.........760.........770.........780.........790.........800.........810\n.........820.........830.........840.........850.........860.........870........\n.880.........890.........900.........910.........920.........930.........940......\n...950.........960.........970.........980.........990........\n999.\n\nDone.\n\nplot(G_CK.csr)\n\n\n\n\n\n\n\n\n\n\n\n5.6.2 Tampines planning area\n\n5.6.2.1 Computing G-function estimation\n\nG_tm = Gest(childcare_tm_ppp, correction = \"best\")\nplot(G_tm)\n\n\n\n\n\n\n\n\n\n\n5.6.2.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Tampines are randomly distributed.\nH1= The distribution of childcare services at Tampines are not randomly distributed.\nThe null hypothesis will be rejected is p-value is smaller than alpha value of 0.001.\nThe code chunk below is used to perform the hypothesis testing.\n\nG_tm.csr &lt;- envelope(childcare_tm_ppp, Gest, correction = \"all\", nsim = 999)\n\nGenerating 999 simulations of CSR  ...\n1, 2, 3, ......10.........20.........30.........40.........50.........60..\n.......70.........80.........90.........100.........110.........120.........130\n.........140.........150.........160.........170.........180.........190........\n.200.........210.........220.........230.........240.........250.........260......\n...270.........280.........290.........300.........310.........320.........330....\n.....340.........350.........360.........370.........380.........390.........400..\n.......410.........420.........430.........440.........450.........460.........470\n.........480.........490.........500.........510.........520.........530........\n.540.........550.........560.........570.........580.........590.........600......\n...610.........620.........630.........640.........650.........660.........670....\n.....680.........690.........700.........710.........720.........730.........740..\n.......750.........760.........770.........780.........790.........800.........810\n.........820.........830.........840.........850.........860.........870........\n.880.........890.........900.........910.........920.........930.........940......\n...950.........960.........970.........980.........990........\n999.\n\nDone.\n\nplot(G_tm.csr)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#analysing-spatial-point-process-using-f-function",
+    "href": "chap05.html#analysing-spatial-point-process-using-f-function",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.7 Analysing Spatial Point Process Using F-Function",
+    "text": "5.7 Analysing Spatial Point Process Using F-Function\nThe F function estimates the empty space function F(r) or its hazard rate h(r) from a point pattern in a window of arbitrary shape. In this section, you will learn how to compute F-function estimation by using Fest() of spatstat package. You will also learn how to perform monta carlo simulation test using envelope() of spatstat package.\n\n5.7.1 Choa Chu Kang planning area\n\n5.7.1.1 Computing F-function estimation\nThe code chunk below is used to compute F-function using Fest() of spatat package.\n\nF_CK = Fest(childcare_ck_ppp)\nplot(F_CK)\n\n\n\n\n\n\n\n\n\n\n\n5.7.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Choa Chu Kang are randomly distributed.\nH1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.\nThe null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.\nMonte Carlo test with F-fucntion\n\nF_CK.csr &lt;- envelope(childcare_ck_ppp, Fest, nsim = 999)\n\nGenerating 999 simulations of CSR  ...\n1, 2, 3, ......10.........20.........30.........40.........50.........60..\n.......70.........80.........90.........100.........110.........120.........130\n.........140.........150.........160.........170.........180.........190........\n.200.........210.........220.........230.........240.........250.........260......\n...270.........280.........290.........300.........310.........320.........330....\n.....340.........350.........360.........370.........380.........390.........400..\n.......410.........420.........430.........440.........450.........460.........470\n.........480.........490.........500.........510.........520.........530........\n.540.........550.........560.........570.........580.........590.........600......\n...610.........620.........630.........640.........650.........660.........670....\n.....680.........690.........700.........710.........720.........730.........740..\n.......750.........760.........770.........780.........790.........800.........810\n.........820.........830.........840.........850.........860.........870........\n.880.........890.........900.........910.........920.........930.........940......\n...950.........960.........970.........980.........990........\n999.\n\nDone.\n\nplot(F_CK.csr)\n\n\n\n\n\n\n\n\n\n\n5.7.3 Tampines planning area\n\n5.7.3.1 Computing F-function estimation\nMonte Carlo test with F-fucntion\n\nF_tm = Fest(childcare_tm_ppp, correction = \"best\")\nplot(F_tm)\n\n\n\n\n\n\n\n\n\n\n5.7.3.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Tampines are randomly distributed.\nH1= The distribution of childcare services at Tampines are not randomly distributed.\nThe null hypothesis will be rejected is p-value is smaller than alpha value of 0.001.\nThe code chunk below is used to perform the hypothesis testing.\n\nF_tm.csr &lt;- envelope(childcare_tm_ppp, Fest, correction = \"all\", nsim = 999)\n\nGenerating 999 simulations of CSR  ...\n1, 2, 3, ......10.........20.........30.........40.........50.........60..\n.......70.........80.........90.........100.........110.........120.........130\n.........140.........150.........160.........170.........180.........190........\n.200.........210.........220.........230.........240.........250.........260......\n...270.........280.........290.........300.........310.........320.........330....\n.....340.........350.........360.........370.........380.........390.........400..\n.......410.........420.........430.........440.........450.........460.........470\n.........480.........490.........500.........510.........520.........530........\n.540.........550.........560.........570.........580.........590.........600......\n...610.........620.........630.........640.........650.........660.........670....\n.....680.........690.........700.........710.........720.........730.........740..\n.......750.........760.........770.........780.........790.........800.........810\n.........820.........830.........840.........850.........860.........870........\n.880.........890.........900.........910.........920.........930.........940......\n...950.........960.........970.........980.........990........\n999.\n\nDone.\n\nplot(F_tm.csr)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#analysing-spatial-point-process-using-k-function",
+    "href": "chap05.html#analysing-spatial-point-process-using-k-function",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.8 Analysing Spatial Point Process Using K-Function",
+    "text": "5.8 Analysing Spatial Point Process Using K-Function\nK-function measures the number of events found up to a given distance of any particular event. In this section, you will learn how to compute K-function estimates by using Kest() of spatstat package. You will also learn how to perform monta carlo simulation test using envelope() of spatstat package.\n\n5.8.1 Choa Chu Kang planning area\n\n5.8.1.1 Computing K-fucntion estimate\n\nK_ck = Kest(childcare_ck_ppp, correction = \"Ripley\")\nplot(K_ck, . -r ~ r, ylab= \"K(d)-r\", xlab = \"d(m)\")\n\n\n\n\n\n\n\n\n\n\n5.8.1.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Choa Chu Kang are randomly distributed.\nH1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.\nThe null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.\nThe code chunk below is used to perform the hypothesis testing.\n\nK_ck.csr &lt;- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)\n\nGenerating 99 simulations of CSR  ...\n1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,\n21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,\n41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,\n61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,\n81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, \n99.\n\nDone.\n\n\n\nplot(K_ck.csr, . - r ~ r, xlab=\"d\", ylab=\"K(d)-r\")\n\n\n\n\n\n\n\n\n\n\n\n5.8.2 Tampines planning area\n\n5.8.2.1 Computing K-fucntion estimation\n\nK_tm = Kest(childcare_tm_ppp, correction = \"Ripley\")\nplot(K_tm, . -r ~ r, \n     ylab= \"K(d)-r\", xlab = \"d(m)\", \n     xlim=c(0,1000))\n\n\n\n\n\n\n\n\n\n\n5.8.2.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Tampines are randomly distributed.\nH1= The distribution of childcare services at Tampines are not randomly distributed.\nThe null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.\nThe code chunk below is used to perform the hypothesis testing.\n\nK_tm.csr &lt;- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)\n\nGenerating 99 simulations of CSR  ...\n1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,\n21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,\n41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,\n61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,\n81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, \n99.\n\nDone.\n\n\n\nplot(K_tm.csr, . - r ~ r, \n     xlab=\"d\", ylab=\"K(d)-r\", xlim=c(0,500))",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap05.html#analysing-spatial-point-process-using-l-function",
+    "href": "chap05.html#analysing-spatial-point-process-using-l-function",
+    "title": "5  2nd Order Spatial Point Patterns Analysis Methods",
+    "section": "5.9 Analysing Spatial Point Process Using L-Function",
+    "text": "5.9 Analysing Spatial Point Process Using L-Function\nIn this section, you will learn how to compute L-function estimation by using Lest() of spatstat package. You will also learn how to perform monta carlo simulation test using envelope() of spatstat package.\n\n5.9.1 Choa Chu Kang planning area\n\n5.9.1.1 Computing L Fucntion estimation\n\nL_ck = Lest(childcare_ck_ppp, correction = \"Ripley\")\nplot(L_ck, . -r ~ r, \n     ylab= \"L(d)-r\", xlab = \"d(m)\")\n\n\n\n\n\n\n\n\n\n\n5.9.1.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Choa Chu Kang are randomly distributed.\nH1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.\nThe null hypothesis will be rejected if p-value if smaller than alpha value of 0.001.\nThe code chunk below is used to perform the hypothesis testing.\n\nL_ck.csr &lt;- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)\n\nGenerating 99 simulations of CSR  ...\n1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,\n21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,\n41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,\n61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,\n81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, \n99.\n\nDone.\n\n\n\nplot(L_ck.csr, . - r ~ r, xlab=\"d\", ylab=\"L(d)-r\")\n\n\n\n\n\n\n\n\n\n\n\n5.9.2 Tampines planning area\n\n5.9.2.1 Computing L-fucntion estimate\n\nL_tm = Lest(childcare_tm_ppp, correction = \"Ripley\")\nplot(L_tm, . -r ~ r, \n     ylab= \"L(d)-r\", xlab = \"d(m)\", \n     xlim=c(0,1000))\n\n\n\n\n\n\n\n\n\n\n5.9.2.2 Performing Complete Spatial Randomness Test\nTo confirm the observed spatial patterns above, a hypothesis test will be conducted. The hypothesis and test are as follows:\nHo = The distribution of childcare services at Tampines are randomly distributed.\nH1= The distribution of childcare services at Tampines are not randomly distributed.\nThe null hypothesis will be rejected if p-value is smaller than alpha value of 0.001.\nThe code chunk below will be used to perform the hypothesis testing.\n\nL_tm.csr &lt;- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)\n\nGenerating 99 simulations of CSR  ...\n1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,\n21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,\n41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,\n61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,\n81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, \n99.\n\nDone.\n\n\nThen, plot the model output by using the code chun below.\n\nplot(L_tm.csr, . - r ~ r, \n     xlab=\"d\", ylab=\"L(d)-r\", xlim=c(0,500))",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>2nd Order Spatial Point Patterns Analysis Methods</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html",
+    "href": "chap06.html",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "",
+    "text": "6.1 Overview\nA spatio-temporal point process (also called space-time or spatial-temporal point process) is a random collection of points, where each point represents the time and location of an event. Examples of events include incidence of disease, sightings or births of a species, or the occurrences of fires, earthquakes, lightning strikes, tsunamis, or volcanic eruptions.\nThe analysis of spatio-temporal point patterns is becoming increasingly necessary, given the rapid emergence of geographically and temporally indexed data in a wide range of fields. Several spatio-temporal point patterns analysis methods have been introduced and implemented in R in the last ten years. This chapter shows how various R packages can be combined to run a set of spatio-temporal point pattern analyses in a guided and intuitive way. A real world forest fire events in Kepulauan Bangka Belitung, Indonesia from 1st January 2023 to 31st December 2023 is used to illustrate the methods, procedures and interpretations.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#learning-outcome",
+    "href": "chap06.html#learning-outcome",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.2 Learning Outcome",
+    "text": "6.2 Learning Outcome\n\n6.2.1 The research questions\nThe specific questions we would like to answer are:\n\nare the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?\nif the answer is NO, where and when the observed forest fire locations tend to cluster?",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#the-data",
+    "href": "chap06.html#the-data",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.3 The data",
+    "text": "6.3 The data\nFor the purpose of this exercise, two data sets will be used, they are:\n\nforestfires, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from Fire Information for Resource Management System. For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.\n\nKepulauan_Bangka_Belitung, an ESRI shapefile showing the sub-district (i.e. kelurahan) boundary of Kepulauan Bangka Belitung. The data set was downloaded from Indonesia Geospatial portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#installing-and-loading-the-r-packages",
+    "href": "chap06.html#installing-and-loading-the-r-packages",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.4 Installing and Loading the R packages",
+    "text": "6.4 Installing and Loading the R packages\nFor the purpose of this study, six R packages will be used. They are:\n\nsf provides functions for importing processing and wrangling geospatial data,,\nraster for handling raster data in R,\nspatstat for performing Spatial Point Patterns Analysis such as kcross, Lcross, etc.,\nsparr provides functions to estimate fixed and adaptive kernel-smoothed spatial relative risk surfaces via the density-ratio method and perform subsequent inference. Fixed-bandwidth spatiotemporal density and relative risk estimation is also supported\ntmap provides functions to produce cartographic quality thematic maps, and\ntidyverse, a family of R packages that provide functions to perform common data science tasks including and not limited to data import, data transformation, data wrangling and data visualisation.\n\n\nDIYThe solution\n\n\nUsing the steps you learned from previous chapter, write a code chunk to load the packages above onto R environment.\n\n\n\npacman::p_load(sf, spatstat, sparr, \n               tmap, stpp, tidyverse)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#importing-and-preparing-study-area",
+    "href": "chap06.html#importing-and-preparing-study-area",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.5 Importing and Preparing Study Area",
+    "text": "6.5 Importing and Preparing Study Area\n\n6.5.1 Importing study area\nCode chunk below is used import study area (i.e. Kepulauan Bangka Belitung) into R environment.\n\nkbb &lt;- st_read(dsn=\"chap06/data/rawdata\",\n               layer = \"Kepulauan_Bangka_Belitung\") \n\nThe revised code chunk.\n\nkbb_sf &lt;- st_read(dsn=\"chap06/data/rawdata\",\n               layer = \"Kepulauan_Bangka_Belitung\") %&gt;%\n  st_union() %&gt;%\n  st_zm(drop = TRUE, what = \"ZM\") %&gt;%\n  st_transform(crs = 32748)\n\nReading layer `Kepulauan_Bangka_Belitung' from data source \n  `C:\\tskam\\r4gdsa\\chap06\\data\\rawdata' using driver `ESRI Shapefile'\nSimple feature collection with 297 features and 26 fields\nGeometry type: POLYGON\nDimension:     XYZ\nBounding box:  xmin: 105.1085 ymin: -3.116593 xmax: 106.8488 ymax: -1.501603\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n\n\n\n\n6.5.2 Converting OWIN\nNext, as.owin() is used to convert kbb into an owin object.\n\nkbb_owin &lt;- as.owin(kbb_sf)\nkbb_owin\n\nwindow: polygonal boundary\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n\n\nNext, class() is used to confirm if the output is indeed an owin object.\n\nclass(kbb_owin)\n\n[1] \"owin\"",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#importing-and-preparing-forest-fire-data",
+    "href": "chap06.html#importing-and-preparing-forest-fire-data",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.6 Importing and Preparing Forest Fire data",
+    "text": "6.6 Importing and Preparing Forest Fire data\nNext, we will import the forest fire data set (i.e. forestfires.csv) into R environment.\n\nfire_sf &lt;- read_csv(\"chap06/data/rawdata/forestfires.csv\") %&gt;%\n  st_as_sf(coords = c(\"longitude\", \"latitude\"),\n                       crs = 4326) %&gt;%\n  st_transform(crs = 32748)\n\nBecause ppp object only accept numerical or character as mark. The code chunk below is used to convert data type of acq_date to numeric.\n\nfire_sf &lt;- fire_sf %&gt;% \n  mutate(DayofYear = yday(acq_date)) %&gt;%\n  mutate(Month_num = month(acq_date)) %&gt;%\n  mutate(Month_fac = month(acq_date, \n                           label = TRUE, \n                           abbr = FALSE))",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#visualising-the-fire-points",
+    "href": "chap06.html#visualising-the-fire-points",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.7 Visualising the Fire Points",
+    "text": "6.7 Visualising the Fire Points\n\n6.7.1 Overall plot\n\nDIYThe code\n\n\nUsing the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the distribution of fire points. The map should look similar to the figure below.\n\n\n\n\n\n\n\n\n\n\n\n\ntm_shape(kbb_sf)+\n  tm_polygons() +\ntm_shape(fire_sf) +\n  tm_dots()\n\n\n\n\n\n\n\n\n\n\n\n\n\n6.7.2 Visuaising geographic distribution of forest fires by month\n\nDIYThe code\n\n\nUsing the steps you learned in Hands-on Exercise 2, prepare a point symbol map showing the monthly geographic distribution of forest fires in 2023. The map should look similar to the figure below.\n\n\n\n\n\n\n\n\n\n\n\n\ntm_shape(kbb_sf)+\n  tm_polygons() +\ntm_shape(fire_sf) +\n  tm_dots(size = 0.1) +\ntm_facets(by=\"Month_fac\", \n            free.coords=FALSE, \n            drop.units = TRUE)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#computing-stkde-by-month",
+    "href": "chap06.html#computing-stkde-by-month",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.8 Computing STKDE by Month",
+    "text": "6.8 Computing STKDE by Month\nIn this section, you will learn how to compute STKDE by using spattemp.density() of sparr package. Before using the function, it is highly recommended you read the function’s reference guide in detail in order to understand the input data requirements and the output object generated.\n\n6.8.1 Extracting forest fires by month\nThe code chunk below is used to remove the unwanted fields from fire_sf sf data.frame. This is because as.ppp() only need the mark field and geometry field from the input sf data.frame.\n\nfire_month &lt;- fire_sf %&gt;% \n  select(Month_num)\n\n\n\n6.8.2 Creating ppp\nThe code chunk below is used to derive a ppp object called fire_month from fire_month sf data.frame.\n\nfire_month_ppp &lt;- as.ppp(fire_month)\nfire_month_ppp\n\nMarked planar point pattern: 741 points\nmarks are numeric, of storage type  'double'\nwindow: rectangle = [521564.1, 695791] x [9658137, 9828767] units\n\n\nThe code chunk below is used to check the output is in the correct object class.\n\nsummary(fire_month_ppp)\n\nMarked planar point pattern:  741 points\nAverage intensity 2.49258e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  1.000   8.000   9.000   8.579  10.000  12.000 \n\nWindow: rectangle = [521564.1, 695791] x [9658137, 9828767] units\n                    (174200 x 170600 units)\nWindow area = 29728200000 square units\n\n\nNext, we will check if there are duplicated point events by using the code chunk below.\n\nany(duplicated(fire_month_ppp))\n\n[1] FALSE\n\n\n\n\n6.8.3 Including Owin object\nThe code chunk below is used to combine origin_am_ppp and am_owin objects into one.\n\nfire_month_owin &lt;- fire_month_ppp[kbb_owin]\nsummary(fire_month_owin)\n\nMarked planar point pattern:  741 points\nAverage intensity 6.42469e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  1.000   8.000   9.000   8.579  10.000  12.000 \n\nWindow: polygonal boundary\nsingle connected closed polygon with 47493 vertices\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n                     (193500 x 178600 units)\nWindow area = 11533600000 square units\nFraction of frame area: 0.334\n\n\nAs a good practice, plot() is used to plot ff_owin so that we can examine the correctness of the output object.\n\nplot(fire_month_owin)\n\n\n\n\n\n\n\n\n\n\n6.8.4 Computing Spatio-temporal KDE\nNext, spattemp.density() of sparr package is used to compute the STKDE.\n\nst_kde &lt;- spattemp.density(fire_month_owin)\nsummary(st_kde)\n\nSpatiotemporal Kernel Density Estimate\n\nBandwidths\n  h = 15102.47 (spatial)\n  lambda = 0.0304 (temporal)\n\nNo. of observations\n  741 \n\nSpatial bound\n  Type: polygonal\n  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]\n\nTemporal bound\n  [1, 12]\n\nEvaluation\n  128 x 128 x 12 trivariate lattice\n  Density range: [1.233458e-27, 8.202976e-10]\n\n\n\n\n6.8.5 Plotting the spatio-temporal KDE object\nIn the code chunk below, plot() of R base is used to the KDE for between July 2023 - December 2023.\n\ntims &lt;- c(7,8,9,10,11,12)\npar(mfcol=c(2,3))\nfor(i in tims){ \n  plot(st_kde, i, \n       override.par=FALSE, \n       fix.range=TRUE, \n       main=paste(\"KDE at month\",i))\n}",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#computing-stkde-by-day-of-year",
+    "href": "chap06.html#computing-stkde-by-day-of-year",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.9 Computing STKDE by Day of Year",
+    "text": "6.9 Computing STKDE by Day of Year\nIn this section, you will learn how to computer the STKDE of forest fires by day of year.\n\n6.9.1 Creating ppp object\nIn the code chunk below, DayofYear field is included in the output ppp object.\n\nfire_yday_ppp &lt;- fire_sf %&gt;% \n  select(DayofYear) %&gt;%\n  as.ppp()\n\n\n\n6.9.2 Including Owin object\nNext, code chunk below is used to combine the ppp object and the owin object.\n\nfire_yday_owin &lt;- fire_yday_ppp[kbb_owin]\nsummary(fire_yday_owin)\n\nMarked planar point pattern:  741 points\nAverage intensity 6.42469e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n   10.0   213.0   258.0   245.9   287.0   352.0 \n\nWindow: polygonal boundary\nsingle connected closed polygon with 47493 vertices\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n                     (193500 x 178600 units)\nWindow area = 11533600000 square units\nFraction of frame area: 0.334\n\n\n\n\n6.9.3 \n\nkde_yday &lt;- spattemp.density(\n  fire_yday_owin)\nsummary(kde_yday)\n\nSpatiotemporal Kernel Density Estimate\n\nBandwidths\n  h = 15102.47 (spatial)\n  lambda = 6.3198 (temporal)\n\nNo. of observations\n  741 \n\nSpatial bound\n  Type: polygonal\n  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]\n\nTemporal bound\n  [10, 352]\n\nEvaluation\n  128 x 128 x 343 trivariate lattice\n  Density range: [3.959516e-27, 2.751287e-12]\n\n\n\nplot(kde_yday)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#computing-stkde-by-day-of-year-improved-method",
+    "href": "chap06.html#computing-stkde-by-day-of-year-improved-method",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.10 Computing STKDE by Day of Year: Improved method",
+    "text": "6.10 Computing STKDE by Day of Year: Improved method\nOne of the nice function provides in sparr package is BOOT.spattemp(). It support bandwidth selection for standalone spatiotemporal density/intensity based on bootstrap estimation of the MISE, providing an isotropic scalar spatial bandwidth and a scalar temporal bandwidth.\nCode chunk below uses BOOT.spattemp() to determine both the spatial bandwidth and the scalar temporal bandwidth.\n\nset.seed(1234)\nBOOT.spattemp(fire_yday_owin) \n\nInitialising...Done.\nOptimising...\nh = 15102.47 \b; lambda = 16.84806 \nh = 16612.72 \b; lambda = 16.84806 \nh = 15102.47 \b; lambda = 1527.095 \nh = 15480.03 \b; lambda = 771.9715 \nh = 15668.81 \b; lambda = 394.4098 \nh = 15763.2 \b; lambda = 205.6289 \nh = 15810.4 \b; lambda = 111.2385 \nh = 15833.99 \b; lambda = 64.04328 \nh = 15845.79 \b; lambda = 40.44567 \nh = 15851.69 \b; lambda = 28.64687 \nh = 15863.49 \b; lambda = 5.049258 \nh = 15854.64 \b; lambda = 22.74746 \nh = 15860.54 \b; lambda = 10.94866 \nh = 15859.07 \b; lambda = 13.89836 \nh = 14348.82 \b; lambda = 13.89836 \nh = 13216.87 \b; lambda = 12.42351 \nh = 12460.27 \b; lambda = 15.37321 \nh = 10760.88 \b; lambda = 16.11064 \nh = 8875.282 \b; lambda = 11.68608 \nh = 10432.08 \b; lambda = 12.97658 \nh = 7976.084 \b; lambda = 16.66371 \nh = 9286.281 \b; lambda = 15.60366 \nh = 9615.08 \b; lambda = 18.73771 \nh = 9206.581 \b; lambda = 21.61828 \nh = 8140.483 \b; lambda = 18.23073 \nh = 8795.582 \b; lambda = 17.70071 \nh = 9124.381 \b; lambda = 20.83477 \nh = 9164.856 \b; lambda = 19.52699 \nh = 8345.358 \b; lambda = 18.48998 \nh = 9297.65 \b; lambda = 18.67578 \nh = 8928.375 \b; lambda = 16.8495 \nh = 9105.736 \b; lambda = 18.85762 \nDone.\n\n\n         h     lambda \n9105.73611   18.85762 \n\n\n\n6.10.1 Computing spatio-temporal KDE\nNow, the STKDE will be derived by using h and lambda values derive in previous step.\n\nkde_yday &lt;- spattemp.density(fire_yday_owin,\n                             h = 9000,\n                             lambda = 19)\nsummary(kde_yday)\n\nSpatiotemporal Kernel Density Estimate\n\nBandwidths\n  h = 9000 (spatial)\n  lambda = 19 (temporal)\n\nNo. of observations\n  741 \n\nSpatial bound\n  Type: polygonal\n  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]\n\nTemporal bound\n  [10, 352]\n\nEvaluation\n  128 x 128 x 343 trivariate lattice\n  Density range: [2.001642e-19, 2.445724e-12]\n\n\n\n\n6.10.2 Plotting the output spatio-temporal KDE\nLast, plot() of sparr package is used to plot the output as shown below.\n\nplot(kde_yday)",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#spatio-temporal-point-patterns-analysis-stpp-methods",
+    "href": "chap06.html#spatio-temporal-point-patterns-analysis-stpp-methods",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.11 Spatio-temporal Point Patterns Analysis: stpp methods",
+    "text": "6.11 Spatio-temporal Point Patterns Analysis: stpp methods\nIn this section, you will gain hands-on experience on using functions of stpp package to perform spatio-temporal point patterns analysis.\n\nStudents are encouraged to read stpp: An R Package for Plotting, Simulating and Analyzing Spatio-Temporal Point Patterns to learn more about the package.\n\n\n6.11.1 Preparing spatio-temporal point process object of stpp\nStep 1: Extracting forest fire coordinates from the fire point events\n\ncoords &lt;- st_coordinates(fire_sf)\n\nStep 2: Creating a data frame by combining the x- and y-coordinates and temporal event. Note that the temporal event must be in integer.\n\nfire_df &lt;- data.frame(\n  x = coords[, 1],  \n  y = coords[, 2],\n  t = fire_sf$`DayofYear`)\n\nStep 3: Creating stpp spatio-temporal object\nIn the code chunk below, as.3dpoint() of stpp package is used to create stpp spatio-temporal object class.\n\nfire_stpp &lt;- as.3dpoints(fire_df)\n\nUse the code chunk below to confirm that the output is in stpp spatio-temporal object class.\n\nclass(fire_stpp)\n\n[1] \"stpp\"\n\n\nNext we can visual fire_stpp by using the code chunk below.\n\nplot(fire_stpp)\n\n\n\n\n\n\n\n\n\n\n6.11.2 Computing spatio-temporal k-function\nIn the code chunk below, STIKhat() of stpp package is used to compute space-time inhomogeneous K-function.\n\nkbb_stik &lt;- STIKhat(fire_stpp)\n\nNext, plotK() is used to visualise the output space-time inhomogeneous K-function.\n\nplotK(kbb_stik)\n\n\n\n\n6.11.3 Guide to interpret the plot\n\nIf the contours show high values for small values of uu and vv, it suggests clustering at short spatial and temporal distances, meaning events occur close to each other in both space and time.\nIf the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.\n\nThe spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. In the plot above, we can see clustering at specific distances by observing the spacing and values of the contour lines.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "chap06.html#reference",
+    "href": "chap06.html#reference",
+    "title": "6  Spatio-Temporal Point Patterns Analysis",
+    "section": "6.12 Reference",
+    "text": "6.12 Reference\nPeter Hall (1990) “Using the Bootstrap to Estimate Mean Squared Error and Select Smoothing Parameter in Nonparametric Problems”, JOURNAL OF MULTIVARIATE ANALYSIS, Vol. 32, pp. 177-203.",
+    "crumbs": [
+      "Spatial Point Patterns Analysis",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Spatio-Temporal Point Patterns Analysis</span>"
+    ]
   }
 ]
