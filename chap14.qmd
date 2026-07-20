@@ -20,44 +20,44 @@ Geospatial predictive modelling is conceptually rooted in the principle that the
 
 In this in-class exercise, you will learn how to build predictive model by using geographical random forest method. By the end of this hands-on exercise, you will acquire the skills of:
 
--   preparing training and test data sets by using appropriate data sampling methods,
--   calibrating predictive models by using both geospatial statistical learning and machine learning methods,
--   comparing and selecting the best model for predicting the future outcome,
--   predicting the future outcomes by using the best model calibrated.
+- preparing training and test data sets by using appropriate data sampling methods,
+- calibrating predictive models by using both geospatial statistical learning and machine learning methods,
+- comparing and selecting the best model for predicting the future outcome,
+- predicting the future outcomes by using the best model calibrated.
 
 ## The Data
 
--   **Aspatial dataset**:
-    -   HDB Resale data: a list of HDB resale transacted prices in Singapore from Jan 2017 onwards. It is in csv format which can be downloaded from Data.gov.sg.
--   **Geospatial dataset**:
-    -   *MP14_SUBZONE_WEB_PL*: a polygon feature data providing information of URA 2014 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from Data.gov.sg
--   **Locational factors with geographic coordinates**:
-    -   Downloaded from **Data.gov.sg**.
-        -   **Eldercare** data is a list of eldercare in Singapore. It is in shapefile format.
-        -   **Hawker Centre** data is a list of hawker centres in Singapore. It is in geojson format.
-        -   **Parks** data is a list of parks in Singapore. It is in geojson format.
-        -   **Supermarket** data is a list of supermarkets in Singapore. It is in geojson format.
-        -   **CHAS clinics** data is a list of CHAS clinics in Singapore. It is in geojson format.
-        -   **Childcare service** data is a list of childcare services in Singapore. It is in geojson format.
-        -   **Kindergartens** data is a list of kindergartens in Singapore. It is in geojson format.
-    -   Downloaded from **Datamall.lta.gov.sg**.
-        -   **MRT** data is a list of MRT/LRT stations in Singapore with the station names and codes. It is in shapefile format.
-        -   **Bus stops** data is a list of bus stops in Singapore. It is in shapefile format.
--   **Locational factors without geographic coordinates**:
-    -   Downloaded from **Data.gov.sg**.
-        -   **Primary school** data is extracted from the list on General information of schools from data.gov portal. It is in csv format.
-    -   Retrieved/Scraped from **other sources**
-        -   **CBD** coordinates obtained from Google.
-        -   **Shopping malls** data is a list of Shopping malls in Singapore obtained from [Wikipedia](https://en.wikipedia.org/wiki/List_of_shopping_malls_in_Singapore).
-        -   **Good primary schools** is a list of primary schools that are ordered in ranking in terms of popularity and this can be found at [Local Salary Forum](https://www.salary.sg/2021/best-primary-schools-2021-by-popularity).
+- **Aspatial dataset**:
+  - HDB Resale data: a list of HDB resale transacted prices in Singapore from Jan 2017 onwards. It is in csv format which can be downloaded from Data.gov.sg.
+- **Geospatial dataset**:
+  - *MP14_SUBZONE_WEB_PL*: a polygon feature data providing information of URA 2014 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from Data.gov.sg
+- **Locational factors with geographic coordinates**:
+  - Downloaded from **Data.gov.sg**.
+    - **Eldercare** data is a list of eldercare in Singapore. It is in shapefile format.
+    - **Hawker Centre** data is a list of hawker centres in Singapore. It is in geojson format.
+    - **Parks** data is a list of parks in Singapore. It is in geojson format.
+    - **Supermarket** data is a list of supermarkets in Singapore. It is in geojson format.
+    - **CHAS clinics** data is a list of CHAS clinics in Singapore. It is in geojson format.
+    - **Childcare service** data is a list of childcare services in Singapore. It is in geojson format.
+    - **Kindergartens** data is a list of kindergartens in Singapore. It is in geojson format.
+  - Downloaded from **Datamall.lta.gov.sg**.
+    - **MRT** data is a list of MRT/LRT stations in Singapore with the station names and codes. It is in shapefile format.
+    - **Bus stops** data is a list of bus stops in Singapore. It is in shapefile format.
+- **Locational factors without geographic coordinates**:
+  - Downloaded from **Data.gov.sg**.
+    - **Primary school** data is extracted from the list on General information of schools from data.gov portal. It is in csv format.
+  - Retrieved/Scraped from **other sources**
+    - **CBD** coordinates obtained from Google.
+    - **Shopping malls** data is a list of Shopping malls in Singapore obtained from [Wikipedia](https://en.wikipedia.org/wiki/List_of_shopping_malls_in_Singapore).
+    - **Good primary schools** is a list of primary schools that are ordered in ranking in terms of popularity and this can be found at [Local Salary Forum](https://www.salary.sg/2021/best-primary-schools-2021-by-popularity).
 
 ## Installing and Loading R packages
 
 This code chunk performs 3 tasks:
 
--   A list called packages will be created and will consists of all the R packages required to accomplish this exercise.
--   Check if R packages on package have been installed in R and if not, they will be installed.
--   After all the R packages have been installed, they will be loaded.
+- A list called packages will be created and will consists of all the R packages required to accomplish this exercise.
+- Check if R packages on package have been installed in R and if not, they will be installed.
+- After all the R packages have been installed, they will be loaded.
 
 ```{r}
 pacman::p_load(sf, spdep, GWmodel, SpatialML, 
@@ -99,6 +99,7 @@ mdata <- mdata %>%
   st_jitter(amount = 1)
 ```
 :::
+
 ::::::::
 
 ### Data Sampling
@@ -202,6 +203,7 @@ This is a computational intensity and time consuming process. It is wiser to sav
 :::
 
 ```{r}
+#| eval: false  
 write_rds(bw_adaptive, "chap14/data/model/bw_adaptive.rds")
 ```
 
@@ -239,6 +241,7 @@ This is a computational intensity and time consuming process. It is wiser to sav
 :::
 
 ```{r}
+#| eval: false
 write_rds(gwr_adaptive, 
           "chap14/data/model/gwr_adaptive.rds")
 ```
@@ -277,6 +280,7 @@ gwr_bw_test_adaptive <- bw.gwr(
 ```
 
 ```{r}
+#| eval: false
 write_rds(gwr_bw_test_adaptive, 
           "chap14/data/model/gwr_bw_test_adaptive.rds")
 ```

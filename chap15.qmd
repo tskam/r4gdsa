@@ -18,21 +18,21 @@ Each spatial interaction, as an analogy for a set of movements, is composed of a
 
 In this hands-on exercise, you will learn how to build an OD matrix by using [*Passenger Volume by Origin Destination Bus Stops*]() data set downloaded from [LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en.html). By the end of this hands-on exercise, you will be able:
 
--   to import and extract OD data for a selected time interval,
--   to import and save geospatial data (i.e. bus stops and mpsz) into sf tibble data frame objects,
--   to populate planning subzone code into bus stops sf tibble data frame,
--   to construct desire lines geospatial data from the OD data, and
--   to visualise passenger volume by origin and destination bus stops by using the desire lines data.
+- to import and extract OD data for a selected time interval,
+- to import and save geospatial data (i.e. bus stops and mpsz) into sf tibble data frame objects,
+- to populate planning subzone code into bus stops sf tibble data frame,
+- to construct desire lines geospatial data from the OD data, and
+- to visualise passenger volume by origin and destination bus stops by using the desire lines data.
 
 ## Getting Started
 
 For the purpose of this exercise, five r packages will be used. They are:
 
--   [sf](https://r-spatial.github.io/sf/) for importing, integrating, processing and transforming geospatial data.
--   [tidyverse](https://www.tidyverse.org/) for importing, integrating, wrangling and visualising data.
--   [tmap](https://r-tmap.github.io/tmap/) for creating elegent and cartographic quality thematic maps.
--   [stplanr](https://docs.ropensci.org/stplanr/) provides functions for solving common problems in transport planning and modelling such as downloading and cleaning transport datasets; creating geographic “desire lines” from origin-destination (OD) data; route assignment, locally and interfaces to routing services such as CycleStreets.net; calculation of route segment attributes such as bearing and aggregate flow; and ‘travel watershed’ analysis. 
--   [DT](https://rstudio.github.io/DT/) provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables.
+- [sf](https://r-spatial.github.io/sf/) for importing, integrating, processing and transforming geospatial data.
+- [tidyverse](https://www.tidyverse.org/) for importing, integrating, wrangling and visualising data.
+- [tmap](https://r-tmap.github.io/tmap/) for creating elegent and cartographic quality thematic maps.
+- [stplanr](https://docs.ropensci.org/stplanr/) provides functions for solving common problems in transport planning and modelling such as downloading and cleaning transport datasets; creating geographic “desire lines” from origin-destination (OD) data; route assignment, locally and interfaces to routing services such as CycleStreets.net; calculation of route segment attributes such as bearing and aggregate flow; and ‘travel watershed’ analysis.
+- [DT](https://rstudio.github.io/DT/) provides an R interface to the JavaScript library DataTables. R data objects (matrices or data frames) can be displayed as tables on HTML pages, and DataTables provides filtering, pagination, sorting, and many other features in the tables.
 
 ```{r}
 pacman::p_load(tmap, sf, DT, stplanr, tidyverse)
@@ -98,8 +98,8 @@ odbus6_9 <- read_rds("chap15/data/rds/odbus6_9.rds")
 
 For the purpose of this exercise, two geospatial data will be used. They are:
 
--   BusStop: This data provides the location of bus stop as at last quarter of 2022.
--   MPSZ-2019: This data provides the sub-zone boundary of URA Master Plan 2019.
+- BusStop: This data provides the location of bus stop as at last quarter of 2022.
+- MPSZ-2019: This data provides the sub-zone boundary of URA Master Plan 2019.
 
 Both data sets are in ESRI shapefile format.
 
@@ -121,8 +121,8 @@ mpsz
 ```
 
 ::: callout-note
--   `st_read()` function of sf package is used to import the shapefile into R as sf data frame.
--   `st_transform()` function of sf package is used to transform the projection to crs 3414.
+- `st_read()` function of sf package is used to import the shapefile into R as sf data frame.
+- `st_transform()` function of sf package is used to transform the projection to crs 3414.
 :::
 
 The code chunk below will be used to write mpsz sf tibble data frame into an rds file for future use.
@@ -144,9 +144,9 @@ busstop_mpsz <- st_intersection(busstop, mpsz) %>%
 ```
 
 ::: callout-note
--   `st_intersection()` is used to perform point and polygon overly and the output will be in point sf object.
--   `select()` of dplyr package is then use to retain only BUS_STOP_N and SUBZONE_C in the busstop_mpsz sf data frame.
--   five bus stops are excluded in the resultant data frame because they are outside of Singapore bpundary.
+- `st_intersection()` is used to perform point and polygon overly and the output will be in point sf object.
+- `select()` of dplyr package is then use to retain only BUS_STOP_N and SUBZONE_C in the busstop_mpsz sf data frame.
+- five bus stops are excluded in the resultant data frame because they are outside of Singapore bpundary.
 :::
 
 ```{r}
