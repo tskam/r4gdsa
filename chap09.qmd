@@ -15,13 +15,13 @@ editor: visual
 
 In this hands-on exercise, you will learn how to compute Global Measures of Spatial Autocorrelation (GMSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
 
--   import geospatial data using appropriate function(s) of **sf** package,
--   import csv file using appropriate function of **readr** package,
--   perform relational join using appropriate join function of **dplyr** package,
--   compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
-    -   plot Moran scatterplot,
-    -   compute and plot spatial correlogram using appropriate function of **spdep** package.
--   provide statistically correct interpretation of GSA statistics.
+- import geospatial data using appropriate function(s) of **sf** package,
+- import csv file using appropriate function of **readr** package,
+- perform relational join using appropriate join function of **dplyr** package,
+- compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
+  - plot Moran scatterplot,
+  - compute and plot spatial correlogram using appropriate function of **spdep** package.
+- provide statistically correct interpretation of GSA statistics.
 
 ## Getting Started
 
@@ -35,24 +35,24 @@ In this case study, we are interested to examine the spatial pattern of a select
 
 Two data sets will be used in this hands-on exercise, they are:
 
--   Hunan province administrative boundary layer at county level. This is a geospatial data set in ESRI shapefile format.
--   Hunan_2012.csv: This csv file contains selected Hunan's local development indicators in 2012.
+- Hunan province administrative boundary layer at county level. This is a geospatial data set in ESRI shapefile format.
+- Hunan_2012.csv: This csv file contains selected Hunan's local development indicators in 2012.
 
 ### Setting the Analytical Toolls
 
 Before we get started, we need to ensure that **spdep**, **sf**, **tmap** and **tidyverse** packages of R are currently installed in your R.
 
--   sf is use for importing and handling geospatial data in R,
--   tidyverse is mainly use for wrangling attribute data in R,
--   spdep will be used to compute spatial weights, global and local spatial autocorrelation statistics, and
--   tmap will be used to prepare cartographic quality chropleth map.
+- sf is use for importing and handling geospatial data in R,
+- tidyverse is mainly use for wrangling attribute data in R,
+- spdep will be used to compute spatial weights, global and local spatial autocorrelation statistics, and
+- tmap will be used to prepare cartographic quality chropleth map.
 
 The code chunk below is used to perform the following tasks:
 
--   creating a package list containing the necessary R packages,
--   checking if the R packages in the package list have been installed in R,
-    -   if they have yet to be installed, RStudio will installed the missing packages,
--   launching the packages into R environment.
+- creating a package list containing the necessary R packages,
+- checking if the R packages in the package list have been installed in R,
+  - if they have yet to be installed, RStudio will installed the missing packages,
+- launching the packages into R environment.
 
 ```{r}
 pacman::p_load(sf, spdep, tmap, tidyverse)
@@ -154,9 +154,9 @@ rswm_q
 ::: callout-note
 ### What can we learn from the code chunk above?
 
--   The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
--   *style* can take values "W", "B", "C", "U", "minmax" and "S". B is the basic binary coding, W is row standardised (sums over all links to n), C is globally standardised (sums over all links to n), U is equal to C divided by the number of neighbours (sums over all links to unity), while S is the variance-stabilizing coding scheme proposed by Tiefelsdorf et al. 1999, p. 167-168 (sums over all links to n).
--   If *zero policy* is set to TRUE, weights vectors of zero length are inserted for regions without neighbour in the neighbours list. These will in turn generate lag values of zero, equivalent to the sum of products of the zero row t(rep(0, length=length(neighbours))) %\*% x, for arbitrary numerical vector x of length length(neighbours). The spatially lagged value of x for the zero-neighbour region will then be zero, which may (or may not) be a sensible choice.
+- The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
+- *style* can take values "W", "B", "C", "U", "minmax" and "S". B is the basic binary coding, W is row standardised (sums over all links to n), C is globally standardised (sums over all links to n), U is equal to C divided by the number of neighbours (sums over all links to unity), while S is the variance-stabilizing coding scheme proposed by Tiefelsdorf et al. 1999, p. 167-168 (sums over all links to n).
+- If *zero policy* is set to TRUE, weights vectors of zero length are inserted for regions without neighbour in the neighbours list. These will in turn generate lag values of zero, equivalent to the sum of products of the zero row t(rep(0, length=length(neighbours))) %\*% x, for arbitrary numerical vector x of length length(neighbours). The spatially lagged value of x for the zero-neighbour region will then be zero, which may (or may not) be a sensible choice.
 :::
 
 ## Global Measures of Spatial Autocorrelation: Moran's I
