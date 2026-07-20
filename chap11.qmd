@@ -1,5 +1,13 @@
 ---
 title: "Emerging Hot Spot Analysis"
+date: "November 29, 2023"
+date-modified: "last-modified"
+format: html
+execute:
+  warning: false
+  message: false
+  fig-retine: 3
+  freeze: true
 editor: visual
 ---
 

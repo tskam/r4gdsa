@@ -14,18 +14,18 @@ execute:
 
 In this hands-on exercise, you will gain hands-on experience on how to delineate homogeneous region by using geographically referenced multivariate data. There are two major analysis, namely:
 
--   hierarchical cluster analysis; and
--   spatially constrained cluster analysis.
+- hierarchical cluster analysis; and
+- spatially constrained cluster analysis.
 
 ### Learning Outcome
 
 By the end of this hands-on exercise, you will able:
 
--   to convert GIS polygon data into R's simple feature data.frame by using appropriate functions of **sf** package of R;
--   to convert simple feature data.frame into R's SpatialPolygonDataFrame object by using appropriate **sf** of package of R;
--   to perform custer analysis by using *hclust()* of Base R;
--   to perform spatially constrained cluster analysis using *skater()* of Base R; and
--   to visualise the analysis output by using **ggplot2** and **tmap** package.
+- to convert GIS polygon data into R's simple feature data.frame by using appropriate functions of **sf** package of R;
+- to convert simple feature data.frame into R's SpatialPolygonDataFrame object by using appropriate **sf** of package of R;
+- to perform custer analysis by using *hclust()* of Base R;
+- to perform spatially constrained cluster analysis using *skater()* of Base R; and
+- to visualise the analysis output by using **ggplot2** and **tmap** package.
 
 ## Getting Started
 
@@ -37,8 +37,8 @@ In geobusiness and spatial policy, it is a common practice to delineate the mark
 
 Two data sets will be used in this study. They are:
 
--   Myanmar Township Boundary Data (i.e. *myanmar_township_boundaries*) : This is a GIS data in ESRI shapefile format. It consists of township boundary information of Myanmar. The spatial data are captured in polygon features.
--   *Shan-ICT.csv*: This is an extract of [**The 2014 Myanmar Population and Housing Census Myanmar**](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet) at the township level.
+- Myanmar Township Boundary Data (i.e. *myanmar_township_boundaries*) : This is a GIS data in ESRI shapefile format. It consists of township boundary information of Myanmar. The spatial data are captured in polygon features.
+- *Shan-ICT.csv*: This is an extract of [**The 2014 Myanmar Population and Housing Census Myanmar**](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet) at the township level.
 
 Both data sets are download from [Myanmar Information Management Unit (MIMU)](http://themimu.info/)
 
@@ -48,17 +48,17 @@ Before we get started, it is important for us to install the necessary R package
 
 The R packages needed for this exercise are as follows:
 
--   Spatial data handling
-    -   **sf**, **rgdal** and **spdep**
--   Attribute data handling
-    -   **tidyverse**, especially **readr**, **ggplot2** and **dplyr**
--   Choropleth mapping
-    -   **tmap**
--   Multivariate data visualisation and analysis
-    -   **coorplot**, **ggpubr**, and **heatmaply**
--   Cluster analysis
-    -   **cluster**
-    -   **ClustGeo**
+- Spatial data handling
+  - **sf**, **rgdal** and **spdep**
+- Attribute data handling
+  - **tidyverse**, especially **readr**, **ggplot2** and **dplyr**
+- Choropleth mapping
+  - **tmap**
+- Multivariate data visualisation and analysis
+  - **coorplot**, **ggpubr**, and **heatmaply**
+- Cluster analysis
+  - **cluster**
+  - **ClustGeo**
 
 The code chunks below installs and launches these R packages into R environment.
 
@@ -572,9 +572,9 @@ Another technical challenge face by data analyst in performing clustering analys
 
 There are [three](https://statweb.stanford.edu/~gwalther/gap) commonly used methods to determine the optimal clusters, they are:
 
--   [Elbow Method](https://en.wikipedia.org/wiki/Elbow_method_(clustering))
--   [Average Silhouette Method](https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub)
--   [Gap Statistic Method](http://www.web.stanford.edu/~hastie/Papers/gap.pdf)
+- [Elbow Method](https://en.wikipedia.org/wiki/Elbow_method_(clustering))
+- [Average Silhouette Method](https://www.sciencedirect.com/science/article/pii/0377042787901257?via%3Dihub)
+- [Gap Statistic Method](http://www.web.stanford.edu/~hastie/Papers/gap.pdf)
 
 #### Gap Statistic Method
 
@@ -673,9 +673,9 @@ In order to visualise the clusters, the *groups* object need to be appended onto
 
 The code chunk below form the join in three steps:
 
--   the *groups* list object will be converted into a matrix;
--   *cbind()* is used to append *groups* matrix onto shan_sf to produce an output simple feature object called `shan_sf_cluster`; and
--   *rename* of **dplyr** package is used to rename *as.matrix.groups* field as *CLUSTER*.
+- the *groups* list object will be converted into a matrix;
+- *cbind()* is used to append *groups* matrix onto shan_sf to produce an output simple feature object called `shan_sf_cluster`; and
+- *rename* of **dplyr** package is used to rename *as.matrix.groups* field as *CLUSTER*.
 
 ```{r}
 shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
@@ -988,12 +988,12 @@ The parallel coordinate plot above reveals that households in Cluster 4 township
 
 Note that the `scale` argument of `ggparcoor()` provide several methods to scale the clustering variables. They are:
 
--   std: univariately, subtract mean and divide by standard deviation.
--   robust: univariately, subtract median and divide by median absolute deviation.
--   uniminmax: univariately, scale so the minimum of the variable is zero, and the maximum is one.
--   globalminmax: no scaling is done; the range of the graphs is defined by the global minimum and the global maximum.
--   center: use uniminmax to standardize vertical height, then center each variable at a value specified by the scaleSummary param.
--   centerObs: use uniminmax to standardize vertical height, then center each variable at the value of the observation specified by the centerObsID param
+- std: univariately, subtract mean and divide by standard deviation.
+- robust: univariately, subtract median and divide by median absolute deviation.
+- uniminmax: univariately, scale so the minimum of the variable is zero, and the maximum is one.
+- globalminmax: no scaling is done; the range of the graphs is defined by the global minimum and the global maximum.
+- center: use uniminmax to standardize vertical height, then center each variable at a value specified by the scaleSummary param.
+- centerObs: use uniminmax to standardize vertical height, then center each variable at the value of the observation specified by the centerObsID param
 
 There is no one best scaling method to use. You should explore them and select the one that best meet your analysis need.
 
