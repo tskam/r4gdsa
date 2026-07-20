@@ -19,30 +19,30 @@ editor: visual
 
 **Spatial Point Pattern Analysis (SPPA)** is the evaluation of the pattern or distribution of a set of points on a surface. The points may represent:
 
--   events such as crimes, traffic accidents, or disease onsets, or
--   business services (e.g., coffee shops and fast-food outlets) or facilities such as childcare centres and eldercare centres.
+- events such as crimes, traffic accidents, or disease onsets, or
+- business services (e.g., coffee shops and fast-food outlets) or facilities such as childcare centres and eldercare centres.
 
 **First-order Spatial Point Pattern Analysis (1st-SPPA)** focuses on understanding the intensity or density of points across a study area. It examines how the distribution of points varies over space, essentially identifying trends or patterns in point density. This type of analysis deals with the individual locations of points and their distribution, without considering interactions between them.
 
 In essence, 1st-SPPA helps answer questions such as:
 
--   Where are points most densely located within the study area?
--   Is point density uniform, or does it vary across space?
--   How spread out is the point pattern?
+- Where are points most densely located within the study area?
+- Is point density uniform, or does it vary across space?
+- How spread out is the point pattern?
 
 In this chapter, you will gain hands-on experience with [**spatstat**](https://cran.r-project.org/web/packages/spatstat/) to perform two commonly used 1st-SPPA methods:
 
 The specific questions we would like to answer are as follows:
 
--   Are the childcare centres in Singapore randomly distributed throughout the country?
--   If the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
+- Are the childcare centres in Singapore randomly distributed throughout the country?
+- If the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
 
 ## The data
 
 To provide answers to the questions above, two data sets will be used. They are:
 
--   *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
--   *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
+- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
+- *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
 
 Both data sets are provided in kml and geojson format. Students are free to download their preferred data format.
 
@@ -50,11 +50,11 @@ Both data sets are provided in kml and geojson format. Students are free to down
 
 In this hands-on exercise, five R packages will be used, they are:
 
--   [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
--   [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
--   [**terra**](https://rspatial.github.io/terra/index.html): The terra package is a modern spatial data analysis package designed to replace the raster package. It offers improved speed and efficiency when working with both raster and vector spatial data, particularly with large datasets. terra provides functionalities for creating, reading, manipulating, and writing raster and vector data, and it's built on top of GDAL and PROJ libraries for enhanced performance. In this hands-on exercise, it will be used to convert image output generate by spatstat into terra format.
--   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [**leaflet**](https://leafletjs.com/) API.
--   [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages
+- [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
+- [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
+- [**terra**](https://rspatial.github.io/terra/index.html): The terra package is a modern spatial data analysis package designed to replace the raster package. It offers improved speed and efficiency when working with both raster and vector spatial data, particularly with large datasets. terra provides functionalities for creating, reading, manipulating, and writing raster and vector data, and it's built on top of GDAL and PROJ libraries for enhanced performance. In this hands-on exercise, it will be used to convert image output generate by spatstat into terra format.
+- [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [**leaflet**](https://leafletjs.com/) API.
+- [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages
 
 Use the code chunk below to install and launch the five R packages.
 
@@ -68,10 +68,10 @@ pacman::p_load(sf, terra, spatstat,
 ::: callout-note
 ### DIY
 
--   Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
--   Tidy the datasets and, if necessary, transform their projections.
--   Validate that both datasets use the same projection.
--   Ensure that the final outputs are stored in sf format.\
+- Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
+- Tidy the datasets and, if necessary, transform their projections.
+- Validate that both datasets use the same projection.
+- Ensure that the final outputs are stored in sf format.\
 :::
 
 Use the code chunk below to import Master Plan 2019 Subzone (No Sea) data set into R environment.
@@ -280,8 +280,8 @@ clarkevans.test(childcareSG_ppp,
 ::: callout-note
 ### Quiz
 
--   Draw statistical conclusion from the test result.
--   Provide business communication from the statistical analysis.
+- Draw statistical conclusion from the test result.
+- Provide business communication from the statistical analysis.
 :::
 
 ### Perform the Clark-Evans test with CSR
@@ -300,8 +300,8 @@ clarkevans.test(childcareSG_ppp,
 ::: callout-note
 ### Quiz
 
--   Draw statistical conclusion from the test result.
--   Provide business communication from the statistical analysis.
+- Draw statistical conclusion from the test result.
+- Provide business communication from the statistical analysis.
 :::
 
 ## Kernel Density Estimation Method
@@ -314,9 +314,9 @@ In this section, you will learn how to compute the kernel density estimation (KD
 
 The code chunk below computes a kernel density by using the following configurations of [*density()*](https://rdrr.io/cran/spatstat/man/density.ppp.html) of **spatstat**:
 
--   [*bw.diggle()*](https://rdrr.io/cran/spatstat/man/bw.diggle.html) automatic bandwidth selection method. Other recommended methods are [*bw.CvL()*](https://rdrr.io/cran/spatstat/man/bw.CvL.html), [*bw.scott()*](https://rdrr.io/cran/spatstat/man/bw.scott.html) or [*bw.ppl()*](https://rdrr.io/cran/spatstat/man/bw.ppl.html).\
--   The smoothing kernel used is *gaussian*, which is the default. Other smoothing methods are: "epanechnikov", "quartic" or "disc".\
--   The intensity estimate is corrected for edge effect bias by using method described by Jones (1993) and Diggle (2010, equation 18.9). The default is *FALSE*.
+- [*bw.diggle()*](https://rdrr.io/cran/spatstat/man/bw.diggle.html) automatic bandwidth selection method. Other recommended methods are [*bw.CvL()*](https://rdrr.io/cran/spatstat/man/bw.CvL.html), [*bw.scott()*](https://rdrr.io/cran/spatstat/man/bw.scott.html) or [*bw.ppl()*](https://rdrr.io/cran/spatstat/man/bw.ppl.html).\
+- The smoothing kernel used is *gaussian*, which is the default. Other smoothing methods are: "epanechnikov", "quartic" or "disc".\
+- The intensity estimate is corrected for edge effect bias by using method described by Jones (1993) and Diggle (2010, equation 18.9). The default is *FALSE*.
 
 ```{r}
 kde_SG_diggle <- density(
