@@ -20,15 +20,15 @@ Geospatial Data Science is a process of importing, wrangling, integrating, and p
 
 By the end of this hands-on exercise, you should acquire the following competencies:
 
--   installing and loading [sf](https://r-spatial.github.io/sf/) and [tidyverse](https://www.tidyverse.org/) packages into R environment,
--   importing geospatial data by using appropriate functions of **sf** package,
--   importing aspatial data by using appropriate function of **readr** package,
--   exploring the content of simple feature data frame by using appropriate **Base R** and **sf** functions,
--   assigning or transforming coordinate systems by using using appropriate *sf* functions,
--   converting an aspatial data into a sf data frame by using appropriate function of **sf** package,
--   performing geoprocessing tasks by using appropriate functions of **sf** package,
--   performing data wrangling tasks by using appropriate functions of **dplyr** package and
--   performing Exploratory Data Analysis (EDA) by using appropriate functions from **ggplot2** package.
+- installing and loading [sf](https://r-spatial.github.io/sf/) and [tidyverse](https://www.tidyverse.org/) packages into R environment,
+- importing geospatial data by using appropriate functions of **sf** package,
+- importing aspatial data by using appropriate function of **readr** package,
+- exploring the content of simple feature data frame by using appropriate **Base R** and **sf** functions,
+- assigning or transforming coordinate systems by using using appropriate *sf* functions,
+- converting an aspatial data into a sf data frame by using appropriate function of **sf** package,
+- performing geoprocessing tasks by using appropriate functions of **sf** package,
+- performing data wrangling tasks by using appropriate functions of **dplyr** package and
+- performing Exploratory Data Analysis (EDA) by using appropriate functions from **ggplot2** package.
 
 ::: callout-note
 Students are encouraged to read the reference guide of each function, especially the input data requirements, syntaxt and argument option before using them.
@@ -38,10 +38,10 @@ Students are encouraged to read the reference guide of each function, especially
 
 Data are key to data analytics including geospatial analytics. Hence, before analysing, we need to assemble the necessary data. In this hands-on exercise, you are required to extract the necessary data sets from the following sources:
 
--   Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg/)
--   Pre-Schools Location from [data.gov.sg](https://data.gov.sg/)
--   Cycling Path from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
--   Latest version of Singapore Airbnb listing data from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
+- Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg/)
+- Pre-Schools Location from [data.gov.sg](https://data.gov.sg/)
+- Cycling Path from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
+- Latest version of Singapore Airbnb listing data from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
 
 ::: callout-note
 The purpose of this section is not merely extracting the necessary data sets. It also aims to introduce you to public available data sets. Students are encouraged to explore the rest of the available data sets in these three data sources.
@@ -65,16 +65,16 @@ Now, you will extract the downloaded `listing` data file. At `Downloads` folder,
 
 In this hands-on exercise, two R packages will be used. They are:
 
--   **sf** for importing, managing, and processing geospatial data, and
--   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
+- **sf** for importing, managing, and processing geospatial data, and
+- **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
 
 ::: callout-note
 Tidyverse consists of a family of R packages. In this hands-on exercise, the following packages will be used:
 
--   **readr** for importing csv data,
--   **tidyr** for manipulating data,
--   **dplyr** for transforming data, and
--   **ggplot2** for visualising data
+- **readr** for importing csv data,
+- **tidyr** for manipulating data,
+- **dplyr** for transforming data, and
+- **ggplot2** for visualising data
 :::
 
 ::: callout-warning
@@ -89,15 +89,15 @@ pacman::p_load(sf, tidyverse)
 
 What we can learn from the code chunk above:
 
--   [`p_load`](https://cran.r-project.org/web/packages/pacman/pacman.pdf) function pf [**pacman**](https://github.com/trinker/pacman) package is used to install and load sf and tidyverse packages into R environment.
+- [`p_load`](https://cran.r-project.org/web/packages/pacman/pacman.pdf) function pf [**pacman**](https://github.com/trinker/pacman) package is used to install and load sf and tidyverse packages into R environment.
 
 ## Importing Geospatial Data
 
 In this section, you will learn how to import the following geospatial data into R by using [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package:
 
--   `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format,
--   `CyclingPath`, a line feature layer in ESRI shapefile format, and
--   `PreSchool`, a point feature layer in kml file format.
+- `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format,
+- `CyclingPath`, a line feature layer in ESRI shapefile format, and
+- `PreSchool`, a point feature layer in kml file format.
 
 ### Importing polygon feature data in shapefile format
 
@@ -323,9 +323,9 @@ listings_sf <- st_as_sf(listings,
 
 Things to learn from the arguments above:
 
--   *coords* argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.
--   *crs* argument requires you to provide the coordinates system in epsg format. [EPSG: 4326](https://epsg.io/4326) is wgs84 Geographic Coordinate System and [EPSG: 3414](https://epsg.io/3414) is Singapore SVY21 Projected Coordinate System. You can search for other country's epsg code by referring to [epsg.io](https://epsg.io/).
--   *%\>%* is used to nest *st_transform()* to transform the newly created simple feature data frame into svy21 projected coordinates system.
+- *coords* argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.
+- *crs* argument requires you to provide the coordinates system in epsg format. [EPSG: 4326](https://epsg.io/4326) is wgs84 Geographic Coordinate System and [EPSG: 3414](https://epsg.io/3414) is Singapore SVY21 Projected Coordinate System. You can search for other country's epsg code by referring to [epsg.io](https://epsg.io/).
+- *%\>%* is used to nest *st_transform()* to transform the newly created simple feature data frame into svy21 projected coordinates system.
 
 Let us examine the content of this newly created simple feature data frame.
 
