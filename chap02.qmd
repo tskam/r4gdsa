@@ -30,11 +30,11 @@ It is advisable for you to read the functional description of each function befo
 
 In this hands-on exercise, the key R package use is [**tmap**](https://cran.r-project.org/web/packages/tmap/) package in R. Beside **tmap** package, five other R packages will be used. They are:
 
--   [**readr**](https://readr.tidyverse.org/) for importing delimited text file,
--   [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
--   [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
--   [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for handling geospatial data.
--   [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
+- [**readr**](https://readr.tidyverse.org/) for importing delimited text file,
+- [**tidyr**](https://tidyr.tidyverse.org/) for tidying data,
+- [**dplyr**](https://dplyr.tidyverse.org/) for wrangling data and
+- [**sf**](https://cran.r-project.org/web/packages/sf/index.html) for handling geospatial data.
+- [**rvest**](https://rvest.tidyverse.org/) for scraping (or harvesting) data from web pages.
 
 Among the five packages, **readr**, **tidyr** and **dplyr** are part of **tidyverse** package.
 
@@ -52,9 +52,9 @@ Notice that, we only need to install **tidyverse** instead of **readr**, **tidyr
 
 Two data set will be used to create the choropleth map. They are:
 
--   Master Plan 2019 Subzone Boundary (No Sea) (KML). It can be downloaded at [data.gov.sg](https://data.gov.sg/) This is a geospatial data. It consists of the geographical boundary of Singapore at the planning subzone level. The data is based on URA Master Plan 2019.
+- Master Plan 2019 Subzone Boundary (No Sea) (KML). It can be downloaded at [data.gov.sg](https://data.gov.sg/) This is a geospatial data. It consists of the geographical boundary of Singapore at the planning subzone level. The data is based on URA Master Plan 2019.
 
--   Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2024 in csv format (i.e. `respopagesextod2024.csv`). This is an aspatial data fie. It can be downloaded at [Department of Statistics, Singapore](https://www.singstat.gov.sg/). Although it does not contain any coordinates values, but it's PA and SZ fields can be used as unique identifiers to georeference to Master Plan 2019 Subzone Boundary.
+- Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2024 in csv format (i.e. `respopagesextod2024.csv`). This is an aspatial data fie. It can be downloaded at [Department of Statistics, Singapore](https://www.singstat.gov.sg/). Although it does not contain any coordinates values, but it's PA and SZ fields can be used as unique identifiers to georeference to Master Plan 2019 Subzone Boundary.
 
 ### Importing Geospatial Data into R
 
@@ -119,18 +119,18 @@ popdata <- read_csv("chap02/data/aspatial/respopagesextod2024.csv")
 
 Before a thematic map can be prepared, you are required to prepare a data table with year 2020 values. The data table should include the variables PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.
 
--   YOUNG: age group 0 to 4 until age groyup 20 to 24,
--   ECONOMY ACTIVE: age group 25-29 until age group 60-64,
--   AGED: age group 65 and above,
--   TOTAL: all age group, and
--   DEPENDENCY: the ratio between young and aged against economy active group
+- YOUNG: age group 0 to 4 until age groyup 20 to 24,
+- ECONOMY ACTIVE: age group 25-29 until age group 60-64,
+- AGED: age group 65 and above,
+- TOTAL: all age group, and
+- DEPENDENCY: the ratio between young and aged against economy active group
 
 #### Data wrangling
 
 The following data wrangling and transformation functions will be used:
 
--   *pivot_wider()* of **tidyr** package, and
--   *mutate()*, *filter()*, *group_by()* and *select()* of **dplyr** package
+- *pivot_wider()* of **tidyr** package, and
+- *mutate()*, *filter()*, *group_by()* and *select()* of **dplyr** package
 
 ```{r}
 popdata2024 <- popdata %>%
@@ -172,7 +172,7 @@ mpsz_pop2024 <- left_join(mpsz, popdata2024,
 
 Thing to learn from the code chunk above:
 
--   *left_join()* of **dplyr** package is used with `mpsz` simple feature data frame as the left data table is to ensure that the output will be a simple features data frame.
+- *left_join()* of **dplyr** package is used with `mpsz` simple feature data frame as the left data table is to ensure that the output will be a simple features data frame.
 
 ```{r}
 write_rds(mpsz_pop2024, "chap02/data/rds/mpsz_pop2024.rds")
@@ -184,8 +184,8 @@ Choropleth mapping involves the symbolisation of enumeration units, such as coun
 
 Two approaches can be used to prepare thematic map using *tmap*, they are:
 
--   Plotting a thematic map quickly by using *qtm()*.
--   Plotting highly customisable thematic map by using tmap elements.
+- Plotting a thematic map quickly by using *qtm()*.
+- Plotting highly customisable thematic map by using tmap elements.
 
 ### Plotting a choropleth map quickly by using *qtm()*
 
@@ -201,8 +201,8 @@ qtm(shp = mpsz_pop2024,
 
 Things to learn from the code chunk above:
 
--   *tmap_mode()* with "plot" option is used to produce a static map. For interactive mode, "view" option should be used.
--   *fill* argument is used to map the attribute (i.e. DEPENDENCY)
+- *tmap_mode()* with "plot" option is used to produce a static map. For interactive mode, "view" option should be used.
+- *fill* argument is used to map the attribute (i.e. DEPENDENCY)
 
 ### Creating a choropleth map by using *tmap*'s elements
 
@@ -255,9 +255,9 @@ tm_shape(mpsz_pop2024)+
 
 Things to learn from *tm_polygons()*:
 
--   The default interval binning used to draw the choropleth map is called "pretty". A detailed discussion of the data classification methods supported by **tmap** will be provided in sub-section 4.3.
--   The default colour scheme used is `blues3` of ColorBrewer. You will learn more about the color scheme in sub-section 4.4.
--   By default, Missing value will be shaded in grey.
+- The default interval binning used to draw the choropleth map is called "pretty". A detailed discussion of the data classification methods supported by **tmap** will be provided in sub-section 4.3.
+- The default colour scheme used is `blues3` of ColorBrewer. You will learn more about the color scheme in sub-section 4.4.
+- By default, Missing value will be shaded in grey.
 
 #### Drawing a choropleth map using *tm_fill()* and \*tm_border()\*\*
 
@@ -286,9 +286,9 @@ The `fill_alpha` argument is used to define transparency number between 0 (total
 
 Beside `fill_alpha` argument, there are three other arguments for `tm_borders()`, they are:
 
--   `col` = border colour,
--   `lwd` = border line width. The default is 1, and
--   `lty` = border line type. The default is "solid".
+- `col` = border colour,
+- `lwd` = border line width. The default is 1, and
+- `lty` = border line type. The default is "solid".
 
 ```{r}
 tm_shape(mpsz_pop2024)+
@@ -470,9 +470,9 @@ tmap_style("white")
 
 In **tmap**, small multiple maps can be plotted in three ways:
 
--   by assigning multiple values to at least one of the asthetic arguments,
--   by creating multiple stand-alone maps with *tmap_arrange()*, and
--   by defining a group-by variable in *tm_facets()*.
+- by assigning multiple values to at least one of the asthetic arguments,
+- by creating multiple stand-alone maps with *tmap_arrange()*, and
+- by defining a group-by variable in *tm_facets()*.
 
 ### By assigning multiple values to at least one of the aesthetic arguments
 
@@ -673,24 +673,24 @@ tmap_mode("plot")
 
 ### All about **tmap** package
 
--   [tmap: Thematic Maps in R](https://www.jstatsoft.org/article/view/v084i06)
--   [tmap](https://cran.r-project.org/web/packages/tmap/index.html)
--   [tmap: get started!](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
--   [tmap: changes in version 2.0](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-changes-v2.html)
--   [tmap: creating thematic maps in a flexible way (useR!2015)](http://von-tijn.nl/tijn/research/presentations/tmap_user2015.pdf)
--   [Exploring and presenting maps with tmap (useR!2017)](http://von-tijn.nl/tijn/research/presentations/tmap_user2017.pdf)
+- [tmap: Thematic Maps in R](https://www.jstatsoft.org/article/view/v084i06)
+- [tmap](https://cran.r-project.org/web/packages/tmap/index.html)
+- [tmap: get started!](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+- [tmap: changes in version 2.0](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-changes-v2.html)
+- [tmap: creating thematic maps in a flexible way (useR!2015)](http://von-tijn.nl/tijn/research/presentations/tmap_user2015.pdf)
+- [Exploring and presenting maps with tmap (useR!2017)](http://von-tijn.nl/tijn/research/presentations/tmap_user2017.pdf)
 
 ### Geospatial data wrangling
 
--   [sf: Simple Features for R](https://cran.r-project.org/web/packages/sf/index.html)
--   [Simple Features for R: StandardizedSupport for Spatial Vector Data](https://journal.r-project.org/archive/2018/RJ-2018-009/RJ-2018-009.pdf)
--   [Reading, Writing and Converting Simple Features](https://cran.r-project.org/web/packages/sf/vignettes/sf2.html)
+- [sf: Simple Features for R](https://cran.r-project.org/web/packages/sf/index.html)
+- [Simple Features for R: StandardizedSupport for Spatial Vector Data](https://journal.r-project.org/archive/2018/RJ-2018-009/RJ-2018-009.pdf)
+- [Reading, Writing and Converting Simple Features](https://cran.r-project.org/web/packages/sf/vignettes/sf2.html)
 
 ### Data wrangling
 
--   [dplyr](https://dplyr.tidyverse.org/)
--   [Tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
--   [tidyr: Easily Tidy Data with 'spread()' and 'gather()' Functions](https://cran.r-project.org/web/packages/tidyr/tidyr.pdf)
+- [dplyr](https://dplyr.tidyverse.org/)
+- [Tidy data](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+- [tidyr: Easily Tidy Data with 'spread()' and 'gather()' Functions](https://cran.r-project.org/web/packages/tidyr/tidyr.pdf)
 
 ```{r}
 #| echo: false
