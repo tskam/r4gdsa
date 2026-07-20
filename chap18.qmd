@@ -23,12 +23,12 @@ In this hands-on exercise, you will gain hands-on experience on how to perform m
 
 By the end of this hands-on exercise, you will be able:
 
--   to import GIS data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
--   to import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
--   to clean and tidy the data sets so that they are ready for the analysis,
--   to compute distance matrix between the origins (i.e. villages) and destinations (i.e stores),
--   to computer interaction probability using Huff model, and
--   to visualise the market area by using tmap and ggplot2 packages.
+- to import GIS data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+- to import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+- to clean and tidy the data sets so that they are ready for the analysis,
+- to compute distance matrix between the origins (i.e. villages) and destinations (i.e stores),
+- to computer interaction probability using Huff model, and
+- to visualise the market area by using tmap and ggplot2 packages.
 
 ### Setting the scene
 
@@ -40,15 +40,15 @@ In this exercise, you will assume the role of a data analyst within the business
 
 Four data sets will be used in this hands-on exercise, they are:
 
--   Geospatial data
+- Geospatial data
 
-    -   STORES_TN, store locations data in ESRI shapefile format.
-    -   VILLAGE_TN, village boundary data in ESRI shapefile format.
+  - STORES_TN, store locations data in ESRI shapefile format.
+  - VILLAGE_TN, village boundary data in ESRI shapefile format.
 
--   Aspatial data
+- Aspatial data
 
-    -   pop2019.csv, population data of Taichung City in 2019. H_CNT, P_CNT, M_CNT, and F_CNT indicate Number of household, Total population, Male population and Female population respectively.
-    -   Store_sales_data.csv provides store sales data, and
+  - pop2019.csv, population data of Taichung City in 2019. H_CNT, P_CNT, M_CNT, and F_CNT indicate Number of household, Total population, Male population and Female population respectively.
+  - Store_sales_data.csv provides store sales data, and
 
 ## Getting Started
 
@@ -56,11 +56,11 @@ Before we getting started, it is important for us to install the necessary R pac
 
 The R packages need for this exercise are as follows:
 
--   sf for handling geospatial data and performing geoprocessing function such as computing distance matrix,
--   MCI for performing Huff and MCI modelling,
--   tidyverse for performing data science tasks including visualisation, 
--   ggstatsplot, an R package that extends the ggplot2 visualization package to combine data visualization with statistical analysis, creating plots that include statistical test results directly, and
--   tmap for plotting cartographic quality thematic maps.
+- sf for handling geospatial data and performing geoprocessing function such as computing distance matrix,
+- MCI for performing Huff and MCI modelling,
+- tidyverse for performing data science tasks including visualisation,
+- ggstatsplot, an R package that extends the ggplot2 visualization package to combine data visualization with statistical analysis, creating plots that include statistical test results directly, and
+- tmap for plotting cartographic quality thematic maps.
 
 The code chunk below installs and launches these R packages into RStudio environment.
 
@@ -354,10 +354,6 @@ ggscatterstats(
   y = Total_Sales)
 
 ```
-
-
-
-
 
 ```{r}
 huff_share_wider <- huff_share %>%
