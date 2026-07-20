@@ -19,29 +19,29 @@ In this hands-on exercise, you will gain hands-on experience on how to model geo
 
 By the end of this hands-on exercise, you will be able:
 
--   to import GIS polygon data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
--   to import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
--   to computer accessibility measure by using Hansen's potential model and Spatial Accessibility Measure (SAM); and
--   to visualise the accessibility measures by using tmap and ggplot2 packages.
+- to import GIS polygon data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+- to import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+- to computer accessibility measure by using Hansen's potential model and Spatial Accessibility Measure (SAM); and
+- to visualise the accessibility measures by using tmap and ggplot2 packages.
 
 ## The data
 
 Four data sets will be used in this hands-on exercise, they are:
 
--   `MP14_SUBZONE_NO_SEA_PL`: URA Master Plan 2014 subzone boundary GIS data. This data set is downloaded from data.gov.sg.
+- `MP14_SUBZONE_NO_SEA_PL`: URA Master Plan 2014 subzone boundary GIS data. This data set is downloaded from data.gov.sg.
 
--   `hexagons`: A 250m radius hexagons GIS data. This data set was created by using [*st_make_grid()*](https://r-spatial.github.io/sf/reference/st_make_grid.html) of sf package. It is in ESRI shapefile format.
+- `hexagons`: A 250m radius hexagons GIS data. This data set was created by using [*st_make_grid()*](https://r-spatial.github.io/sf/reference/st_make_grid.html) of sf package. It is in ESRI shapefile format.
 
--   `ELDERCARE`: GIS data showing location of eldercare service. [This data](https://data.gov.sg/dataset/eldercare-services) is downloaded from data.gov.sg. There are two versions. One in ESRI shapefile format. The other one in Google kml file format. For the purpose of this hands-on exercise, ESRI shapefile format is provided.
+- `ELDERCARE`: GIS data showing location of eldercare service. [This data](https://data.gov.sg/dataset/eldercare-services) is downloaded from data.gov.sg. There are two versions. One in ESRI shapefile format. The other one in Google kml file format. For the purpose of this hands-on exercise, ESRI shapefile format is provided.
 
--   `OD_Matrix`: a distance matrix in csv format. There are six fields in the data file. They are:
+- `OD_Matrix`: a distance matrix in csv format. There are six fields in the data file. They are:
 
-    -   `origin_id`: the unique id values of the origin (i.e. `fid` of hexagon data set.),
-    -   `destination_id`: the unique id values of the destination (i.e. `fid` of `ELDERCARE` data set.),
-    -   `entry_cost`: the perpendicular distance between the origins and the nearest road),
-    -   `network_cost`: the actual network distance from the origin and destination,
-    -   `exit_cost`: the perpendicular distance between the destination and the nearest road), and
-    -   `total_cost`: the summation of `entry_cost`, `network_cost` and `exit_cost`.
+  - `origin_id`: the unique id values of the origin (i.e. `fid` of hexagon data set.),
+  - `destination_id`: the unique id values of the destination (i.e. `fid` of `ELDERCARE` data set.),
+  - `entry_cost`: the perpendicular distance between the origins and the nearest road),
+  - `network_cost`: the actual network distance from the origin and destination,
+  - `exit_cost`: the perpendicular distance between the destination and the nearest road), and
+  - `total_cost`: the summation of `entry_cost`, `network_cost` and `exit_cost`.
 
 All the values of the cost related fields are in **metres**.
 
@@ -53,18 +53,18 @@ Before we getting started, it is important for us to install the necessary R pac
 
 The R packages need for this exercise are as follows:
 
--   Spatial data handling
-    -   sf
--   Modelling geographical accessibility
-    -   spatialAcc
--   Attribute data handling
-    -   tidyverse, especially readr and dplyr
--   thematic mapping
-    -   tmap
--   Staistical graphic
-    -   ggplot2
--   Statistical analysis
-    -   ggstatsplot
+- Spatial data handling
+  - sf
+- Modelling geographical accessibility
+  - spatialAcc
+- Attribute data handling
+  - tidyverse, especially readr and dplyr
+- thematic mapping
+  - tmap
+- Staistical graphic
+  - ggplot2
+- Statistical analysis
+  - ggstatsplot
 
 The code chunk below installs and launches these R packages into RStudio environment.
 
@@ -241,7 +241,7 @@ mapex <- st_bbox(hexagons)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
 
-```{r} 
+```{r}
 #| fig_width: 12
 #| fig-height: 8 
 tm_shape(hexagon_Hansen,
@@ -310,7 +310,7 @@ hexagon_KD2SFCA <- bind_cols(hexagons, acc_KD2SFCA)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r} 
+```{r}
 #| fig_width: 12
 #| fig-height: 8 
 tm_shape(hexagon_KD2SFCA,
@@ -379,7 +379,7 @@ hexagon_SAM <- bind_cols(hexagons, acc_SAM)
 
 The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
 
-```{r} 
+```{r}
 #| fig_width: 12
 #| fig-height: 8 
 tm_shape(hexagon_SAM,
