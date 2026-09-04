@@ -41,7 +41,7 @@ The specific questions we would like to answer are as follows:
 
 To provide answers to the questions above, two data sets will be used. They are:
 
-- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
+- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.
 - *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
 
 Both data sets are provided in kml and geojson format. Students are free to download their preferred data format.
@@ -60,7 +60,7 @@ Use the code chunk below to install and launch the five R packages.
 
 ```{r}
 pacman::p_load(sf, terra, spatstat, 
-               tmap, rvest, tidyverse)
+               tmap, tidyverse)
 ```
 
 ## Importing and Wrangling Geospatial Data Sets
@@ -71,60 +71,26 @@ pacman::p_load(sf, terra, spatstat,
 - Import the two geospatial datasets into R using the methods from Hands-on Exercises 1 and 2.
 - Tidy the datasets and, if necessary, transform their projections.
 - Validate that both datasets use the same projection.
-- Ensure that the final outputs are stored in sf format.\
+- Ensure that the final outputs are stored in sf format.
 :::
 
 Use the code chunk below to import Master Plan 2019 Subzone (No Sea) data set into R environment.
 
 ```{r}
-#| eval: false
-mpsz_sf <- st_read("chap04/data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml") %>% 
-  st_zm(drop = TRUE, what = "ZM") %>% st_transform(crs = 3414)
+mpsz_sf <- st_read("chap04/data/MasterPlan2019SubzoneBoundaryNoSea.geojson") %>% 
+  st_transform(crs = 3414)
 ```
 
-::: callout-tip
-Notice that [`st_zm()`](https://r-spatial.github.io/sf/reference/st_zm.html) is used to used to remove Z (elevation) and M (measure) dimensions from geospatial geometries.
-:::
-
-Next, build a function called *extract_kml_field* for extracting REGION_N, PLN_AREA_N, SUBZONE_N, SUBZONE_C from Description field by using the code chunk below.
+Next, code chunk below will be used to exclude all outer island from the data set.
 
 ```{r}
-#| eval: false
-extract_kml_field <- function(html_text, field_name) {
-  if (is.na(html_text) || html_text == "") return(NA_character_)
-  
-  page <- read_html(html_text)
-  rows <- page %>% html_elements("tr")
-  
-  value <- rows %>%
-    keep(~ html_text2(html_element(.x, "th")) == field_name) %>%
-    html_element("td") %>%
-    html_text2()
-  
-  if (length(value) == 0) NA_character_ else value
-}
-```
-
-```{r}
-#| eval: false
-mpsz_sf <- mpsz_sf %>%
-  mutate(
-    REGION_N = map_chr(Description, extract_kml_field, "REGION_N"),
-    PLN_AREA_N = map_chr(Description, extract_kml_field, "PLN_AREA_N"),
-    SUBZONE_N = map_chr(Description, extract_kml_field, "SUBZONE_N"),
-    SUBZONE_C = map_chr(Description, extract_kml_field, "SUBZONE_C")
-  ) %>%
-  select(-Name, -Description) %>%
-  relocate(geometry, .after = last_col())
-```
-
-```{r}
-#| eval: false
 mpsz_cl <- mpsz_sf %>%
   filter(SUBZONE_N != "SOUTHERN GROUP",
          PLN_AREA_N != "WESTERN ISLANDS",
          PLN_AREA_N != "NORTH-EASTERN ISLANDS")
 ```
+
+It is always a good habit to write to clean dataset into a rds file format for future use.
 
 ```{r}
 #| eval: false
@@ -140,8 +106,7 @@ mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
 Next, code chunk below will be used to import the childcare Service data downloaded from data.gov.sg into R environment as sf data frame called *chilcare_sf*. The Simple Feature Geometry (sfg) of this geospatial data layer if
 
 ```{r}
-childcare_sf <- st_read("chap04/data/ChildCareServices.kml") %>% 
-  st_zm(drop = TRUE, what = "ZM") %>%
+childcare_sf <- st_read("chap04/data/ChildCareServices.geojson") %>%
   st_transform(crs = 3414)
 ```
 
@@ -160,7 +125,10 @@ Using the mapping methods from Hands-on Exercise 2, prepare a map as shown in th
 tm_shape(mpsz_cl) +
   tm_polygons() +
 tm_shape(childcare_sf)+
-  tm_dots()
+  tm_dots() +
+tm_graticules(lines = FALSE) +
+  tm_compass(position = tm_pos_in(
+    "left", "top"))
 ```
 
 Notice that all the geospatial layers are within the same map extend. This shows that their referencing system and coordinate values are referred to similar spatial context. This is very important in any geospatial analysis.
@@ -273,7 +241,7 @@ The 95% confident interval will be used.
 ```{r}
 clarkevans.test(childcareSG_ppp,
                 correction="none",
-                clipregion="sg_owin",
+                clipregion= sg_owin,
                 alternative=c("clustered"))
 ```
 
@@ -291,7 +259,7 @@ In the code chunk below, the argument method = "MonteCarlo" is used. In this cas
 ```{r}
 clarkevans.test(childcareSG_ppp,
                 correction="none",
-                clipregion="sg_owin",
+                clipregion= sg_owin,
                 alternative=c("clustered"),
                 method="MonteCarlo",
                 nsim=99)

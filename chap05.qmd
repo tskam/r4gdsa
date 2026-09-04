@@ -20,15 +20,15 @@ Using appropriate functions of [spatstat](https://cran.r-project.org/web/package
 
 The specific questions we would like to answer are as follows:
 
--   are the childcare centres in Singapore randomly distributed throughout the country?\
--   if the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
+- are the childcare centres in Singapore randomly distributed throughout the country?\
+- if the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?
 
 ## The data
 
 To provide answers to the questions above, two data sets will be used. They are:
 
--   *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
--   *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
+- *Child Care Services* data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.\
+- *Master Plan 2019 Subzone Boundary (No Sea)*, a polygon feature data providing information of URA 2019 Master Plan Planning Subzone boundary data.
 
 Both data sets are available at [Singapore's open data portal](data.gov.sg). They are provided in kml and geojson format. Students are free to download their preferred data format.
 
@@ -36,10 +36,10 @@ Both data sets are available at [Singapore's open data portal](data.gov.sg). The
 
 In this hands-on exercise, three R packages will be used, they are:
 
--   [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
--   [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
--   [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
--   [tidyverse](https://www.tidyverse.org/), a family of R packages designed for modern data science. These packages are developed to work together seamlessly, sharing a common design philosophy, grammar, and data structures, which aims to make data manipulation, analysis, and visualization in R more intuitive and efficient.
+- [**sf**](https://r-spatial.github.io/sf/), a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
+- [**spatstat**](https://spatstat.org/), which has a wide range of useful functions for point pattern analysis. In this hands-on exercise, it will be used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
+- [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html) which provides functions for plotting cartographic quality static point patterns maps or interactive maps by using [leaflet](https://leafletjs.com/) API.
+- [tidyverse](https://www.tidyverse.org/), a family of R packages designed for modern data science. These packages are developed to work together seamlessly, sharing a common design philosophy, grammar, and data structures, which aims to make data manipulation, analysis, and visualization in R more intuitive and efficient.
 
 Use the code chunk below to install and launch the five R packages.
 
@@ -51,8 +51,8 @@ pacman::p_load(sf, spatstat, tmap, tidyverse)
 
 The processes of importing and preparing the geospatial data to meet the analysis are similar to Chapter 4. Please refer to the following sub-sections, if necessary:
 
--   [Importing and Wrangling Geospatial Data Sets](file:///C:/tskam/r4gdsa/_book/chap04.html#importing-and-wrangling-geospatial-data-sets)
--   [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
+- [Importing and Wrangling Geospatial Data Sets](file:///C:/tskam/r4gdsa/_book/chap04.html#importing-and-wrangling-geospatial-data-sets)
+- [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
 
 ```{r}
 #| eval: false
