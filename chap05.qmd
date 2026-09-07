@@ -55,7 +55,7 @@ The processes of importing and preparing the geospatial data to meet the analysi
 - [Geospatial Data wrangling](file:///C:/tskam/r4gdsa/_book/chap04.html#geospatial-data-wrangling) for preparing geospatial data in ppp object class required by spatstat package.
 
 ```{r}
-#| eval: false
+#| echo: false
 mpsz_cl <- read_rds("chap04/data/mpsz_cl.rds")
 ```
 
@@ -202,7 +202,8 @@ The null hypothesis will be rejected if p-value is smaller than alpha value of 0
 Monte Carlo test with F-fucntion
 
 ```{r}
-F_CK.csr <- envelope(childcare_ck_ppp, Fest, nsim = 999)
+F_CK.csr <- envelope(childcare_ck_ppp, Fest, 
+                     nsim = 999)
 plot(F_CK.csr)
 ```
 
@@ -230,7 +231,9 @@ The null hypothesis will be rejected is p-value is smaller than alpha value of 0
 The code chunk below is used to perform the hypothesis testing.
 
 ```{r}
-F_tm.csr <- envelope(childcare_tm_ppp, Fest, correction = "all", nsim = 999)
+F_tm.csr <- envelope(childcare_tm_ppp, Fest,
+                     correction = "all", 
+                     nsim = 999)
 plot(F_tm.csr)
 ```
 
@@ -260,7 +263,9 @@ The null hypothesis will be rejected if p-value is smaller than alpha value of 0
 The code chunk below is used to perform the hypothesis testing.
 
 ```{r}
-K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+K_ck.csr <- envelope(childcare_ck_ppp, Kest, 
+                     nsim = 99, rank = 1,
+                     global=FALSE)
 
 ```
 
@@ -270,10 +275,11 @@ plot(K_ck.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 
 ### Tampines planning area
 
-#### Computing K-fucntion estimation
+#### Computing K-function estimation
 
 ```{r}
-K_tm = Kest(childcare_tm_ppp, correction = "Ripley")
+K_tm = Kest(childcare_tm_ppp, 
+            correction = "Ripley")
 plot(K_tm, . -r ~ r, 
      ylab= "K(d)-r", xlab = "d(m)", 
      xlim=c(0,1000))
@@ -292,13 +298,16 @@ The null hypothesis will be rejected if p-value is smaller than alpha value of 0
 The code chunk below is used to perform the hypothesis testing.
 
 ```{r}
-K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+K_tm.csr <- envelope(childcare_tm_ppp, Kest, 
+                     nsim = 99, rank = 1,
+                     global=FALSE)
 
 ```
 
 ```{r fig.width=7,  fig.height=4.5}
 plot(K_tm.csr, . - r ~ r, 
-     xlab="d", ylab="K(d)-r", xlim=c(0,500))
+     xlab="d", ylab="K(d)-r", 
+     xlim=c(0,500))
 ```
 
 ## Analysing Spatial Point Process Using L-Function
@@ -328,12 +337,15 @@ The null hypothesis will be rejected if p-value if smaller than alpha value of 0
 The code chunk below is used to perform the hypothesis testing.
 
 ```{r}
-L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_ck.csr <- envelope(childcare_ck_ppp, Lest, 
+                     nsim = 99, rank = 1,
+                     global=FALSE)
 
 ```
 
 ```{r fig.width=8, fig.height=5}
-plot(L_ck.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+plot(L_ck.csr, . - r ~ r, 
+     xlab="d", ylab="L(d)-r")
 ```
 
 ### Tampines planning area
@@ -360,7 +372,9 @@ The null hypothesis will be rejected if p-value is smaller than alpha value of 0
 The code chunk below will be used to perform the hypothesis testing.
 
 ```{r}
-L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_tm.csr <- envelope(childcare_tm_ppp, Lest, 
+                     nsim = 99, rank = 1,
+                     global=FALSE)
 
 ```
 
@@ -368,5 +382,6 @@ Then, plot the model output by using the code chun below.
 
 ```{r fig.width=7,  fig.height=5.5}
 plot(L_tm.csr, . - r ~ r, 
-     xlab="d", ylab="L(d)-r", xlim=c(0,500))
+     xlab="d", ylab="L(d)-r", 
+     xlim=c(0,500))
 ```

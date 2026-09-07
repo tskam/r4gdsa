@@ -110,6 +110,12 @@ childcare_sf <- st_read("chap04/data/ChildCareServices.geojson") %>%
   st_transform(crs = 3414)
 ```
 
+```{r}
+#| echo: false
+write_rds(childcare_sf, 
+          "chap04/data/childcare_sf.rds")
+```
+
 ### Mapping the geospatial data sets
 
 After checking the referencing system of each geospatial data data frame, it is also useful for us to plot a map to show their spatial patterns.
