@@ -296,7 +296,8 @@ saveGIF({
     plot(kde_yday, tselect = t,
          main = paste("KDE - Day", t))
   }
-}, movie.name = "chap06/kde_animation.gif", interval = 0.2)
+}, movie.name = "chap06/kde_animation.gif", 
+interval = 0.2)
 ```
 
 ![](chap06/)
@@ -333,8 +334,8 @@ plot(kde_yday)
 ```
 
 ```{r}
-library()
-
+#| echo: false
+#| eval: false
 saveGIF({
   for(i in 1:length(kde_yday$time)) {
     plot(kde_yday, i)

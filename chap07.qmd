@@ -50,7 +50,8 @@ The code chunk below uses `st_read()` of **sf** package to important Punggol_St 
 network <- st_read(dsn="chap07/data/geospatial", 
                    layer="Punggol_St")
 childcare <- st_read(dsn="chap07/data/geospatial",
-                     layer="Punggol_CC")
+                     layer="Punggol_CC") %>%
+  st_zm(drop = TRUE, what = "ZM")
 ```
 
 We can examine the structure of the output simple features data tables in RStudio. Alternative, code chunk below can be used to print the content of network and childcare simple features objects by using the code chunk below.
@@ -129,7 +130,6 @@ The points are located at center of the line based on the length of the line.
 We are ready to computer the NKDE by using the code chunk below.
 
 ```{r}
-#| eval: false
 densities <- nkde(network, 
                   events = childcare,
                   w = rep(1, nrow(childcare)),
@@ -162,7 +162,6 @@ The user guide of **spNetwork** package provide a comprehensive discussion of *n
 Before we can visualise the NKDE values, code chunk below will be used to insert the computed density values (i.e. densities) into *samples* and *lixels* objects as *density* field.
 
 ```{r}
-#| eval: false
 samples$density <- densities
 lixels$density <- densities
 ```
@@ -170,8 +169,6 @@ lixels$density <- densities
 Since svy21 projection system is in meter, the computed density values are very small i.e. 0.0000005. The code chunk below is used to resale the density values from number of events per meter to number of events per kilometer.
 
 ```{r}
-#| eval: false
-# rescaling to help the mapping
 samples$density <- samples$density*1000
 lixels$density <- lixels$density*1000
 ```
@@ -179,7 +176,6 @@ lixels$density <- lixels$density*1000
 The code below uses appropriate functions of tmap package to prepare interactive and high cartographic quality map visualisation.
 
 ```{r}
-#| eval: false
 tmap_mode('view')
 tm_shape(lixels)+
   tm_lines(col="density")+
