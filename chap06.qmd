@@ -368,6 +368,13 @@ fire_df <- data.frame(
   t = fire_sf$`DayofYear`)
 ```
 
+Next, we will create study area boundary by using *kbb_sf* data by using the code chunk below.
+
+```{r}
+coords <- st_coordinates(kbb_sf)
+s_region_matrix <- coords[, 1:2]
+```
+
 Step 3: Creating stpp spatio-temporal object
 
 In the code chunk below, `as.3dpoint()` of stpp package is used to create stpp spatio-temporal object class.
@@ -385,7 +392,12 @@ class(fire_stpp)
 Next we can visual *fire_stpp* by using the code chunk below.
 
 ```{r}
-plot(fire_stpp)
+plot(fire_stpp, s_region_matrix)
+```
+
+```{r}
+plot(fire_stpp, s_region_matrix,
+     pch = 19, mark = TRUE) 
 ```
 
 ### Computing spatio-temporal k-function
@@ -393,17 +405,19 @@ plot(fire_stpp)
 In the code chunk below, [`STIKhat()`](https://cran.r-project.org/web/packages/stpp/refman/stpp.html#STIKhat) of stpp package is used to compute space-time inhomogeneous K-function.
 
 ```{r}
-kbb_stik <- STIKhat(fire_stpp)
+kbb_stik <- STIKhat(fire_stpp,
+                    s.region = s_region_matrix,
+                    t.region = c(150,250),
+                    infectious = TRUE)
 ```
 
 Next, [`plotK()`](https://cran.r-project.org/web/packages/stpp/refman/stpp.html#plotK) is used to visualise the output space-time inhomogeneous K-function.
 
 ```{r}
-#| eval: false
-plotK(kbb_stik)
+plotK(kbb_stik, n = 20, 
+      L = TRUE, type = "contour")
 ```
 
-![](chap06/kbb_stik.png)
 
 ### Guide to interpret the plot
 
