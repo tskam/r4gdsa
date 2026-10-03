@@ -23,7 +23,7 @@ The analysis consist of four main steps:
 - Categorising each study area location by referring to the resultant trend z-score and p-value for each location with data, and with the hot spot z-score and p-value for each bin.
 
 ::: callout-important
-It is highly recommended to read [Emerging Hot Spot Analysis](https://sfdep.josiahparry.com/articles/understanding-emerging-hotspots) before you continue the exercise.
+It is highly recommended to read [Emerging Hot Spot Analysis](https://josiahparry.github.io/sfdep/articles/understanding-emerging-hotspots.html) before you continue the exercise.
 :::
 
 :::: :::::
@@ -79,9 +79,9 @@ GDPPC <- read_csv(
 
 ## Creating a Time Series Cube
 
-Before getting started, students must read this [article](https://sfdep.josiahparry.com/articles/spacetime-s3.html) to learn the basic concept of spatio-temporal cube and its implementation in sfdep package.
+Before getting started, students must read this [article](https://josiahparry.github.io/sfdep/articles/spacetime-s3.html) to learn the basic concept of spatio-temporal cube and its implementation in sfdep package.
 
-In the code chunk below, [`spacetime()`](https://sfdep.josiahparry.com/reference/spacetime.html) of sfdep ised used to create an spatio-temporal cube.
+In the code chunk below, [`spacetime()`](https://josiahparry.github.io/sfdep/reference/spacetime.html) of sfdep ised used to create an spatio-temporal cube.
 
 ```{r}
 GDPPC_st <- spacetime(GDPPC, hunan,
@@ -257,7 +257,7 @@ head(emerging)
 
 ## Performing Emerging Hotspot Analysis
 
-Lastly, we will perform EHSA analysis by using [`emerging_hotspot_analysis()`](https://sfdep.josiahparry.com/reference/emerging_hotspot_analysis.html) of sfdep package. It takes a spacetime object x (i.e. GDPPC_st), and the quoted name of the variable of interest (i.e. GDPPC) for .var argument. The k argument is used to specify the number of time lags which is set to 1 by default. Lastly, nsim map numbers of simulation to be performed.
+Lastly, we will perform EHSA analysis by using [`emerging_hotspot_analysis()`](https://josiahparry.github.io/sfdep/reference/emerging_hotspot_analysis.html) of sfdep package. It takes a spacetime object x (i.e. GDPPC_st), and the quoted name of the variable of interest (i.e. GDPPC) for .var argument. The k argument is used to specify the number of time lags which is set to 1 by default. Lastly, nsim map numbers of simulation to be performed.
 
 ```{r}
 ehsa <- emerging_hotspot_analysis(
