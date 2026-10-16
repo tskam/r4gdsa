@@ -444,7 +444,7 @@
     "href": "chap17.html",
     "title": "17  Modelling Geographical Accessibility",
     "section": "",
-    "text": "17.1 Introduction\nIn this hands-on exercise, you will gain hands-on experience on how to model geographical accessibility by using R’s geospatial analysis packages.",
+    "text": "17.1 Introduction\nThe geography of accessibility measures how easily people can overcome distance and spatial barriers to reach important destinations like jobs, schools, healthcare, and shops. It moves beyond raw physical distance to evaluate how time, transport networks, cost, and individual constraints shape real-world\nQuestions that can be answered by accessibility models are:\nIn this hands-on exercise, you will gain hands-on experience on how to model geographical accessibility by using R’s geospatial analysis packages.",
     "crumbs": [
       "Modelling Spatial Interaction and Flows",
       "<span class='chapter-number'>17</span>  <span class='chapter-title'>Modelling Geographical Accessibility</span>"
@@ -455,7 +455,7 @@
     "href": "chap17.html#introduction",
     "title": "17  Modelling Geographical Accessibility",
     "section": "",
-    "text": "17.1.1 Learning Outcome\nBy the end of this hands-on exercise, you will be able:\n\nto import GIS polygon data into R and save them as simple feature data frame by using appropriate functions of sf package of R;\nto import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;\nto computer accessibility measure by using Hansen’s potential model and Spatial Accessibility Measure (SAM); and\nto visualise the accessibility measures by using tmap and ggplot2 packages.",
+    "text": "Which part of the geographical areas are deprived from getting access to a social service, facility or job opportunity?\nWhich part of the geographical areas will be affected by a public policy or business decision such as merging JCs, secondary and primary schools.\n\n\n\n17.1.1 Learning Outcome\nBy the end of this hands-on exercise, you will be able:\n\nto import GIS polygon data into R and save them as simple feature data frame by using appropriate functions of sf package of R;\nto import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;\nto computer accessibility measure by using Hansen’s potential model and Spatial Accessibility Measure (SAM); and\nto visualise the accessibility measures by using tmap and ggplot2 packages.",
     "crumbs": [
       "Modelling Spatial Interaction and Flows",
       "<span class='chapter-number'>17</span>  <span class='chapter-title'>Modelling Geographical Accessibility</span>"
@@ -477,7 +477,7 @@
     "href": "chap17.html#getting-started",
     "title": "17  Modelling Geographical Accessibility",
     "section": "17.3 Getting Started",
-    "text": "17.3 Getting Started\nBefore we getting started, it is important for us to install the necessary R packages and launch them into RStudio environment.\nThe R packages need for this exercise are as follows:\n\nSpatial data handling\n\nsf\n\nModelling geographical accessibility\n\nspatialAcc\n\nAttribute data handling\n\ntidyverse, especially readr and dplyr\n\nthematic mapping\n\ntmap\n\nStaistical graphic\n\nggplot2\n\nStatistical analysis\n\nggstatsplot\n\n\nThe code chunk below installs and launches these R packages into RStudio environment.\n\npacman::p_load(tmap, SpatialAcc, sf, \n               ggstatsplot, reshape2,\n               tidyverse)\n\npackage 'SpatialAcc' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\tskam\\AppData\\Local\\Temp\\Rtmp6P82L7\\downloaded_packages\n\n\nNotice that with tidyverse, we do not have to install readr, dplyr and ggplots packages separately. In fact, tidyverse also installs other R packages such as tidyr, stringr, forcats, tibble, purrr and magrittr.",
+    "text": "17.3 Getting Started\nBefore we getting started, it is important for us to install the necessary R packages and launch them into RStudio environment.\nThe R packages need for this exercise are as follows:\n\nSpatial data handling\n\nsf\n\nModelling geographical accessibility\n\nspatialAcc\n\nAttribute data handling\n\ntidyverse, especially readr and dplyr\n\nthematic mapping\n\ntmap\n\nStaistical graphic\n\nggplot2\n\nStatistical analysis\n\nggstatsplot\n\n\nThe code chunk below installs and launches these R packages into RStudio environment.\n\npacman::p_load(tmap, SpatialAcc, sf, \n               ggstatsplot, reshape2,\n               tidyverse)\n\nNotice that with tidyverse, we do not have to install readr, dplyr and ggplots packages separately. In fact, tidyverse also installs other R packages such as tidyr, stringr, forcats, tibble, purrr and magrittr.",
     "crumbs": [
       "Modelling Spatial Interaction and Flows",
       "<span class='chapter-number'>17</span>  <span class='chapter-title'>Modelling Geographical Accessibility</span>"

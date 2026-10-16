@@ -13,6 +13,13 @@ editor: visual
 
 ## Introduction
 
+The geography of accessibility measures how easily people can overcome distance and spatial barriers to reach important destinations like jobs, schools, healthcare, and shops. It moves beyond raw physical distance to evaluate how time, transport networks, cost, and individual constraints shape real-world 
+
+Questions that can be answered by accessibility models are:
+
+- Which part of the geographical areas are deprived from getting access to a social service, facility or job opportunity?
+- Which part of the geographical areas will be affected by a public policy or business decision such as merging JCs, secondary and primary schools.
+
 In this hands-on exercise, you will gain hands-on experience on how to model geographical accessibility by using R's geospatial analysis packages.
 
 ### Learning Outcome
