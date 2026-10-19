@@ -28,7 +28,7 @@ In this in-class exercise, you will learn how to build predictive model by using
 ## The Data
 
 - **Aspatial dataset**:
-  - HDB Resale data: a list of HDB resale transacted prices in Singapore from Jan 2017 onwards. It is in csv format which can be downloaded from Data.gov.sg.
+  - HDB Resale data: a list of HDB resale transacted prices in Singapore from Jan 2017 onwards. It is in csv format which can be downloaded from data.gov.sg.
 - **Geospatial dataset**:
   - *MP14_SUBZONE_WEB_PL*: a polygon feature data providing information of URA 2014 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from Data.gov.sg
 - **Locational factors with geographic coordinates**:
@@ -61,7 +61,8 @@ This code chunk performs 3 tasks:
 
 ```{r}
 pacman::p_load(sf, spdep, GWmodel, SpatialML, 
-               tmap, rsample, Metrics, tidyverse)
+               tmap, rsample, Metrics, 
+               ranger, tidyverse)
 ```
 
 ## Preparing Data
@@ -87,8 +88,6 @@ overlapping_points <- mdata %>%
   mutate(overlap = lengths(st_equals(., .)) > 1)
 ```
 
-:::
-
 ### Spatial jitter
 
 In the code code chunk below, [`st_jitter()`](https://r-spatial.github.io/sf/reference/st_jitter.html) of **sf** package is used to move the point features by 1m to avoid overlapping point features.
@@ -99,8 +98,6 @@ mdata <- mdata %>%
   st_jitter(amount = 1)
 ```
 :::
-
-::::::::
 
 ### Data Sampling
 
@@ -311,6 +308,7 @@ gwr_pred <- gwr.predict(
 ```
 
 ```{r}
+#| eval: false
 write_rds(gwr_pred, 
           "chap14/data/model/gwr_pred.rds")
 ```
